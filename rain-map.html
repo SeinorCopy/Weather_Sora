@@ -224,26 +224,32 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-
+        
         .info-card {
             background: #eef2f6;
             border: 1px solid rgba(180, 195, 210, 0.1);
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 14px;
+            text-align: left;              /* ← 改左 */
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            align-items: flex-start;       /* ← 改左 */
+            gap: 4px;
         }
-
+        
         .info-card .label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
+            font-weight: 400;                            /* ← 正常字重 */
+            letter-spacing: 0.5px;                       /* ← 靚少少 */
             color: var(--text-sub);
+            text-transform: uppercase;                   /* ← 大階 */
         }
-
+        
         .info-card .value {
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 0.95rem;
+            font-weight: 400;                            /* ← 唔再粗體！ */
             color: var(--text-main);
+            letter-spacing: 0.3px;                       /* ← 靚少少 */
         }
 
         /* ===== 加載狀態 ===== */
@@ -318,10 +324,10 @@
         <!-- ===== Legend ===== -->
         <div class="legend">
             <span class="legend-item"><span class="dot rain-none"></span> 無</span>
-            <span class="legend-item"><span class="dot rain-light"></span> 微</span>
-            <span class="legend-item"><span class="dot rain-moderate"></span> 中</span>
-            <span class="legend-item"><span class="dot rain-heavy"></span> 大</span>
-            <span class="legend-item"><span class="dot rain-extreme"></span> 豪</span>
+            <span class="legend-item"><span class="dot rain-light"></span> 輕度</span>
+            <span class="legend-item"><span class="dot rain-moderate"></span> 中度</span>
+            <span class="legend-item"><span class="dot rain-heavy"></span> 重度</span>
+            <span class="legend-item"><span class="dot rain-extreme"></span> 印度</span>
         </div>
 
         <!-- ===== Map ===== -->
@@ -390,7 +396,7 @@
                 <span class="value" id="maxRain">--</span>
             </div>
             <div class="info-card">
-                <span class="label">🌧️ 降雨涵蓋率</span>
+                <span class="label">🌧️ 降雨量 </span>
                 <span class="value" id="rainArea">--</span>
             </div>
         </div>
@@ -506,8 +512,8 @@
                     if (rain > 0) rainCount++;
                 });
     
-                maxRainEl.textContent = maxName + ' (' + max + 'mm)';
-                rainAreaEl.textContent = rainCount + ' / 19 區';
+                maxRainEl.textContent = maxName;
+                rainAreaEl.textContent =  max + ' mm';      //🌧️ 降雨量 (rainCount = 區）
                 updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + formatTime();
             }
     
