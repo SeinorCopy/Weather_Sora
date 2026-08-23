@@ -25,7 +25,7 @@
 
     body {
       min-height: 100vh;
-      background: #1a1a2e;
+      background: #2c3e50;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -38,7 +38,7 @@
     }
 
     body.typhoon-bg {
-      background: #1a1a2e;
+      background: #2c3e50;
     }
 
     .weather-card {
@@ -305,7 +305,7 @@
       line-height: 1.5;
     }
 
-    /* ===== 警報框（8號風球橙色） ===== */
+    /* ===== 警報框 ===== */
     .news-alert {
       border-radius: 16px;
       padding: 14px 18px;
@@ -334,35 +334,44 @@
     .news-alert-black .news-body { color: rgba(255, 255, 255, 0.85); }
     .news-alert-black .news-time { color: rgba(255, 255, 255, 0.4); }
 
+    /* ===== 8號風球 - 新配色（深灰藍 + 風暴橙） ===== */
     .news-alert-typhoon-8 {
-      background: #2c1a0a;
+      background: #1a2a3a;
       border-left: 3px solid #e67e22;
-      border: 1px solid rgba(230, 126, 34, 0.3);
+      border: 1px solid rgba(230, 126, 34, 0.25);
     }
-    .news-alert-typhoon-8 i { color: #e67e22; }
-    .news-alert-typhoon-8 .news-title { color: #e67e22; }
-    .news-alert-typhoon-8 .news-body { color: rgba(255, 255, 255, 0.85); }
-    .news-alert-typhoon-8 .news-time { color: rgba(255, 255, 255, 0.4); }
+    .news-alert-typhoon-8 i { 
+      color: #e67e22; 
+    }
+    .news-alert-typhoon-8 .news-title { 
+      color: #e67e22; 
+    }
+    .news-alert-typhoon-8 .news-body { 
+      color: #d0d8e0; 
+    }
+    .news-alert-typhoon-8 .news-time { 
+      color: rgba(255, 255, 255, 0.3); 
+    }
 
     .news-alert-typhoon-9 {
-      background: #3d1a00;
+      background: #1a1a2e;
       border-left: 3px solid #d35400;
-      border: 1px solid rgba(211, 84, 0, 0.3);
+      border: 1px solid rgba(211, 84, 0, 0.25);
     }
     .news-alert-typhoon-9 i { color: #d35400; }
     .news-alert-typhoon-9 .news-title { color: #d35400; }
     .news-alert-typhoon-9 .news-body { color: rgba(255, 255, 255, 0.85); }
-    .news-alert-typhoon-9 .news-time { color: rgba(255, 255, 255, 0.4); }
+    .news-alert-typhoon-9 .news-time { color: rgba(255, 255, 255, 0.3); }
 
     .news-alert-typhoon-10 {
-      background: #2a0a0a;
+      background: #1a0a0a;
       border-left: 3px solid #c0392b;
-      border: 1px solid rgba(192, 57, 43, 0.3);
+      border: 1px solid rgba(192, 57, 43, 0.25);
     }
     .news-alert-typhoon-10 i { color: #c0392b; }
     .news-alert-typhoon-10 .news-title { color: #c0392b; }
     .news-alert-typhoon-10 .news-body { color: rgba(255, 255, 255, 0.85); }
-    .news-alert-typhoon-10 .news-time { color: rgba(255, 255, 255, 0.4); }
+    .news-alert-typhoon-10 .news-time { color: rgba(255, 255, 255, 0.3); }
 
     .news-alert-red {
       background: #fce4e4;
@@ -902,13 +911,11 @@
       createWindLines();
 
       window.addEventListener('load', function() {
-        // ⭐ 特別天氣提示
         fetchSpecialWeatherTips();
         setInterval(fetchSpecialWeatherTips, 600000);
         
-        // 🌬️ 設定為 8號風球
         updateWeather('8號風球', 26, 85, 60);
-        console.log('🌀 SORA HK · 8號風球 Demo');
+        console.log('🌀 SORA HK · 8號風球 Demo (新警報框配色)');
       });
 
       window.setSORAWeather = updateWeather;
