@@ -406,7 +406,7 @@
             const rainAreaEl = document.getElementById('rainArea');
             const backBtn = document.getElementById('backBtn');
             const body = document.body;
-
+    
             // ===== 🌀 返回掣轉場 =====
             backBtn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -415,8 +415,8 @@
                     window.location.href = 'index.html';
                 }, 300);
             });
-
-            // ===== 🗺️ 各區雨量數據（從 API 更新） =====
+    
+            // ===== 🗺️ 各區雨量數據 =====
             const districtData = {
                 '中西區': 0, '灣仔': 0, '東區': 0, '南區': 0,
                 '油尖旺': 0, '深水埗': 0, '九龍城': 0, '黃大仙': 0, '觀塘': 0,
@@ -424,48 +424,63 @@
                 '將軍澳': 0,
                 '屯門': 0, '元朗': 0, '荃灣': 0, '葵青': 0, '離島': 0
             };
-
-            // ===== 天文台站名 → 地區名 Mapping =====
-            const districtMap = {
-                '天文台': '中西區',
-                '長洲': '離島',
+    
+            // ===== 站名 → 區名 Mapping（用最大雨量代表該區）=====
+            const stationToDistrict = {
+                // 香港島
+                '香港天文台': '中西區',
+                '山頂': '中西區',
+                '馬己仙峽': '中西區',
+                '跑馬地': '灣仔',
+                '筲箕灣': '東區',
                 '赤柱': '南區',
-                '屯門': '屯門',
-                '元朗': '元朗',
-                '沙田': '沙田',
-                '大埔': '大埔',
-                '北角': '東區',
-                '黃大仙': '黃大仙',
-                '觀塘': '觀塘',
-                '將軍澳': '將軍澳',
-                '荃灣': '荃灣',
-                '葵涌': '葵青',
+                '黃竹坑': '南區',
+    
+                // 九龍
+                '京士柏': '油尖旺',
                 '深水埗': '深水埗',
-                '九龍城': '九龍城',
-                '油尖旺': '油尖旺',
-                '灣仔': '灣仔',
-                '西貢': '西貢',
+                '啟德': '九龍城',
+                '新蒲崗': '黃大仙',
+                '廣播道': '黃大仙',
+                '觀塘': '觀塘',
+    
+                // 新界東
+                '沙田': '沙田',
+                '大埔墟': '大埔',
                 '大美督': '大埔',
-                '流浮山': '元朗',
                 '打鼓嶺': '北區',
                 '上水': '北區',
+                '西貢': '西貢',
+                '北潭涌': '西貢',
+                '清水灣': '西貢',
+                '將軍澳': '將軍澳',
+    
+                // 新界西
+                '屯門': '屯門',
+                '流浮山': '元朗',
                 '石崗': '元朗',
-                '京士柏': '油尖旺',
-                '香港公園': '中西區'
+                '水邊圍': '元朗',
+                '濕地公園': '元朗',
+                '荃灣可觀': '荃灣',
+                '長青': '葵青',
+    
+                // 離島
+                '長洲': '離島',
+                '坪洲': '離島',
+                '昂坪': '離島',
+                '橫瀾島': '離島',
+                '香港國際機場': '離島'
             };
-
-            // ===== 加載狀態 =====
+    
             let isLoading = true;
             let loadAttempts = 0;
             const MAX_ATTEMPTS = 3;
-
-            // ===== 格式化時間 =====
+    
             function formatTime() {
                 const now = new Date();
                 return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
             }
-
-            // ===== 獲取雨量級別 CSS Class =====
+    
             function getRainClass(rain) {
                 if (rain === 0 || rain === null || rain === undefined) return 'rain-none';
                 if (rain < 5) return 'rain-light';
@@ -473,78 +488,73 @@
                 if (rain < 50) return 'rain-heavy';
                 return 'rain-extreme';
             }
-
-            // ===== 更新地圖 UI =====
+    
             function updateUI() {
                 let max = -1, maxName = '', rainCount = 0;
-                
+    
                 document.querySelectorAll('.district').forEach(el => {
                     const name = el.dataset.district;
                     const rain = districtData[name] || 0;
-                    
+    
                     el.classList.remove('rain-none', 'rain-light', 'rain-moderate', 'rain-heavy', 'rain-extreme');
                     el.classList.add(getRainClass(rain));
-
-                    if (rain > max) { 
-                        max = rain; 
-                        maxName = name; 
+    
+                    if (rain > max) {
+                        max = rain;
+                        maxName = name;
                     }
                     if (rain > 0) rainCount++;
                 });
-
+    
                 maxRainEl.textContent = maxName + ' (' + max + 'mm)';
                 rainAreaEl.textContent = rainCount + ' / 19 區';
                 updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + formatTime();
             }
-
+    
             // ===== 🔥 從天文台 API 獲取真實雨量數據 =====
             async function fetchRealRainfall() {
                 try {
-                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
                     const apiUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc';
-                    
-                    const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-                    
+
+                    const response = await fetch(apiUrl);
+    
                     if (!response.ok) {
                         throw new Error('HTTP error! status: ' + response.status);
                     }
-                    
+    
                     const data = await response.json();
-                    const newData = {};
-                    
+    
+                    // 先清空
+                    for (const key in districtData) {
+                        districtData[key] = 0;
+                    }
+    
                     if (data.hourlyRainfall && data.hourlyRainfall.length > 0) {
                         data.hourlyRainfall.forEach(station => {
-                            const placeName = station.place;
-                            // 天文台place直接就是18區名稱
-                            if (station.value !== null && station.value !== undefined) {
-                                newData[placeName] = station.value;
+                            const stationName = station.automaticWeatherStation;
+                            const district = stationToDistrict[stationName];
+    
+                            if (district) {
+                                let val = parseFloat(station.value);
+                                if (isNaN(val) || station.value === 'M') val = 0;
+    
+                                // 同一區有多個站時，取最大雨量
+                                if (val > districtData[district]) {
+                                    districtData[district] = Math.round(val * 10) / 10;
+                                }
                             }
                         });
-            
-                        // 特殊處理：將軍澳同步西貢數據
-                        if (newData['西貢'] !== undefined) {
-                            newData['將軍澳'] = newData['西貢'];
-                        }
                     }
-                    
-                    // 更新 districtData
-                    for (const key in districtData) {
-                        if (newData[key] !== undefined) {
-                            districtData[key] = Math.round(newData[key] * 10) / 10;
-                        } else {
-                            districtData[key] = 0;
-                        }
-                    }
-                    
+    
                     updateUI();
                     isLoading = false;
                     console.log('✅ 雨量數據更新成功！', districtData);
                     return true;
-                    
+    
                 } catch (error) {
                     console.error('❌ 拎唔到雨量數據：', error);
                     loadAttempts++;
-                    
+    
                     if (loadAttempts < MAX_ATTEMPTS) {
                         console.log('🔄 重試中... (' + loadAttempts + '/' + MAX_ATTEMPTS + ')');
                         setTimeout(fetchRealRainfall, 3000);
@@ -556,8 +566,8 @@
                     return false;
                 }
             }
-
-            // ===== 🆘 Fallback 模擬數據（API 死咗時用） =====
+    
+            // ===== 🆘 Fallback 模擬數據 =====
             function useFallbackData() {
                 const fallbackData = {
                     '中西區': 45, '灣仔': 22, '東區': 8, '南區': 0,
@@ -566,7 +576,7 @@
                     '將軍澳': 35,
                     '屯門': 25, '元朗': 48, '荃灣': 14, '葵青': 1, '離島': 20
                 };
-                
+    
                 for (const key in districtData) {
                     if (fallbackData[key] !== undefined) {
                         districtData[key] = fallbackData[key];
@@ -574,8 +584,8 @@
                 }
                 updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + formatTime() + ' (模擬數據)';
             }
-
-            // ===== 🖱️ 綁定地圖互動事件 =====
+    
+            // ===== 🖱️ 地圖互動事件 =====
             document.querySelectorAll('.district').forEach(el => {
                 el.addEventListener('mouseenter', function(e) {
                     const name = this.dataset.district;
@@ -584,38 +594,28 @@
                     ttVal.textContent = '雨量：' + rain + ' mm';
                     tooltip.classList.add('show');
                 });
-
                 el.addEventListener('mousemove', function(e) {
                     tooltip.style.left = (e.clientX + 14) + 'px';
                     tooltip.style.top = (e.clientY - 12) + 'px';
                 });
-
                 el.addEventListener('mouseleave', function() {
                     tooltip.classList.remove('show');
                 });
-
                 el.addEventListener('click', function() {
                     document.querySelectorAll('.district').forEach(d => d.classList.remove('active'));
                     this.classList.add('active');
                 });
             });
-
+    
             // ===== 🚀 初始化 =====
             function init() {
-                // 先顯示加載狀態
                 updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> 載入中...';
-                
-                // 嘗試獲取真實數據
                 fetchRealRainfall();
-                
-                // 每 5 分鐘更新一次
-                setInterval(fetchRealRainfall, 300000);
+                setInterval(fetchRealRainfall, 300000); // 每 5 分鐘更新
             }
-
-            // 頁面加載完成後啟動
+    
             init();
-
-            console.log('🌧️ SORA HK 降雨分佈圖已載入 (Production 版)');
+            console.log('🌧️ SORA HK 降雨分佈圖已載入 (Fixed 版)');
             console.log('📡 數據來源：香港天文台 hourlyRainfall API');
         })();
     </script>
