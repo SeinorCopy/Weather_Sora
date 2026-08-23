@@ -33,7 +33,6 @@
       transition: background 0.5s ease;
     }
 
-    /* ===== 雨天/風球 背景變暗 ===== */
     body.rainy-bg {
       background: #2c3e50;
     }
@@ -113,7 +112,6 @@
       opacity: 1;
     }
 
-    /* 風線 */
     .wind-line {
       position: absolute;
       height: 3px;
@@ -139,7 +137,6 @@
       }
     }
 
-    /* 旋轉風圈 */
     .typhoon-spiral {
       position: absolute;
       top: 50%;
@@ -170,7 +167,6 @@
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    /* ===== 搖晃動畫（打風時圖片搖擺） ===== */
     @keyframes shake {
       0%, 100% { transform: rotate(0deg) translateX(0); }
       10% { transform: rotate(1deg) translateX(3px); }
@@ -188,20 +184,11 @@
       animation: shake 0.8s ease-in-out infinite;
     }
 
-    /* ===== 圖片淡入切換 ===== */
     .hero-image img {
       transition: opacity 0.8s ease, transform 0.8s ease;
       width: 100%;
       height: auto;
       display: block;
-    }
-
-    .hero-image img.fade-in {
-      opacity: 1;
-    }
-
-    .hero-image img.fade-out {
-      opacity: 0;
     }
 
     /* ===== 頂部 ===== */
@@ -219,7 +206,6 @@
       font-weight: 400;
     }
 
-    /* ===== 右上角警告圖標 ===== */
     .warning-badge {
       display: flex;
       align-items: center;
@@ -279,6 +265,38 @@
       border: 1px solid rgba(180, 195, 210, 0.15);
       min-height: 120px;
       position: relative;
+    }
+
+    /* ===== ⭐ 特別天氣提示 ===== */
+    #specialTipContainer {
+      background: #f0f4f8;
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin: 8px 0 12px;
+      border-left: 4px solid #7a9bb5;
+      font-size: 0.85rem;
+      color: #3d525c;
+      transition: all 0.3s ease;
+    }
+
+    #specialTipContainer .tip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #specialTipContainer .tip-label {
+      font-weight: 500;
+    }
+
+    #specialTipContainer .tip-time {
+      font-size: 0.65rem;
+      color: #8a9ba8;
+    }
+
+    #specialTipContainer .tip-body {
+      margin-top: 4px;
+      line-height: 1.5;
     }
 
     /* ===== 警報框 ===== */
@@ -498,52 +516,21 @@
       </div>
     </div>
 
-    <!-- ===== 主卡片 ===== -->
     <div class="hero-image" id="heroImage">
       <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
     </div>
 
+    <!-- ===== ⭐ 特別天氣提示（天文台 SWT） ===== -->
+    <div id="specialTipContainer">
+      <div class="tip-header">
+        <span class="tip-label">📢 特別天氣提示</span>
+        <span class="tip-time" id="specialTipTime">🕒 --:--</span>
+      </div>
+      <div class="tip-body" id="specialTip">
+        載入中...
+      </div>
+    </div>
 
-    <!-- ⭐ 特別天氣提示 -->
-    // ===== 拎天文台特別天氣提示 =====
-  async function fetchSpecialWeatherTips() {
-    try {
-      const response = await fetch(
-        'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc'
-      );
-      const data = await response.json();
-      
-      // 檢查有冇 swt 數據
-      if (data.swt && data.swt.length > 0) {
-        const firstTip = data.swt[0];
-        console.log('📢 特別天氣提示：', firstTip.shortMsg);
-        
-        // 更新 UI（例如放喺新聞框上面）
-        document.getElementById('specialTip').textContent = firstTip.shortMsg;
-        document.getElementById('specialTipTime').textContent = 
-          `🕒 ${firstTip.updateTime.replace('T', ' ').slice(0, 16)}`;
-        
-        return firstTip;
-      } else {
-        console.log('目前沒有特別天氣提示');
-        document.getElementById('specialTip').textContent = '目前沒有特別天氣提示';
-        return null;
-      }
-    } catch (error) {
-      console.error('拎唔到特別天氣提示：', error);
-      document.getElementById('specialTip').textContent = '⚠️ 無法載入天氣提示';
-      return null;
-    }
-  }
-  
-  // 喺頁面載入時自動執行
-  window.addEventListener('load', function() {
-    fetchSpecialWeatherTips();
-    // 每 10 分鐘更新一次
-    setInterval(fetchSpecialWeatherTips, 600000);
-  });
-
-    <!-- ===== 警報框 ===== -->
     <div class="news-alert" id="newsAlert">
       <i class="fas fa-bullhorn" id="newsIcon"></i>
       <div class="news-content">
@@ -603,6 +590,8 @@
       const rainContainer = document.getElementById('rainContainer');
       const typhoonOverlay = document.getElementById('typhoonOverlay');
       const body = document.body;
+      const specialTip = document.getElementById('specialTip');
+      const specialTipTime = document.getElementById('specialTipTime');
 
       // ===== helpers =====
       function formatTime() {
@@ -649,13 +638,11 @@
       // ===== 🌬️ 生成風線 =====
       function createWindLines() {
         typhoonOverlay.innerHTML = '';
-        // 加返 spiral
         for (let i = 0; i < 3; i++) {
           const spiral = document.createElement('div');
           spiral.className = 'typhoon-spiral';
           typhoonOverlay.appendChild(spiral);
         }
-        // 加風線
         const lineCount = 15;
         for (let i = 0; i < lineCount; i++) {
           const line = document.createElement('div');
@@ -670,6 +657,60 @@
           line.style.animationDelay = delay + 's';
           line.style.opacity = 0.1 + Math.random() * 0.2;
           typhoonOverlay.appendChild(line);
+        }
+      }
+
+      // ===== ⭐ 拎天文台特別天氣提示 =====
+      async function fetchSpecialWeatherTips() {
+        try {
+          const response = await fetch(
+            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc'
+          );
+          const data = await response.json();
+          
+          if (data.swt && data.swt.length > 0) {
+            const firstTip = data.swt[0];
+            console.log('📢 特別天氣提示：', firstTip.shortMsg);
+            
+            if (specialTip) {
+              specialTip.textContent = firstTip.shortMsg;
+            }
+            if (specialTipTime) {
+              const formattedTime = firstTip.updateTime.replace('T', ' ').slice(0, 16);
+              specialTipTime.textContent = `🕒 ${formattedTime}`;
+            }
+            
+            return firstTip;
+          } else {
+            console.log('目前沒有特別天氣提示');
+            if (specialTip) {
+              specialTip.textContent = '目前沒有特別天氣提示';
+            }
+            return null;
+          }
+        } catch (error) {
+          console.error('拎唔到特別天氣提示：', error);
+          if (specialTip) {
+            specialTip.textContent = '⚠️ 無法載入天氣提示';
+          }
+          return null;
+        }
+      }
+
+      // ===== 更新動畫 =====
+      function updateAnimation(animationType) {
+        rainContainer.classList.remove('active');
+        typhoonOverlay.classList.remove('active');
+        heroImage.classList.remove('shake');
+        body.classList.remove('rainy-bg', 'typhoon-bg');
+
+        if (animationType === 'rain') {
+          rainContainer.classList.add('active');
+          body.classList.add('rainy-bg');
+        } else if (animationType === 'typhoon') {
+          typhoonOverlay.classList.add('active');
+          heroImage.classList.add('shake');
+          body.classList.add('typhoon-bg');
         }
       }
 
@@ -787,24 +828,6 @@
         },
       };
 
-      // ===== 更新動畫 =====
-      function updateAnimation(animationType) {
-        // 移除所有 animation class
-        rainContainer.classList.remove('active');
-        typhoonOverlay.classList.remove('active');
-        heroImage.classList.remove('shake');
-        body.classList.remove('rainy-bg', 'typhoon-bg');
-
-        if (animationType === 'rain') {
-          rainContainer.classList.add('active');
-          body.classList.add('rainy-bg');
-        } else if (animationType === 'typhoon') {
-          typhoonOverlay.classList.add('active');
-          heroImage.classList.add('shake');
-          body.classList.add('typhoon-bg');
-        }
-      }
-
       // ===== 更新右上角警告圖標 =====
       function updateWarningBadge(warningType) {
         const config = WARNING_CONFIG[warningType];
@@ -850,23 +873,16 @@
       function updateWeather(warningType, feels, humid, wind, newsBodyText) {
         const config = WARNING_CONFIG[warningType];
 
-        // 更新動畫
         if (config) {
           updateAnimation(config.animation);
         } else {
           updateAnimation('none');
         }
 
-        // 更新右上角警告圖標
         updateWarningBadge(warningType);
-
-        // 更新中間圖片
         updateHeroImage(warningType);
-
-        // 更新警報框
         updateAlertBox(warningType);
 
-        // 更新警報內容
         if (newsBodyText) {
           newsBody.textContent = newsBodyText;
         } else if (config) {
@@ -875,16 +891,13 @@
           newsBody.textContent = '目前沒有惡劣天氣警告，天氣狀況良好。';
         }
 
-        // 更新時間
         const fullDate = formatFullDate();
         newsTime.textContent = `🕒 ${fullDate}`;
 
-        // 更新底部數字
         feelsLike.textContent = Math.round(feels);
         humidity.textContent = Math.round(humid);
         windSpeed.textContent = Math.round(wind);
 
-        // 更新時間戳
         updateTimestamp();
       }
 
@@ -893,8 +906,13 @@
       createWindLines();
 
       window.addEventListener('load', function() {
+        // ⭐ 特別天氣提示
+        fetchSpecialWeatherTips();
+        setInterval(fetchSpecialWeatherTips, 600000);
+        
+        // 原本嘅天氣更新
         updateWeather('黑雨', 24, 92, 18);
-        console.log('🌧️ SORA HK 天文台預警系統 (動畫版)');
+        console.log('🌧️ SORA HK 天文台預警系統 (動畫版 + 特別天氣提示)');
       });
 
       window.setSORAWeather = updateWeather;
