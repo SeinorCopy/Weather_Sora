@@ -599,7 +599,41 @@
     .footer-spacer {
       height: 4px;
     }
+    /* ===== 💬 小鳥對白框 Speech Bubble ===== */
+    .hero-image {
+      cursor: pointer; /* 提示可以點擊 */
+    }
+    
+    .speech-bubble {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #2c3e50;
+      padding: 8px 14px;
+      border-radius: 16px;
+      border-bottom-left-radius: 4px; /* 做成對白框尾巴形狀 */
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      opacity: 0;
+      transform: translateY(6px) scale(0.9);
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+    }
+    
+    /* 顯示時嘅 Pop-up 狀態 */
+    .speech-bubble.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
 
+
+    
     @media (max-width: 450px) {
       .weather-card { padding: 20px 16px 24px; }
       .city-name { font-size: 1.3rem; }
@@ -651,6 +685,7 @@
 
     <div class="hero-image" id="heroImage">
       <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
+      <div class="speech-bubble" id="speechBubble"></div>
     </div>
 
     <!-- ===== 🌧️ 降雨分佈按鈕（落雨/打風先出現） ===== -->
@@ -740,6 +775,63 @@
       const specialTipTime = document.getElementById('specialTipTime');
       const rainBtn = document.getElementById('rainBtn');
 
+      const speechBubble = document.getElementById('speechBubble');
+      let currentWarningType = '黑雨'; // 用嚟記錄目前模式
+      let bubbleTimer = null;
+
+      // ===== 💬 對白庫設定 =====
+      const BIRD_DIALOGUES = {
+        rain: [
+          "遮埋你好冇？",
+          "出面好大雨啊... 濕晒啦 ☔",
+          "記得拎遮啊，唔好淋親！"
+        ],
+        typhoon: [
+          "打風啦 WFH啦...",
+          "吹到頭都亂埋 🌀",
+          "出面好危險，留喺屋企啦！"
+        ],
+        normal: [
+          "返工啦你 阻住人訓教",
+          "今日冇得放假啦 咩啊 😜",
+          "太陽伯伯出黎啦，仲唔起身？"
+        ]
+      };
+      
+      // ===== 點擊小鳥觸發對白 =====
+      heroImage.addEventListener('click', function() {
+        // 判定目前屬於咩 Mode
+        let mode = 'normal';
+        if (['黑雨', '紅雨', '黃雨', '雷暴'].includes(currentWarningType)) {
+          mode = 'rain';
+        } else if (['8號風球', '9號風球', '10號風球'].includes(currentWarningType)) {
+          mode = 'typhoon';
+        }
+      
+        // 隨機抽一句對白
+        const quotes = BIRD_DIALOGUES[mode];
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      
+        // 顯示對白框
+        speechBubble.textContent = randomQuote;
+        speechBubble.classList.add('show');
+      
+        // 小鳥輕微晃動反饋
+        heroImageSrc.style.transform = 'scale(0.97)';
+        setTimeout(() => heroImageSrc.style.transform = 'scale(1)', 150);
+      
+        // 2.5 秒後自動隱藏
+        clearTimeout(bubbleTimer);
+        bubbleTimer = setTimeout(() => {
+          speechBubble.classList.remove('show');
+        }, 2500);
+      });
+
+
+
+      
+
+      
       // ===== 🌀 轉場：撳掣去 rain-map =====
       rainBtn.addEventListener('click', function() {
         body.classList.add('page-out');
@@ -1014,6 +1106,7 @@
 
       // ===== 更新天氣（完整功能） =====
       function updateWeather(warningType, feels, humid, wind, newsBodyText) {
+        currentWarningType = warningType; // 記錄目前天氣類型，供點擊時判定 Mode
         const config = WARNING_CONFIG[warningType];
 
         if (config) {
