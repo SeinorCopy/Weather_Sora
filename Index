@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>SORA HK · 天文台預警</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #e8edf2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .weather-card {
+      max-width: 480px;
+      width: 100%;
+      background: #f5f7fa;
+      border-radius: 32px;
+      padding: 28px 26px 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      color: #3d525c;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(180, 195, 210, 0.2);
+    }
+
+    /* ===== 頂部：更新時間 (左) + 警告圖標 (右) ===== */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .update-time-top {
+      font-size: 0.7rem;
+      color: #8a9ba8;
+      letter-spacing: 0.5px;
+      font-weight: 400;
+    }
+
+    /* ===== 右上角警告圖標 ===== */
+    .warning-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .warning-badge-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .warning-badge-icon .fa-circle-exclamation {
+      color: #d4a843;
+    }
+
+    /* 各警告顏色 (右上角) */
+    .warning-black .fa-circle-exclamation { color: #1a1a1a; }
+    .warning-red .fa-circle-exclamation { color: #c0392b; }
+    .warning-amber .fa-circle-exclamation { color: #d4a843; }
+    .warning-yellow .fa-circle-exclamation { color: #f1c40f; }
+    .warning-typhoon-8 .fa-circle-exclamation { color: #e67e22; }
+    .warning-typhoon-9 .fa-circle-exclamation { color: #d35400; }
+    .warning-typhoon-10 .fa-circle-exclamation { color: #c0392b; }
+
+    .warning-badge-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #3d525c;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== 城市名稱 ===== */
+    .city-section {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+
+    .city-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.6rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: #3d525c;
+    }
+
+    .city-name i {
+      color: #7a9bb5;
+      font-size: 1.1rem;
+    }
+
+    /* ===== 中間圖片區 ===== */
+    .hero-image {
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      margin: 10px 0 18px;
+      background: #eef2f6;
+      border: 1px solid rgba(180, 195, 210, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px 0 28px;
+      min-height: 80px;
+    }
+
+    .hero-image-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .hero-caption {
+      font-size: 0.85rem;
+      color: #8a9ba8;
+      letter-spacing: 4px;
+      margin-top: 2px;
+      font-weight: 300;
+    }
+
+    /* ===== 警報框 ===== */
+    .news-alert {
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin: 12px 0 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    /* 預設：無警告（綠色） */
+    .news-alert-none {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+      border: 1px solid rgba(76, 175, 80, 0.2);
+    }
+    .news-alert-none i { color: #4caf50; }
+    .news-alert-none .news-title { color: #2e7d32; }
+
+    /* 黑雨 / 8號風球：深色背景 */
+    .news-alert-black {
+      background: #1a1a1a;
+      border-left: 3px solid #ffd700;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    .news-alert-black i { color: #ffd700; }
+    .news-alert-black .news-title { color: #ffd700; }
+    .news-alert-black .news-body { color: rgba(255, 255, 255, 0.85); }
+    .news-alert-black .news-time { color: rgba(255, 255, 255, 0.4); }
+
+    /* 8號風球 (橙色深色) */
+    .news-alert-typhoon-8 {
+      background: #2c1a0a;
+      border-left: 3px solid #e67e22;
+      border: 1px solid rgba(230, 126, 34, 0.3);
+    }
+    .news-alert-typhoon-8 i { color: #e67e22; }
+    .news-alert-typhoon-8 .news-title { color: #e67e22; }
+    .news-alert-typhoon-8 .news-body { color: rgba(255, 255, 255, 0.85); }
+    .news-alert-typhoon-8 .news-time { color: rgba(255, 255, 255, 0.4); }
+
+    /* 9號風球 */
+    .news-alert-typhoon-9 {
+      background: #3d1a00;
+      border-left: 3px solid #d35400;
+      border: 1px solid rgba(211, 84, 0, 0.3);
+    }
+    .news-alert-typhoon-9 i { color: #d35400; }
+    .news-alert-typhoon-9 .news-title { color: #d35400; }
+    .news-alert-typhoon-9 .news-body { color: rgba(255, 255, 255, 0.85); }
+    .news-alert-typhoon-9 .news-time { color: rgba(255, 255, 255, 0.4); }
+
+    /* 10號風球 */
+    .news-alert-typhoon-10 {
+      background: #2a0a0a;
+      border-left: 3px solid #c0392b;
+      border: 1px solid rgba(192, 57, 43, 0.3);
+    }
+    .news-alert-typhoon-10 i { color: #c0392b; }
+    .news-alert-typhoon-10 .news-title { color: #c0392b; }
+    .news-alert-typhoon-10 .news-body { color: rgba(255, 255, 255, 0.85); }
+    .news-alert-typhoon-10 .news-time { color: rgba(255, 255, 255, 0.4); }
+
+    /* 紅雨：紅色底 */
+    .news-alert-red {
+      background: #fce4e4;
+      border-left: 3px solid #c0392b;
+      border: 1px solid rgba(192, 57, 43, 0.2);
+    }
+    .news-alert-red i { color: #c0392b; }
+    .news-alert-red .news-title { color: #b03a2e; }
+
+    /* 黃雨：黃色底 */
+    .news-alert-yellow {
+      background: #fef9e0;
+      border-left: 3px solid #f1c40f;
+      border: 1px solid rgba(241, 196, 15, 0.3);
+    }
+    .news-alert-yellow i { color: #d4a843; }
+    .news-alert-yellow .news-title { color: #b8942e; }
+
+    /* 其他警告：淡黃 */
+    .news-alert-other {
+      background: #fcf8f0;
+      border-left: 3px solid #d4a843;
+      border: 1px solid rgba(212, 168, 67, 0.2);
+    }
+    .news-alert-other i { color: #d4a843; }
+    .news-alert-other .news-title { color: #b8942e; }
+
+    .news-alert i {
+      font-size: 1.1rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .news-content {
+      flex: 1;
+    }
+
+    .news-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    .news-body {
+      font-size: 0.85rem;
+      margin-top: 4px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .news-time {
+      font-size: 0.65rem;
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    /* ===== 隱藏警報框 ===== */
+    .news-alert-hidden {
+      display: none;
+    }
+
+    /* ===== 額外資訊（底部三格卡片） ===== */
+    .extra-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0 4px;
+    }
+
+    .extra-item {
+      background: #eef2f6;
+      border-radius: 20px;
+      padding: 16px 8px 14px;
+      text-align: center;
+      border: 1px solid rgba(180, 195, 210, 0.1);
+    }
+
+    .extra-item i {
+      font-size: 1.2rem;
+      color: #7a9bb5;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .extra-item .label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: #8a9ba8;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+    }
+
+    /* 數字大、單位小 */
+    .extra-item .value {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .extra-item .number {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #3d525c;
+      line-height: 1.2;
+    }
+
+    .extra-item .unit {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: #8a9ba8;
+    }
+
+    .footer-spacer {
+      height: 4px;
+    }
+
+    /* 響應式 */
+    @media (max-width: 450px) {
+      .weather-card { padding: 20px 16px 24px; }
+      .city-name { font-size: 1.3rem; }
+      .hero-image { padding: 24px 0 20px; min-height: 60px; }
+      .hero-caption { font-size: 0.75rem; }
+      .extra-item { padding: 12px 6px 10px; }
+      .extra-item .number { font-size: 1.3rem; }
+      .extra-item .unit { font-size: 0.65rem; }
+      .warning-badge-icon { font-size: 1.3rem; }
+      .warning-badge-label { font-size: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="weather-card" id="app">
+
+  <!-- ===== 頂部：更新時間 (左) + 警告圖標 (右) ===== -->
+  <div class="top-bar">
+    <div class="update-time-top" id="updateTimeTop">
+      <i class="far fa-clock" style="margin-right: 4px;"></i> 更新：11:05
+    </div>
+    <div class="warning-badge" id="warningBadge">
+      <span class="warning-badge-label" id="warningLabel">黑雨</span>
+      <span class="warning-badge-icon" id="warningIcon">
+        <i class="fas fa-circle-exclamation"></i>
+      </span>
+    </div>
+  </div>
+
+  <!-- ===== 城市名稱：SORA HK ===== -->
+  <div class="city-section">
+    <div class="city-name">
+      <i class="fas fa-location-dot"></i>
+      <span id="cityDisplay">SORA HK</span>
+    </div>
+  </div>
+
+  <!-- ===== 中間圖片區 ===== -->
+  <div class="hero-image">
+    <div class="hero-image-content">
+      <div class="hero-caption">✦ 鳥兒與天氣 ✦</div>
+    </div>
+  </div>
+
+  <!-- ===== 警報框 ===== -->
+  <div class="news-alert" id="newsAlert">
+    <i class="fas fa-bullhorn" id="newsIcon"></i>
+    <div class="news-content">
+      <div class="news-title" id="newsTitle">⚠️ 天文台天氣警報</div>
+      <div class="news-body" id="newsBody">天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量。</div>
+      <div class="news-time" id="newsTime">🕒 2026-08-23 11:05</div>
+    </div>
+  </div>
+
+  <!-- ===== 底部三格卡片 ===== -->
+  <div class="extra-grid">
+    <div class="extra-item">
+      <i class="fas fa-temperature-low"></i>
+      <span class="label">體感溫度</span>
+      <div class="value">
+        <span class="number" id="feelsLike">24</span>
+        <span class="unit">°C</span>
+      </div>
+    </div>
+    <div class="extra-item">
+      <i class="fas fa-droplet"></i>
+      <span class="label">濕度</span>
+      <div class="value">
+        <span class="number" id="humidity">92</span>
+        <span class="unit">%</span>
+      </div>
+    </div>
+    <div class="extra-item">
+      <i class="fas fa-wind"></i>
+      <span class="label">風速</span>
+      <div class="value">
+        <span class="number" id="windSpeed">18</span>
+        <span class="unit">km/h</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-spacer"></div>
+</div>
+
+<script>
+  (function() {
+    // ----- DOM refs -----
+    const cityDisplay = document.getElementById('cityDisplay');
+    const feelsLike = document.getElementById('feelsLike');
+    const humidity = document.getElementById('humidity');
+    const windSpeed = document.getElementById('windSpeed');
+    const updateTimeTop = document.getElementById('updateTimeTop');
+    const newsAlert = document.getElementById('newsAlert');
+    const newsIcon = document.getElementById('newsIcon');
+    const newsTitle = document.getElementById('newsTitle');
+    const newsBody = document.getElementById('newsBody');
+    const newsTime = document.getElementById('newsTime');
+    const warningBadge = document.getElementById('warningBadge');
+    const warningIcon = document.getElementById('warningIcon');
+    const warningLabel = document.getElementById('warningLabel');
+
+    // ----- helpers -----
+    function formatTime() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+
+    function formatFullDate() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const mo = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      return `${y}-${mo}-${d} ${h}:${m}`;
+    }
+
+    function updateTimestamp() {
+      updateTimeTop.innerHTML = `<i class="far fa-clock" style="margin-right: 4px;"></i> 更新：${formatTime()}`;
+    }
+
+    // ===== 警告配置 =====
+    const WARNING_CONFIG = {
+      '黑雨': {
+        badgeClass: 'warning-black',
+        badgeLabel: '⚫ 黑雨',
+        alertClass: 'news-alert-black',
+        icon: 'fa-bullhorn',
+        title: '🚨 黑色暴雨警告信號',
+        defaultBody: '天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量，山洪暴發風險極高。'
+      },
+      '紅雨': {
+        badgeClass: 'warning-red',
+        badgeLabel: '🔴 紅雨',
+        alertClass: 'news-alert-red',
+        icon: 'fa-bullhorn',
+        title: '⚠️ 紅色暴雨警告信號',
+        defaultBody: '天文台發出紅色暴雨警告信號，香港廣泛地區已錄得超過50毫米雨量，請注意安全。'
+      },
+      '黃雨': {
+        badgeClass: 'warning-yellow',
+        badgeLabel: '🟡 黃雨',
+        alertClass: 'news-alert-yellow',
+        icon: 'fa-bullhorn',
+        title: '⚠️ 黃色暴雨警告信號',
+        defaultBody: '天文台發出黃色暴雨警告信號，香港部分地區已錄得超過30毫米雨量。'
+      },
+      '8號風球': {
+        badgeClass: 'warning-typhoon-8',
+        badgeLabel: '🌀 8號',
+        alertClass: 'news-alert-typhoon-8',
+        icon: 'fa-bullhorn',
+        title: '🌀 八號烈風或暴風信號',
+        defaultBody: '八號烈風或暴風信號現正生效，平均風速每小時63公里或以上，請勿外出。'
+      },
+      '9號風球': {
+        badgeClass: 'warning-typhoon-9',
+        badgeLabel: '🌀 9號',
+        alertClass: 'news-alert-typhoon-9',
+        icon: 'fa-bullhorn',
+        title: '🌀 九號烈風或暴風增強信號',
+        defaultBody: '九號烈風或暴風增強信號現正生效，風力正在增強，請留在安全地方。'
+      },
+      '10號風球': {
+        badgeClass: 'warning-typhoon-10',
+        badgeLabel: '🌀 10號',
+        alertClass: 'news-alert-typhoon-10',
+        icon: 'fa-bullhorn',
+        title: '🌀 十號颶風信號',
+        defaultBody: '十號颶風信號現正生效，風力達颶風程度，請遠離窗邊。'
+      },
+      '雷暴': {
+        badgeClass: '',
+        badgeLabel: '⚡ 雷暴',
+        alertClass: 'news-alert-other',
+        icon: 'fa-bolt',
+        title: '⚡ 雷暴警告',
+        defaultBody: '雷暴警告現正生效，請留意閃電及局部地區性大雨。'
+      },
+      '酷熱': {
+        badgeClass: '',
+        badgeLabel: '☀️ 酷熱',
+        alertClass: 'news-alert-other',
+        icon: 'fa-sun',
+        title: '☀️ 酷熱天氣警告',
+        defaultBody: '酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。'
+      },
+      '寒冷': {
+        badgeClass: '',
+        badgeLabel: '❄️ 寒冷',
+        alertClass: 'news-alert-other',
+        icon: 'fa-snowflake',
+        title: '❄️ 寒冷天氣警告',
+        defaultBody: '寒冷天氣警告現正生效，請注意保暖。'
+      },
+      '晴朗': {
+        badgeClass: '',
+        badgeLabel: '☀️ 晴朗',
+        alertClass: 'news-alert-none',
+        icon: 'fa-check-circle',
+        title: '✅ 天氣概況',
+        defaultBody: '天氣大致晴朗，注意防曬。'
+      },
+      '多雲': {
+        badgeClass: '',
+        badgeLabel: '☁️ 多雲',
+        alertClass: 'news-alert-none',
+        icon: 'fa-check-circle',
+        title: '✅ 天氣概況',
+        defaultBody: '天氣多雲，部分地區有微雨。'
+      },
+    };
+
+    // 無警告時使用
+    const NO_WARNING_CONFIG = {
+      badgeClass: '',
+      badgeLabel: '✅ 無警告',
+      alertClass: 'news-alert-hidden',
+      icon: 'fa-check-circle',
+      title: '✅ 無惡劣天氣警告',
+      defaultBody: '目前沒有惡劣天氣警告，天氣狀況良好。'
+    };
+
+    // ----- 更新右上角警告圖標 -----
+    function updateWarningBadge(warningType) {
+      warningBadge.className = 'warning-badge';
+      const config = WARNING_CONFIG[warningType];
+      if (config) {
+        warningLabel.textContent = config.badgeLabel;
+        if (config.badgeClass) {
+          warningBadge.classList.add(config.badgeClass);
+        }
+        warningIcon.innerHTML = `<i class="fas fa-circle-exclamation"></i>`;
+      } else {
+        warningLabel.textContent = '✅ 無警告';
+        warningIcon.innerHTML = `<i class="fas fa-check-circle" style="color:#4caf50;"></i>`;
+      }
+    }
+
+    // ----- 更新警報框 (根據警告級別變色) -----
+    function updateAlertBox(warningType) {
+      const config = WARNING_CONFIG[warningType];
+      
+      // 先移除所有 alert class
+      newsAlert.className = 'news-alert';
+      
+      if (!config) {
+        // 無警告：隱藏
+        newsAlert.classList.add('news-alert-hidden');
+        return;
+      }
+      
+      // 添加對應的 alert class
+      newsAlert.classList.add(config.alertClass);
+      
+      // 更新圖標
+      newsIcon.className = `fas ${config.icon}`;
+      
+      // 更新標題和內容
+      newsTitle.textContent = config.title;
+    }
+
+    // ----- 更新天氣 -----
+    function updateWeather(warningType, feels, humid, wind, newsBodyText) {
+      // 更新右上角警告圖標
+      updateWarningBadge(warningType);
+
+      // 更新警報框 (顏色 + 標題)
+      updateAlertBox(warningType);
+
+      // 更新警報內容
+      const config = WARNING_CONFIG[warningType];
+      if (newsBodyText) {
+        newsBody.textContent = newsBodyText;
+      } else if (config) {
+        newsBody.textContent = config.defaultBody;
+      } else {
+        newsBody.textContent = '目前沒有惡劣天氣警告，天氣狀況良好。';
+      }
+
+      // 更新時間
+      const fullDate = formatFullDate();
+      newsTime.textContent = `🕒 ${fullDate}`;
+
+      // 更新底部數字（只顯示數字，單位在HTML已分離）
+      feelsLike.textContent = Math.round(feels);
+      humidity.textContent = Math.round(humid);
+      windSpeed.textContent = Math.round(wind);
+
+      // 更新時間戳
+      updateTimestamp();
+    }
+
+    // ----- 啟動 -----
+    window.addEventListener('load', function() {
+      updateWeather('黑雨', 24, 92, 18);
+      console.log('🌧️ SORA HK 天文台預警系統 (優化版)');
+    });
+
+    window.setSORAWeather = updateWeather;
+    console.log('🕊️ SORA HK 已載入');
+    console.log('📌 可呼叫 setSORAWeather(警告類型, 體感, 濕度, 風速)');
+    console.log('   警告類型: 黑雨, 紅雨, 黃雨, 8號風球, 9號風球, 10號風球, 雷暴, 酷熱, 寒冷, 晴朗, 多雲');
+  })();
+</script>
+</body>
+</html>
