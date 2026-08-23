@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>香港降雨分佈圖 · SORA HK</title>
+    <title>降雨分佈圖 · SORA HK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -43,16 +43,44 @@
             width: 100%;
             background: var(--card-bg);
             border-radius: 28px;
-            padding: 24px 20px 26px;
+            padding: 20px 20px 24px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--card-border);
         }
 
+        /* ===== Header with Back Button ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 14px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: #eef2f6;
+            border: 1px solid rgba(180, 195, 210, 0.15);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #dce3ea;
+            transform: scale(0.95);
         }
 
         .header h2 {
@@ -77,6 +105,7 @@
             border: 1px solid rgba(180, 195, 210, 0.15);
         }
 
+        /* ===== Legend ===== */
         .legend {
             display: flex;
             gap: 8px;
@@ -109,6 +138,7 @@
         .dot.rain-heavy { background: var(--rain-heavy); }
         .dot.rain-extreme { background: var(--rain-extreme); }
 
+        /* ===== Map ===== */
         .map-wrapper {
             background: #eef2f6;
             border-radius: 18px;
@@ -149,7 +179,6 @@
         .rain-heavy { fill: var(--rain-heavy); }
         .rain-extreme { fill: var(--rain-extreme); }
 
-        /* ===== 區域名稱 - 移開咗 ===== */
         .district-label {
             font-size: 7px;
             fill: #3d525c;
@@ -160,6 +189,7 @@
             opacity: 0.8;
         }
 
+        /* ===== Footer ===== */
         .footer-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -187,6 +217,7 @@
             color: var(--text-main);
         }
 
+        /* ===== Tooltip ===== */
         .tooltip {
             position: fixed;
             background: rgba(255, 255, 255, 0.95);
@@ -236,11 +267,18 @@
     </div>
 
     <div class="container">
+        <!-- ===== Header with Back Button ===== -->
         <div class="header">
-            <h2><i class="fa-solid fa-cloud-rain"></i> 降雨分佈</h2>
+            <div class="header-left">
+                <a href="index.html" class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <h2><i class="fa-solid fa-cloud-rain"></i> 降雨分佈</h2>
+            </div>
             <span class="update-tag" id="updateTime"><i class="fa-regular fa-clock"></i> 14:30</span>
         </div>
 
+        <!-- ===== Legend ===== -->
         <div class="legend">
             <span class="legend-item"><span class="dot rain-none"></span> 無</span>
             <span class="legend-item"><span class="dot rain-light"></span> 微</span>
@@ -249,73 +287,66 @@
             <span class="legend-item"><span class="dot rain-extreme"></span> 豪</span>
         </div>
 
+        <!-- ===== Map ===== -->
         <div class="map-wrapper">
             <svg viewBox="0 0 500 560" xmlns="http://www.w3.org/2000/svg">
                 
-                <!-- ===== 香港島 ===== -->
+                <!-- 香港島 -->
                 <path class="district" data-district="中西區" d="M130,310 L155,295 L180,290 L200,300 L205,320 L195,340 L175,348 L155,345 L138,328 Z"/>
                 <path class="district" data-district="灣仔" d="M205,295 L235,288 L255,298 L258,320 L248,342 L225,346 L208,335 L202,315 Z"/>
                 <path class="district" data-district="東區" d="M258,290 L290,282 L318,292 L325,315 L315,342 L288,350 L262,342 L252,320 Z"/>
                 <path class="district" data-district="南區" d="M148,348 L175,342 L200,348 L215,370 L198,392 L172,398 L150,392 L138,370 Z"/>
 
-                <!-- ===== 九龍 ===== -->
+                <!-- 九龍 -->
                 <path class="district" data-district="油尖旺" d="M150,262 L175,255 L200,260 L205,280 L188,290 L168,285 L148,275 Z"/>
                 <path class="district" data-district="深水埗" d="M125,252 L152,245 L175,255 L165,275 L142,275 L120,265 Z"/>
                 <path class="district" data-district="九龍城" d="M200,255 L228,248 L248,255 L245,278 L225,285 L205,278 Z"/>
                 <path class="district" data-district="黃大仙" d="M248,248 L278,242 L295,252 L292,275 L272,282 L252,275 Z"/>
                 <path class="district" data-district="觀塘" d="M295,248 L322,242 L338,252 L335,278 L315,285 L298,275 Z"/>
 
-                <!-- ===== 新界東 ===== -->
+                <!-- 新界東 -->
                 <path class="district" data-district="沙田" d="M195,195 L235,182 L265,190 L270,212 L255,235 L230,242 L205,235 L185,215 Z"/>
                 <path class="district" data-district="大埔" d="M265,160 L298,148 L328,160 L335,185 L312,205 L280,198 L258,180 Z"/>
                 <path class="district" data-district="北區" d="M232,112 L270,102 L305,112 L315,142 L288,162 L255,158 L235,140 L222,125 Z"/>
                 <path class="district" data-district="西貢" d="M335,185 L370,175 L395,195 L390,220 L362,235 L335,228 L322,208 Z"/>
-                
-                <!-- ===== ⭐ 將軍澳（新加） ===== -->
                 <path class="district" data-district="將軍澳" d="M325,245 L355,235 L378,248 L375,268 L355,278 L335,272 L322,258 Z"/>
 
-                <!-- ===== 新界西 ===== -->
+                <!-- 新界西 -->
                 <path class="district" data-district="屯門" d="M72,180 L105,170 L132,180 L140,208 L118,225 L92,218 L75,200 Z"/>
                 <path class="district" data-district="元朗" d="M100,140 L138,130 L168,142 L175,170 L150,188 L120,182 L100,165 Z"/>
                 <path class="district" data-district="荃灣" d="M138,200 L170,190 L200,198 L205,220 L180,238 L155,232 L140,218 Z"/>
                 <path class="district" data-district="葵青" d="M170,232 L202,225 L222,232 L218,252 L195,260 L175,252 L165,242 Z"/>
                 <path class="district" data-district="離島" d="M42,330 L75,320 L108,330 L118,360 L100,390 L68,398 L45,378 L35,350 Z"/>
 
-                <!-- ===== 區域名稱（移開咗，冇咁貼） ===== -->
-                <!-- 香港島 -->
+                <!-- 區域名稱 -->
                 <text class="district-label" x="165" y="328">中西</text>
                 <text class="district-label" x="228" y="320">灣仔</text>
                 <text class="district-label" x="285" y="318">東區</text>
                 <text class="district-label" x="178" y="380">南區</text>
 
-                <!-- 九龍 -->
                 <text class="district-label" x="172" y="278">油尖旺</text>
                 <text class="district-label" x="142" y="268">深水埗</text>
                 <text class="district-label" x="222" y="272">九龍城</text>
                 <text class="district-label" x="270" y="268">黃大仙</text>
                 <text class="district-label" x="315" y="268">觀塘</text>
 
-                <!-- 新界東 -->
                 <text class="district-label" x="228" y="222">沙田</text>
                 <text class="district-label" x="290" y="185">大埔</text>
                 <text class="district-label" x="268" y="142">北區</text>
                 <text class="district-label" x="355" y="205">西貢</text>
-                
-                <!-- ⭐ 將軍澳（新加） -->
                 <text class="district-label" x="348" y="258">將軍澳</text>
 
-                <!-- 新界西 -->
                 <text class="district-label" x="105" y="208">屯門</text>
                 <text class="district-label" x="138" y="165">元朗</text>
                 <text class="district-label" x="170" y="225">荃灣</text>
                 <text class="district-label" x="195" y="252">葵青</text>
                 <text class="district-label" x="78" y="370">離島</text>
 
-                <!-- 海域 -->
                 <text x="250" y="450" font-size="9" fill="#b0c0cc" text-anchor="middle" font-weight="300" letter-spacing="3">— 南中國海 —</text>
             </svg>
         </div>
 
+        <!-- ===== Footer ===== -->
         <div class="footer-info">
             <div class="info-card">
                 <span class="label">📊 最高雨量地區</span>
