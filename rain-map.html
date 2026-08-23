@@ -36,6 +36,35 @@
             padding: 16px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: var(--text-main);
+            
+            /* ===== 淡入淡出轉場 ===== */
+            animation: pageFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes pageFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.page-out {
+            animation: pageFadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes pageFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
         }
 
         .container {
@@ -270,7 +299,7 @@
         <!-- ===== Header with Back Button ===== -->
         <div class="header">
             <div class="header-left">
-                <a href="index.html" class="back-btn">
+                <a href="index.html" class="back-btn" id="backBtn">
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
                 <h2><i class="fa-solid fa-cloud-rain"></i> 降雨分佈</h2>
@@ -367,6 +396,17 @@
             const updateTime = document.getElementById('updateTime');
             const maxRainEl = document.getElementById('maxRain');
             const rainAreaEl = document.getElementById('rainArea');
+            const backBtn = document.getElementById('backBtn');
+            const body = document.body;
+
+            // ===== 🌀 返回掣轉場 =====
+            backBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                body.classList.add('page-out');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 300);
+            });
 
             const districtData = {
                 '中西區': 45, '灣仔': 22, '東區': 8, '南區': 0,
