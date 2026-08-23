@@ -498,10 +498,52 @@
       </div>
     </div>
 
+    <!-- ===== 主卡片 ===== -->
     <div class="hero-image" id="heroImage">
       <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
     </div>
 
+
+    <!-- ⭐ 特別天氣提示 -->
+    // ===== 拎天文台特別天氣提示 =====
+  async function fetchSpecialWeatherTips() {
+    try {
+      const response = await fetch(
+        'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc'
+      );
+      const data = await response.json();
+      
+      // 檢查有冇 swt 數據
+      if (data.swt && data.swt.length > 0) {
+        const firstTip = data.swt[0];
+        console.log('📢 特別天氣提示：', firstTip.shortMsg);
+        
+        // 更新 UI（例如放喺新聞框上面）
+        document.getElementById('specialTip').textContent = firstTip.shortMsg;
+        document.getElementById('specialTipTime').textContent = 
+          `🕒 ${firstTip.updateTime.replace('T', ' ').slice(0, 16)}`;
+        
+        return firstTip;
+      } else {
+        console.log('目前沒有特別天氣提示');
+        document.getElementById('specialTip').textContent = '目前沒有特別天氣提示';
+        return null;
+      }
+    } catch (error) {
+      console.error('拎唔到特別天氣提示：', error);
+      document.getElementById('specialTip').textContent = '⚠️ 無法載入天氣提示';
+      return null;
+    }
+  }
+  
+  // 喺頁面載入時自動執行
+  window.addEventListener('load', function() {
+    fetchSpecialWeatherTips();
+    // 每 10 分鐘更新一次
+    setInterval(fetchSpecialWeatherTips, 600000);
+  });
+
+    <!-- ===== 警報框 ===== -->
     <div class="news-alert" id="newsAlert">
       <i class="fas fa-bullhorn" id="newsIcon"></i>
       <div class="news-content">
