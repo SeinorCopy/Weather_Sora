@@ -599,41 +599,7 @@
     .footer-spacer {
       height: 4px;
     }
-    /* ===== 💬 小鳥對白框 Speech Bubble ===== */
-    .hero-image {
-      cursor: pointer; /* 提示可以點擊 */
-    }
-    
-    .speech-bubble {
-      position: absolute;
-      top: 12px;
-      right: 16px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: #2c3e50;
-      padding: 8px 14px;
-      border-radius: 16px;
-      border-bottom-left-radius: 4px; /* 做成對白框尾巴形狀 */
-      font-size: 0.82rem;
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      opacity: 0;
-      transform: translateY(6px) scale(0.9);
-      pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 10;
-    }
-    
-    /* 顯示時嘅 Pop-up 狀態 */
-    .speech-bubble.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
 
-
-    
     @media (max-width: 450px) {
       .weather-card { padding: 20px 16px 24px; }
       .city-name { font-size: 1.3rem; }
@@ -664,14 +630,14 @@
 
     <div class="top-bar">
       <div class="update-time-top" id="updateTimeTop">
-        <i class="far fa-clock" style="margin-right: 4px;"></i> 更新：11:05
+        <i class="far fa-clock" style="margin-right: 4px;"></i> 更新：載入中...
       </div>
       <div class="warning-badge" id="warningBadge">
         <span class="warning-badge-temp" id="warningTemp">
-          24<span class="temp-unit">°C</span>
+          --<span class="temp-unit">°C</span>
         </span>
         <span class="warning-badge-icon" id="warningIcon">
-          <img src="warning-black.png" alt="警告圖標" id="warningImage">
+          <img src="warning-black.png" alt="警告圖標" id="warningImage" style="display:none;">
         </span>
       </div>
     </div>
@@ -685,10 +651,9 @@
 
     <div class="hero-image" id="heroImage">
       <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
-      <div class="speech-bubble" id="speechBubble"></div>
     </div>
 
-    <!-- ===== 🌧️ 降雨分佈按鈕（落雨/打風先出現） ===== -->
+    <!-- ===== 🌧️ 降雨分佈按鈕 ===== -->
     <div class="rain-btn-wrapper">
       <button class="rain-btn hidden" id="rainBtn">
         <span class="btn-icon">
@@ -716,8 +681,8 @@
       <i class="fas fa-bullhorn" id="newsIcon"></i>
       <div class="news-content">
         <div class="news-title" id="newsTitle">⚠️ 天文台天氣警報</div>
-        <div class="news-body" id="newsBody">天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量。</div>
-        <div class="news-time" id="newsTime">🕒 2026-08-23 11:05</div>
+        <div class="news-body" id="newsBody">載入中...</div>
+        <div class="news-time" id="newsTime">🕒 --:--</div>
       </div>
     </div>
 
@@ -726,7 +691,7 @@
         <i class="fas fa-temperature-low"></i>
         <span class="label">體感溫度</span>
         <div class="value">
-          <span class="number" id="feelsLike">24</span>
+          <span class="number" id="feelsLike">--</span>
           <span class="unit">°C</span>
         </div>
       </div>
@@ -734,7 +699,7 @@
         <i class="fas fa-droplet"></i>
         <span class="label">濕度</span>
         <div class="value">
-          <span class="number" id="humidity">92</span>
+          <span class="number" id="humidity">--</span>
           <span class="unit">%</span>
         </div>
       </div>
@@ -742,7 +707,7 @@
         <i class="fas fa-wind"></i>
         <span class="label">風速</span>
         <div class="value">
-          <span class="number" id="windSpeed">18</span>
+          <span class="number" id="windSpeed">--</span>
           <span class="unit">km/h</span>
         </div>
       </div>
@@ -751,432 +716,460 @@
     <div class="footer-spacer"></div>
   </div>
 
-  <script>
-    (function() {
-      // ===== DOM refs =====
-      const cityDisplay = document.getElementById('cityDisplay');
-      const feelsLike = document.getElementById('feelsLike');
-      const humidity = document.getElementById('humidity');
-      const windSpeed = document.getElementById('windSpeed');
-      const updateTimeTop = document.getElementById('updateTimeTop');
-      const newsAlert = document.getElementById('newsAlert');
-      const newsIcon = document.getElementById('newsIcon');
-      const newsTitle = document.getElementById('newsTitle');
-      const newsBody = document.getElementById('newsBody');
-      const newsTime = document.getElementById('newsTime');
-      const warningImage = document.getElementById('warningImage');
-      const warningTemp = document.getElementById('warningTemp');
-      const heroImageSrc = document.getElementById('heroImageSrc');
-      const heroImage = document.getElementById('heroImage');
-      const rainContainer = document.getElementById('rainContainer');
-      const typhoonOverlay = document.getElementById('typhoonOverlay');
-      const body = document.body;
-      const specialTip = document.getElementById('specialTip');
-      const specialTipTime = document.getElementById('specialTipTime');
-      const rainBtn = document.getElementById('rainBtn');
+<script>
+  (function() {
+    // ===== DOM refs =====
+    var cityDisplay = document.getElementById('cityDisplay');
+    var feelsLike = document.getElementById('feelsLike');
+    var humidity = document.getElementById('humidity');
+    var windSpeed = document.getElementById('windSpeed');
+    var updateTimeTop = document.getElementById('updateTimeTop');
+    var newsAlert = document.getElementById('newsAlert');
+    var newsIcon = document.getElementById('newsIcon');
+    var newsTitle = document.getElementById('newsTitle');
+    var newsBody = document.getElementById('newsBody');
+    var newsTime = document.getElementById('newsTime');
+    var warningImage = document.getElementById('warningImage');
+    var warningTemp = document.getElementById('warningTemp');
+    var heroImageSrc = document.getElementById('heroImageSrc');
+    var heroImage = document.getElementById('heroImage');
+    var rainContainer = document.getElementById('rainContainer');
+    var typhoonOverlay = document.getElementById('typhoonOverlay');
+    var body = document.body;
+    var specialTip = document.getElementById('specialTip');
+    var specialTipTime = document.getElementById('specialTipTime');
+    var rainBtn = document.getElementById('rainBtn');
 
-      const speechBubble = document.getElementById('speechBubble');
-      let currentWarningType = '黑雨'; // 用嚟記錄目前模式
-      let bubbleTimer = null;
+    // ===== 真實數據變數 =====
+    var currentTemp = 24;
+    var currentHumid = 62;
+    var currentWind = 12;
+    var currentWarning = '晴朗';
 
-      // ===== 💬 對白庫設定 =====
-      const BIRD_DIALOGUES = {
-        rain: [
-          "遮埋你好冇？",
-          "出面好大雨啊... 濕晒啦 ☔",
-          "記得拎遮啊，唔好淋親！"
-        ],
-        typhoon: [
-          "打風啦 WFH啦...",
-          "吹到頭都亂埋 🌀",
-          "出面好危險，留喺屋企啦！"
-        ],
-        normal: [
-          "返工啦你 阻住人訓教",
-          "今日冇得放假啦 咩啊 😜",
-          "太陽伯伯出黎啦，仲唔起身？"
-        ]
-      };
-      
-      // ===== 點擊小鳥觸發對白 =====
-      heroImage.addEventListener('click', function() {
-        // 判定目前屬於咩 Mode
-        let mode = 'normal';
-        if (['黑雨', '紅雨', '黃雨', '雷暴'].includes(currentWarningType)) {
-          mode = 'rain';
-        } else if (['8號風球', '9號風球', '10號風球'].includes(currentWarningType)) {
-          mode = 'typhoon';
-        }
-      
-        // 隨機抽一句對白
-        const quotes = BIRD_DIALOGUES[mode];
-        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-      
-        // 顯示對白框
-        speechBubble.textContent = randomQuote;
-        speechBubble.classList.add('show');
-      
-        // 小鳥輕微晃動反饋
-        heroImageSrc.style.transform = 'scale(0.97)';
-        setTimeout(() => heroImageSrc.style.transform = 'scale(1)', 150);
-      
-        // 2.5 秒後自動隱藏
-        clearTimeout(bubbleTimer);
-        bubbleTimer = setTimeout(() => {
-          speechBubble.classList.remove('show');
-        }, 2500);
-      });
+    // ===== 🌀 轉場：撳掣去 rain-map =====
+    rainBtn.addEventListener('click', function() {
+      body.classList.add('page-out');
+      setTimeout(function() {
+        window.location.href = 'rain-map.html';
+      }, 300);
+    });
 
+    // ===== helpers =====
+    function formatTime() {
+      var now = new Date();
+      var h = String(now.getHours()).padStart(2, '0');
+      var m = String(now.getMinutes()).padStart(2, '0');
+      return h + ':' + m;
+    }
+    function formatFullDate() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var mo = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      var h = String(now.getHours()).padStart(2, '0');
+      var m = String(now.getMinutes()).padStart(2, '0');
+      return y + '-' + mo + '-' + d + ' ' + h + ':' + m;
+    }
+    function updateTimestamp() {
+      updateTimeTop.innerHTML = '<i class="far fa-clock" style="margin-right: 4px;"></i> 更新：' + formatTime();
+    }
 
+    // ===== 🌧️ 生成雨滴 =====
+    function createRain() {
+      rainContainer.innerHTML = '';
+      var dropCount = 80;
+      for (var i = 0; i < dropCount; i++) {
+        var drop = document.createElement('div');
+        drop.className = 'rain-drop';
+        var left = Math.random() * 100;
+        var height = 10 + Math.random() * 25;
+        var duration = 0.8 + Math.random() * 1.2;
+        var delay = Math.random() * 2;
+        drop.style.left = left + '%';
+        drop.style.height = height + 'px';
+        drop.style.animationDuration = duration + 's';
+        drop.style.animationDelay = delay + 's';
+        drop.style.opacity = 0.3 + Math.random() * 0.5;
+        rainContainer.appendChild(drop);
+      }
+    }
 
-      
+    // ===== 🌬️ 生成風線 =====
+    function createWindLines() {
+      typhoonOverlay.innerHTML = '';
+      for (var i = 0; i < 3; i++) {
+        var spiral = document.createElement('div');
+        spiral.className = 'typhoon-spiral';
+        typhoonOverlay.appendChild(spiral);
+      }
+      var lineCount = 15;
+      for (var j = 0; j < lineCount; j++) {
+        var line = document.createElement('div');
+        line.className = 'wind-line';
+        var top = 5 + Math.random() * 90;
+        var width = 30 + Math.random() * 80;
+        var duration = 4 + Math.random() * 6;
+        var delay = Math.random() * 8;
+        line.style.top = top + '%';
+        line.style.width = width + 'px';
+        line.style.animationDuration = duration + 's';
+        line.style.animationDelay = delay + 's';
+        line.style.opacity = 0.1 + Math.random() * 0.2;
+        typhoonOverlay.appendChild(line);
+      }
+    }
 
-      
-      // ===== 🌀 轉場：撳掣去 rain-map =====
-      rainBtn.addEventListener('click', function() {
-        body.classList.add('page-out');
-        setTimeout(() => {
-          window.location.href = 'rain-map.html';
+    // ===== 更新動畫 =====
+    function updateAnimation(animationType) {
+      rainContainer.classList.remove('active');
+      typhoonOverlay.classList.remove('active');
+      heroImage.classList.remove('shake');
+      body.classList.remove('rainy-bg', 'typhoon-bg');
+      if (animationType === 'rain') {
+        rainContainer.classList.add('active');
+        body.classList.add('rainy-bg');
+      } else if (animationType === 'typhoon') {
+        typhoonOverlay.classList.add('active');
+        heroImage.classList.add('shake');
+        body.classList.add('typhoon-bg');
+      }
+    }
+
+    // ===== 警告配置 =====
+    var WARNING_CONFIG = {
+      '黑雨': {
+        warningImage: 'warning-black.png',
+        heroImage: 'sora_bird_rain.jpeg',
+        alertClass: 'news-alert-black',
+        icon: 'fa-bullhorn',
+        title: '🚨 黑色暴雨警告信號',
+        defaultBody: '天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量，山洪暴發風險極高。',
+        animation: 'rain'
+      },
+      '紅雨': {
+        warningImage: 'warning-red.png',
+        heroImage: 'sora_bird_rain.jpeg',
+        alertClass: 'news-alert-red',
+        icon: 'fa-bullhorn',
+        title: '⚠️ 紅色暴雨警告信號',
+        defaultBody: '天文台發出紅色暴雨警告信號，香港廣泛地區已錄得超過50毫米雨量，請注意安全。',
+        animation: 'rain'
+      },
+      '黃雨': {
+        warningImage: 'warning-yellow.png',
+        heroImage: 'sora_bird_rain.jpeg',
+        alertClass: 'news-alert-yellow',
+        icon: 'fa-bullhorn',
+        title: '⚠️ 黃色暴雨警告信號',
+        defaultBody: '天文台發出黃色暴雨警告信號，香港部分地區已錄得超過30毫米雨量。',
+        animation: 'rain'
+      },
+      '8號風球': {
+        warningImage: 'warning-typhoon_8.png',
+        heroImage: 'sora_bird_typhoon.jpeg',
+        alertClass: 'news-alert-typhoon-8',
+        icon: 'fa-bullhorn',
+        title: '🌀 八號烈風或暴風信號',
+        defaultBody: '八號烈風或暴風信號現正生效，平均風速每小時63公里或以上，請勿外出。',
+        animation: 'typhoon'
+      },
+      '9號風球': {
+        warningImage: 'warning-typhoon_9.png',
+        heroImage: 'sora_bird_typhoon.jpeg',
+        alertClass: 'news-alert-typhoon-9',
+        icon: 'fa-bullhorn',
+        title: '🌀 九號烈風或暴風增強信號',
+        defaultBody: '九號烈風或暴風增強信號現正生效，風力正在增強，請留在安全地方。',
+        animation: 'typhoon'
+      },
+      '10號風球': {
+        warningImage: 'warning-typhoon_10.png',
+        heroImage: 'sora_bird_typhoon.jpeg',
+        alertClass: 'news-alert-typhoon-10',
+        icon: 'fa-bullhorn',
+        title: '🌀 十號颶風信號',
+        defaultBody: '十號颶風信號現正生效，風力達颶風程度，請遠離窗邊。',
+        animation: 'typhoon'
+      },
+      '雷暴': {
+        warningImage: 'warning-yellow.png',
+        heroImage: 'sora_bird_rain.jpeg',
+        alertClass: 'news-alert-other',
+        icon: 'fa-bolt',
+        title: '⚡ 雷暴警告',
+        defaultBody: '雷暴警告現正生效，請留意閃電及局部地區性大雨。',
+        animation: 'rain'
+      },
+      '酷熱': {
+        warningImage: 'warning-yellow.png',
+        heroImage: 'sora_bird_normal.jpeg',
+        alertClass: 'news-alert-other',
+        icon: 'fa-sun',
+        title: '☀️ 酷熱天氣警告',
+        defaultBody: '酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
+        animation: 'none'
+      },
+      '寒冷': {
+        warningImage: 'warning-yellow.png',
+        heroImage: 'sora_bird_normal.jpeg',
+        alertClass: 'news-alert-other',
+        icon: 'fa-snowflake',
+        title: '❄️ 寒冷天氣警告',
+        defaultBody: '寒冷天氣警告現正生效，請注意保暖。',
+        animation: 'none'
+      },
+      '晴朗': {
+        warningImage: '',
+        heroImage: 'sora_bird_normal.jpeg',
+        alertClass: 'news-alert-none',
+        icon: 'fa-check-circle',
+        title: '✅ 天氣概況',
+        defaultBody: '目前沒有惡劣天氣警告，天氣狀況良好。',
+        animation: 'none'
+      },
+      '多雲': {
+        warningImage: '',
+        heroImage: 'sora_bird_normal.jpeg',
+        alertClass: 'news-alert-none',
+        icon: 'fa-check-circle',
+        title: '✅ 天氣概況',
+        defaultBody: '天氣多雲，部分地區有微雨。',
+        animation: 'none'
+      }
+    };
+
+    // ===== 更新右上角（溫度 + 警告圖標） =====
+    function updateWarningBadge(warningType, temp) {
+      var config = WARNING_CONFIG[warningType];
+      if (warningTemp) {
+        warningTemp.innerHTML = Math.round(temp) + '<span class="temp-unit">°C</span>';
+      }
+      if (config && config.warningImage) {
+        warningImage.src = config.warningImage;
+        warningImage.style.display = 'block';
+      } else {
+        warningImage.style.display = 'none';
+      }
+    }
+
+    // ===== 更新中間圖片 =====
+    function updateHeroImage(warningType) {
+      var config = WARNING_CONFIG[warningType];
+      if (config) {
+        heroImageSrc.src = config.heroImage;
+        heroImageSrc.alt = 'SORA 鳥兒天氣 - ' + warningType;
+      } else {
+        heroImageSrc.src = 'sora_bird_normal.jpeg';
+        heroImageSrc.alt = 'SORA 鳥兒天氣';
+      }
+    }
+
+    // ===== 更新警報框 =====
+    function updateAlertBox(warningType) {
+      var config = WARNING_CONFIG[warningType];
+      newsAlert.className = 'news-alert';
+      if (!config) {
+        newsAlert.classList.add('news-alert-hidden');
+        return;
+      }
+      newsAlert.classList.add(config.alertClass);
+      newsIcon.className = 'fas ' + config.icon;
+      newsTitle.textContent = config.title;
+    }
+
+    // ===== 更新天氣 =====
+    function updateWeather(warningType, feels, humid, wind, newsBodyText) {
+      var config = WARNING_CONFIG[warningType];
+      if (config) {
+        updateAnimation(config.animation);
+      } else {
+        updateAnimation('none');
+      }
+      updateWarningBadge(warningType, feels);
+      updateHeroImage(warningType);
+      updateAlertBox(warningType);
+      if (newsBodyText) {
+        newsBody.textContent = newsBodyText;
+      } else if (config) {
+        newsBody.textContent = config.defaultBody;
+      } else {
+        newsBody.textContent = '目前沒有惡劣天氣警告，天氣狀況良好。';
+      }
+      var fullDate = formatFullDate();
+      newsTime.textContent = '🕒 ' + fullDate;
+      feelsLike.textContent = Math.round(feels);
+      humidity.textContent = Math.round(humid);
+      windSpeed.textContent = Math.round(wind);
+      updateTimestamp();
+
+      // ===== 控制降雨分佈按鈕 =====
+      var showRainBtn = ['黑雨', '紅雨', '黃雨', '雷暴', '8號風球', '9號風球', '10號風球'].indexOf(warningType) !== -1;
+      if (showRainBtn) {
+        rainBtn.classList.remove('hidden');
+        setTimeout(function() {
+          rainBtn.classList.add('show');
         }, 300);
-      });
-
-      // ===== helpers =====
-      function formatTime() {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        return `${h}:${m}`;
+      } else {
+        rainBtn.classList.remove('show');
+        setTimeout(function() {
+          rainBtn.classList.add('hidden');
+        }, 400);
       }
+    }
 
-      function formatFullDate() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const mo = String(now.getMonth() + 1).padStart(2, '0');
-        const d = String(now.getDate()).padStart(2, '0');
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        return `${y}-${mo}-${d} ${h}:${m}`;
-      }
+    // ============================================================
+    // ===== 🔥 PRODUCTION: 直接打天文台 API（唔使 proxy） =====
+    // ============================================================
 
-      function updateTimestamp() {
-        updateTimeTop.innerHTML = `<i class="far fa-clock" style="margin-right: 4px;"></i> 更新：${formatTime()}`;
-      }
+    // 將 warnsum 嘅 code 轉成你 UI 用嘅中文 key
+    function mapWarningCode(code) {
+      if (!code) return null;
+      code = code.toUpperCase();
+      if (code === 'WRAINB') return '黑雨';
+      if (code === 'WRAINR') return '紅雨';
+      if (code === 'WRAINA') return '黃雨';
+      if (code === 'TC10') return '10號風球';
+      if (code === 'TC9') return '9號風球';
+      if (code.indexOf('TC8') === 0) return '8號風球';   // TC8NE / TC8SE / TC8NW / TC8SW
+      if (code === 'WTS') return '雷暴';
+      if (code === 'WHOT') return '酷熱';
+      if (code === 'WCOLD') return '寒冷';
+      return null;
+    }
 
-      // ===== 🌧️ 生成雨滴 =====
-      function createRain() {
-        rainContainer.innerHTML = '';
-        const dropCount = 80;
-        for (let i = 0; i < dropCount; i++) {
-          const drop = document.createElement('div');
-          drop.className = 'rain-drop';
-          const left = Math.random() * 100;
-          const height = 10 + Math.random() * 25;
-          const duration = 0.8 + Math.random() * 1.2;
-          const delay = Math.random() * 2;
-          drop.style.left = left + '%';
-          drop.style.height = height + 'px';
-          drop.style.animationDuration = duration + 's';
-          drop.style.animationDelay = delay + 's';
-          drop.style.opacity = 0.3 + Math.random() * 0.5;
-          rainContainer.appendChild(drop);
-        }
-      }
+    // ===== 1. 拎警告摘要 =====
+    function fetchWarningSummary() {
+      var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc';
 
-      // ===== 🌬️ 生成風線 =====
-      function createWindLines() {
-        typhoonOverlay.innerHTML = '';
-        for (let i = 0; i < 3; i++) {
-          const spiral = document.createElement('div');
-          spiral.className = 'typhoon-spiral';
-          typhoonOverlay.appendChild(spiral);
-        }
-        const lineCount = 15;
-        for (let i = 0; i < lineCount; i++) {
-          const line = document.createElement('div');
-          line.className = 'wind-line';
-          const top = 5 + Math.random() * 90;
-          const width = 30 + Math.random() * 80;
-          const duration = 4 + Math.random() * 6;
-          const delay = Math.random() * 8;
-          line.style.top = top + '%';
-          line.style.width = width + 'px';
-          line.style.animationDuration = duration + 's';
-          line.style.animationDelay = delay + 's';
-          line.style.opacity = 0.1 + Math.random() * 0.2;
-          typhoonOverlay.appendChild(line);
-        }
-      }
+      fetch(url)
+        .then(function(response) {
+          if (!response.ok) throw new Error('HTTP error: ' + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          // data 係 object，key 係 WRAIN / WTCSGNL / WTS 等
+          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '雷暴', '酷熱', '寒冷'];
+          var found = '晴朗';
+          var foundList = [];
 
-      // ===== ⭐ 特別天氣提示（用你個 Sample） =====
-      async function fetchSpecialWeatherTips() {
-        try {
-          const sampleData = {
-            "swt": [{
-              "desc": "預料熱帶氣旋紫檀會在今明兩日於北部灣一帶徘徊，然後於星期一稍後至星期二逐漸轉向東北方向移動，靠近雷州半島一帶。天文台會密切監察其動向及本地風力變化，評估星期二或星期三是否需要發出熱帶氣旋警告信號，市民請留意最新天氣消息。",
-              "updateTime": "2026-08-23T12:00:00+08:00"
-            }]
-          };
-          
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          const data = sampleData;
-          
-          if (data.swt && data.swt.length > 0) {
-            const firstTip = data.swt[0];
-            console.log('📢 特別天氣提示：', firstTip.desc);
-            
-            if (specialTip) {
-              specialTip.textContent = firstTip.desc;
+          for (var key in data) {
+            if (data.hasOwnProperty(key) && data[key] && data[key].code) {
+              var mapped = mapWarningCode(data[key].code);
+              if (mapped) {
+                foundList.push(mapped);
+              }
             }
-            if (specialTipTime) {
-              const formattedTime = firstTip.updateTime.replace('T', ' ').slice(0, 16);
-              specialTipTime.textContent = `🕒 ${formattedTime}`;
-            }
-            
-            return firstTip;
           }
-        } catch (error) {
-          console.error('拎唔到特別天氣提示：', error);
-        }
-      }
 
-      // ===== 更新動畫 =====
-      function updateAnimation(animationType) {
-        rainContainer.classList.remove('active');
-        typhoonOverlay.classList.remove('active');
-        heroImage.classList.remove('shake');
-        body.classList.remove('rainy-bg', 'typhoon-bg');
+          for (var j = 0; j < priority.length; j++) {
+            if (foundList.indexOf(priority[j]) !== -1) {
+              found = priority[j];
+              break;
+            }
+          }
 
-        if (animationType === 'rain') {
-          rainContainer.classList.add('active');
-          body.classList.add('rainy-bg');
-        } else if (animationType === 'typhoon') {
-          typhoonOverlay.classList.add('active');
-          heroImage.classList.add('shake');
-          body.classList.add('typhoon-bg');
-        }
-      }
+          currentWarning = found;
+          console.log('✅ 警告摘要：', found, foundList, data);
+          updateWeather(found, currentTemp, currentHumid, currentWind);
+        })
+        .catch(function(error) {
+          console.error('❌ 拎唔到警告摘要：', error);
+          updateWeather('晴朗', currentTemp, currentHumid, currentWind);
+        });
+    }
 
-      // ===== 警告配置 =====
-      const WARNING_CONFIG = {
-        '黑雨': {
-          warningImage: 'warning-black.png',
-          heroImage: 'sora_bird_rain.jpeg',
-          alertClass: 'news-alert-black',
-          icon: 'fa-bullhorn',
-          title: '🚨 黑色暴雨警告信號',
-          defaultBody: '天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量，山洪暴發風險極高。',
-          animation: 'rain'
-        },
-        '紅雨': {
-          warningImage: 'warning-red.png',
-          heroImage: 'sora_bird_rain.jpeg',
-          alertClass: 'news-alert-red',
-          icon: 'fa-bullhorn',
-          title: '⚠️ 紅色暴雨警告信號',
-          defaultBody: '天文台發出紅色暴雨警告信號，香港廣泛地區已錄得超過50毫米雨量，請注意安全。',
-          animation: 'rain'
-        },
-        '黃雨': {
-          warningImage: 'warning-yellow.png',
-          heroImage: 'sora_bird_rain.jpeg',
-          alertClass: 'news-alert-yellow',
-          icon: 'fa-bullhorn',
-          title: '⚠️ 黃色暴雨警告信號',
-          defaultBody: '天文台發出黃色暴雨警告信號，香港部分地區已錄得超過30毫米雨量。',
-          animation: 'rain'
-        },
-        '8號風球': {
-          warningImage: 'warning-typhoon_8.png',
-          heroImage: 'sora_bird_typhoon.jpeg',
-          alertClass: 'news-alert-typhoon-8',
-          icon: 'fa-bullhorn',
-          title: '🌀 八號烈風或暴風信號',
-          defaultBody: '八號烈風或暴風信號現正生效，平均風速每小時63公里或以上，請勿外出。',
-          animation: 'typhoon'
-        },
-        '9號風球': {
-          warningImage: 'warning-typhoon_9.png',
-          heroImage: 'sora_bird_typhoon.jpeg',
-          alertClass: 'news-alert-typhoon-9',
-          icon: 'fa-bullhorn',
-          title: '🌀 九號烈風或暴風增強信號',
-          defaultBody: '九號烈風或暴風增強信號現正生效，風力正在增強，請留在安全地方。',
-          animation: 'typhoon'
-        },
-        '10號風球': {
-          warningImage: 'warning-typhoon_10.png',
-          heroImage: 'sora_bird_typhoon.jpeg',
-          alertClass: 'news-alert-typhoon-10',
-          icon: 'fa-bullhorn',
-          title: '🌀 十號颶風信號',
-          defaultBody: '十號颶風信號現正生效，風力達颶風程度，請遠離窗邊。',
-          animation: 'typhoon'
-        },
-        '雷暴': {
-          warningImage: 'warning-yellow.png',
-          heroImage: 'sora_bird_rain.jpeg',
-          alertClass: 'news-alert-other',
-          icon: 'fa-bolt',
-          title: '⚡ 雷暴警告',
-          defaultBody: '雷暴警告現正生效，請留意閃電及局部地區性大雨。',
-          animation: 'rain'
-        },
-        '酷熱': {
-          warningImage: 'warning-yellow.png',
-          heroImage: 'sora_bird_normal.jpeg',
-          alertClass: 'news-alert-other',
-          icon: 'fa-sun',
-          title: '☀️ 酷熱天氣警告',
-          defaultBody: '酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
-          animation: 'none'
-        },
-        '寒冷': {
-          warningImage: 'warning-yellow.png',
-          heroImage: 'sora_bird_normal.jpeg',
-          alertClass: 'news-alert-other',
-          icon: 'fa-snowflake',
-          title: '❄️ 寒冷天氣警告',
-          defaultBody: '寒冷天氣警告現正生效，請注意保暖。',
-          animation: 'none'
-        },
-        '晴朗': {
-          warningImage: '',
-          heroImage: 'sora_bird_normal.jpeg',
-          alertClass: 'news-alert-none',
-          icon: 'fa-check-circle',
-          title: '✅ 天氣概況',
-          defaultBody: '天氣大致晴朗，注意防曬。',
-          animation: 'none'
-        },
-        '多雲': {
-          warningImage: '',
-          heroImage: 'sora_bird_normal.jpeg',
-          alertClass: 'news-alert-none',
-          icon: 'fa-check-circle',
-          title: '✅ 天氣概況',
-          defaultBody: '天氣多雲，部分地區有微雨。',
-          animation: 'none'
-        },
-      };
+    // ===== 2. 拎天氣報告（溫度、濕度） =====
+    function fetchWeatherReport() {
+      var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc';
 
-      // ===== 更新右上角（溫度 + 警告圖標） =====
-      function updateWarningBadge(warningType, temp) {
-        const config = WARNING_CONFIG[warningType];
-        
-        if (warningTemp) {
-          warningTemp.innerHTML = `${Math.round(temp)}<span class="temp-unit">°C</span>`;
-        }
-        
-        if (config && config.warningImage) {
-          warningImage.src = config.warningImage;
-          warningImage.style.display = 'block';
-        } else {
-          warningImage.style.display = 'none';
-        }
-      }
+      fetch(url)
+        .then(function(response) {
+          if (!response.ok) throw new Error('HTTP error: ' + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          var temp = 24;
+          var humid = 62;
 
-      // ===== 更新中間圖片 =====
-      function updateHeroImage(warningType) {
-        const config = WARNING_CONFIG[warningType];
-        if (config) {
-          heroImageSrc.src = config.heroImage;
-          heroImageSrc.alt = `SORA 鳥兒天氣 - ${warningType}`;
-        } else {
-          heroImageSrc.src = 'sora_bird_normal.jpeg';
-          heroImageSrc.alt = 'SORA 鳥兒天氣';
-        }
-      }
+          if (data.temperature && data.temperature.data) {
+            for (var i = 0; i < data.temperature.data.length; i++) {
+              // 正確站名係「香港天文台」
+              if (data.temperature.data[i].place === '香港天文台') {
+                temp = data.temperature.data[i].value;
+                break;
+              }
+            }
+          }
 
-      // ===== 更新警報框 =====
-      function updateAlertBox(warningType) {
-        const config = WARNING_CONFIG[warningType];
-        
-        newsAlert.className = 'news-alert';
-        
-        if (!config) {
-          newsAlert.classList.add('news-alert-hidden');
-          return;
-        }
-        
-        newsAlert.classList.add(config.alertClass);
-        newsIcon.className = `fas ${config.icon}`;
-        newsTitle.textContent = config.title;
-      }
+          if (data.humidity && data.humidity.data) {
+            for (var j = 0; j < data.humidity.data.length; j++) {
+              if (data.humidity.data[j].place === '香港天文台') {
+                humid = data.humidity.data[j].value;
+                break;
+              }
+            }
+          }
 
-      // ===== 更新天氣（完整功能） =====
-      function updateWeather(warningType, feels, humid, wind, newsBodyText) {
-        currentWarningType = warningType; // 記錄目前天氣類型，供點擊時判定 Mode
-        const config = WARNING_CONFIG[warningType];
+          currentTemp = temp;
+          currentHumid = humid;
+          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%');
+          updateWeather(currentWarning, currentTemp, currentHumid, currentWind);
+        })
+        .catch(function(error) {
+          console.error('❌ 拎唔到天氣報告：', error);
+          updateWeather(currentWarning, currentTemp, currentHumid, currentWind);
+        });
+    }
 
-        if (config) {
-          updateAnimation(config.animation);
-        } else {
-          updateAnimation('none');
-        }
+    // ===== 3. 拎特別天氣提示 =====
+    function fetchSpecialWeatherTips() {
+      var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
 
-        // 右上角：顯示溫度 + 警告圖標
-        updateWarningBadge(warningType, feels);
+      fetch(url)
+        .then(function(response) {
+          if (!response.ok) throw new Error('HTTP error: ' + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          if (data.swt && data.swt.length > 0) {
+            var firstTip = data.swt[0];
+            specialTip.textContent = firstTip.desc;
+            var formattedTime = firstTip.updateTime.replace('T', ' ').slice(0, 16);
+            specialTipTime.textContent = '🕒 ' + formattedTime;
+            console.log('✅ 特別天氣提示已更新');
+          } else {
+            specialTip.textContent = '目前沒有特別天氣提示';
+            specialTipTime.textContent = '🕒 --:--';
+          }
+        })
+        .catch(function(error) {
+          console.error('❌ 拎唔到特別天氣提示：', error);
+          specialTip.textContent = '⚠️ 無法載入天氣提示';
+        });
+    }
 
-        // 中間圖片
-        updateHeroImage(warningType);
-
-        // 警報框
-        updateAlertBox(warningType);
-
-        // 警報內容
-        if (newsBodyText) {
-          newsBody.textContent = newsBodyText;
-        } else if (config) {
-          newsBody.textContent = config.defaultBody;
-        } else {
-          newsBody.textContent = '目前沒有惡劣天氣警告，天氣狀況良好。';
-        }
-
-        const fullDate = formatFullDate();
-        newsTime.textContent = `🕒 ${fullDate}`;
-
-        // 底部三格卡片
-        feelsLike.textContent = Math.round(feels);
-        humidity.textContent = Math.round(humid);
-        windSpeed.textContent = Math.round(wind);
-
-        updateTimestamp();
-
-        // ===== 🌧️ 控制降雨分佈按鈕顯示（落雨 或 打風） =====
-        const showRainBtn = ['黑雨', '紅雨', '黃雨', '雷暴', '8號風球', '9號風球', '10號風球'].includes(warningType);
-        
-        if (showRainBtn) {
-          rainBtn.classList.remove('hidden');
-          setTimeout(() => {
-            rainBtn.classList.add('show');
-          }, 300);
-        } else {
-          rainBtn.classList.remove('show');
-          setTimeout(() => {
-            rainBtn.classList.add('hidden');
-          }, 400);
-        }
-      }
-
-      // ===== 初始化 =====
-      createRain();
-      createWindLines();
-
-      window.addEventListener('load', function() {
-        // ⭐ 特別天氣提示
+    // ===== 4. 全部更新 =====
+    function refreshAllData() {
+      fetchWeatherReport();
+      setTimeout(function() {
+        fetchWarningSummary();
+      }, 200);
+      setTimeout(function() {
         fetchSpecialWeatherTips();
-        setInterval(fetchSpecialWeatherTips, 600000);
-        
-        // 原本嘅天氣更新
-        updateWeather('黑雨', 24, 92, 18);
-        console.log('🌧️ SORA HK 天文台預警系統 (淡入淡出轉場)');
-      });
+      }, 400);
+    }
 
-      window.setSORAWeather = updateWeather;
-      console.log('🕊️ SORA HK 已載入');
-      console.log('📌 可呼叫 setSORAWeather(警告類型, 體感, 濕度, 風速)');
-    })();
-  </script>
+    // ===== 初始化 =====
+    createRain();
+    createWindLines();
+    window.addEventListener('load', function() {
+      refreshAllData();
+      setInterval(refreshAllData, 300000); // 每 5 分鐘
+      console.log('🌧️ SORA HK Production 版已啟動（直接 API）');
+      console.log('📡 數據來源：香港天文台 Open Data API');
+    });
+    window.refreshSORA = refreshAllData;
+  })();
+</script>
 </body>
 </html>
