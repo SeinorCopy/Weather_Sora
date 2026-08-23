@@ -12,11 +12,10 @@
 
   <meta property="og:title" content="SORA HK · 天文台預警">
   <meta property="og:description" content="香港天文台惡劣天氣警告即時監測">
-  <meta property="og:image" content="sora_bird_normal.jpeg">
+  <meta property="og:image" content="sora_bird_typhoon.jpeg">
   <meta property="og:type" content="website">
 
   <style>
-    /* ===== 全部 Style 同上，為節省篇幅略過，但你用返之前完整版嘅 Style ===== */
     * {
       margin: 0;
       padding: 0;
@@ -26,7 +25,7 @@
 
     body {
       min-height: 100vh;
-      background: #e8edf2;
+      background: #1a1a2e;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -57,6 +56,7 @@
       z-index: 2;
     }
 
+    /* ===== 🌧️ 落雨動畫 ===== */
     .rain-container {
       position: fixed;
       top: 0;
@@ -94,6 +94,7 @@
       }
     }
 
+    /* ===== 🌬️ 打風動畫 ===== */
     .typhoon-overlay {
       position: fixed;
       top: 0;
@@ -102,7 +103,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0;
+      opacity: 1;
       transition: opacity 1.5s ease;
       overflow: hidden;
     }
@@ -190,6 +191,7 @@
       display: block;
     }
 
+    /* ===== 頂部 ===== */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -271,6 +273,7 @@
       position: relative;
     }
 
+    /* ===== ⭐ 特別天氣提示 ===== */
     #specialTipContainer {
       background: #f0f4f8;
       border-radius: 16px;
@@ -302,6 +305,7 @@
       line-height: 1.5;
     }
 
+    /* ===== 警報框（8號風球橙色） ===== */
     .news-alert {
       border-radius: 16px;
       padding: 14px 18px;
@@ -489,8 +493,8 @@
   <!-- ===== 🌧️ 落雨動畫 Layer ===== -->
   <div class="rain-container" id="rainContainer"></div>
 
-  <!-- ===== 🌬️ 打風動畫 Layer ===== -->
-  <div class="typhoon-overlay" id="typhoonOverlay">
+  <!-- ===== 🌬️ 打風動畫 Layer（已啟動） ===== -->
+  <div class="typhoon-overlay active" id="typhoonOverlay">
     <div class="typhoon-spiral"></div>
     <div class="typhoon-spiral"></div>
     <div class="typhoon-spiral"></div>
@@ -505,10 +509,10 @@
       </div>
       <div class="warning-badge" id="warningBadge">
         <span class="warning-badge-temp" id="warningTemp">
-          24<span class="temp-unit">°C</span>
+          26<span class="temp-unit">°C</span>
         </span>
         <span class="warning-badge-icon" id="warningIcon">
-          <img src="warning-black.png" alt="警告圖標" id="warningImage">
+          <img src="warning-typhoon_8.png" alt="8號風球" id="warningImage">
         </span>
       </div>
     </div>
@@ -520,27 +524,27 @@
       </div>
     </div>
 
-    <div class="hero-image" id="heroImage">
-      <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
+    <div class="hero-image shake" id="heroImage">
+      <img src="sora_bird_typhoon.jpeg" alt="SORA 鳥兒天氣 - 8號風球" id="heroImageSrc">
     </div>
 
     <!-- ===== ⭐ 特別天氣提示 ===== -->
     <div id="specialTipContainer">
       <div class="tip-header">
         <span class="tip-label">📢 特別天氣提示</span>
-        <span class="tip-time" id="specialTipTime">🕒 --:--</span>
+        <span class="tip-time" id="specialTipTime">🕒 2026-08-23 12:00</span>
       </div>
       <div class="tip-body" id="specialTip">
-        載入中...
+        預料熱帶氣旋紫檀會在今明兩日於北部灣一帶徘徊，然後於星期一稍後至星期二逐漸轉向東北方向移動，靠近雷州半島一帶。天文台會密切監察其動向及本地風力變化，評估星期二或星期三是否需要發出熱帶氣旋警告信號，市民請留意最新天氣消息。
       </div>
     </div>
 
-    <div class="news-alert" id="newsAlert">
+    <div class="news-alert news-alert-typhoon-8" id="newsAlert">
       <i class="fas fa-bullhorn" id="newsIcon"></i>
       <div class="news-content">
-        <div class="news-title" id="newsTitle">⚠️ 天文台天氣警報</div>
-        <div class="news-body" id="newsBody">天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量。</div>
-        <div class="news-time" id="newsTime">🕒 2026-08-23 11:05</div>
+        <div class="news-title" id="newsTitle">🌀 八號烈風或暴風信號</div>
+        <div class="news-body" id="newsBody">八號烈風或暴風信號現正生效，平均風速每小時63公里或以上，請勿外出。</div>
+        <div class="news-time" id="newsTime">🕒 2026-08-23 12:00</div>
       </div>
     </div>
 
@@ -549,7 +553,7 @@
         <i class="fas fa-temperature-low"></i>
         <span class="label">體感溫度</span>
         <div class="value">
-          <span class="number" id="feelsLike">24</span>
+          <span class="number" id="feelsLike">26</span>
           <span class="unit">°C</span>
         </div>
       </div>
@@ -557,7 +561,7 @@
         <i class="fas fa-droplet"></i>
         <span class="label">濕度</span>
         <div class="value">
-          <span class="number" id="humidity">92</span>
+          <span class="number" id="humidity">85</span>
           <span class="unit">%</span>
         </div>
       </div>
@@ -565,7 +569,7 @@
         <i class="fas fa-wind"></i>
         <span class="label">風速</span>
         <div class="value">
-          <span class="number" id="windSpeed">18</span>
+          <span class="number" id="windSpeed">60</span>
           <span class="unit">km/h</span>
         </div>
       </div>
@@ -664,10 +668,9 @@
         }
       }
 
-      // ===== ⭐ 拎天文台特別天氣提示（用你嘅 Sample 數據） =====
+      // ===== ⭐ 特別天氣提示（用你個 Sample） =====
       async function fetchSpecialWeatherTips() {
         try {
-          // 用你提供嘅 Sample 數據
           const sampleData = {
             "swt": [{
               "desc": "預料熱帶氣旋紫檀會在今明兩日於北部灣一帶徘徊，然後於星期一稍後至星期二逐漸轉向東北方向移動，靠近雷州半島一帶。天文台會密切監察其動向及本地風力變化，評估星期二或星期三是否需要發出熱帶氣旋警告信號，市民請留意最新天氣消息。",
@@ -675,7 +678,6 @@
             }]
           };
           
-          // 模擬網絡延遲
           await new Promise(resolve => setTimeout(resolve, 500));
           
           const data = sampleData;
@@ -693,19 +695,9 @@
             }
             
             return firstTip;
-          } else {
-            console.log('目前沒有特別天氣提示');
-            if (specialTip) {
-              specialTip.textContent = '目前沒有特別天氣提示';
-            }
-            return null;
           }
         } catch (error) {
           console.error('拎唔到特別天氣提示：', error);
-          if (specialTip) {
-            specialTip.textContent = '⚠️ 無法載入天氣提示';
-          }
-          return null;
         }
       }
 
@@ -779,4 +771,150 @@
           alertClass: 'news-alert-typhoon-10',
           icon: 'fa-bullhorn',
           title: '🌀 十號颶風信號',
-          defaultBody: '十號颶風信號現正生效，
+          defaultBody: '十號颶風信號現正生效，風力達颶風程度，請遠離窗邊。',
+          animation: 'typhoon'
+        },
+        '雷暴': {
+          warningImage: 'warning-yellow.png',
+          heroImage: 'sora_bird_rain.jpeg',
+          alertClass: 'news-alert-other',
+          icon: 'fa-bolt',
+          title: '⚡ 雷暴警告',
+          defaultBody: '雷暴警告現正生效，請留意閃電及局部地區性大雨。',
+          animation: 'rain'
+        },
+        '酷熱': {
+          warningImage: 'warning-yellow.png',
+          heroImage: 'sora_bird_normal.jpeg',
+          alertClass: 'news-alert-other',
+          icon: 'fa-sun',
+          title: '☀️ 酷熱天氣警告',
+          defaultBody: '酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
+          animation: 'none'
+        },
+        '寒冷': {
+          warningImage: 'warning-yellow.png',
+          heroImage: 'sora_bird_normal.jpeg',
+          alertClass: 'news-alert-other',
+          icon: 'fa-snowflake',
+          title: '❄️ 寒冷天氣警告',
+          defaultBody: '寒冷天氣警告現正生效，請注意保暖。',
+          animation: 'none'
+        },
+        '晴朗': {
+          warningImage: '',
+          heroImage: 'sora_bird_normal.jpeg',
+          alertClass: 'news-alert-none',
+          icon: 'fa-check-circle',
+          title: '✅ 天氣概況',
+          defaultBody: '天氣大致晴朗，注意防曬。',
+          animation: 'none'
+        },
+        '多雲': {
+          warningImage: '',
+          heroImage: 'sora_bird_normal.jpeg',
+          alertClass: 'news-alert-none',
+          icon: 'fa-check-circle',
+          title: '✅ 天氣概況',
+          defaultBody: '天氣多雲，部分地區有微雨。',
+          animation: 'none'
+        },
+      };
+
+      // ===== 更新右上角（溫度 + 警告圖標） =====
+      function updateWarningBadge(warningType, temp) {
+        const config = WARNING_CONFIG[warningType];
+        
+        if (warningTemp) {
+          warningTemp.innerHTML = `${Math.round(temp)}<span class="temp-unit">°C</span>`;
+        }
+        
+        if (config && config.warningImage) {
+          warningImage.src = config.warningImage;
+          warningImage.style.display = 'block';
+        } else {
+          warningImage.style.display = 'none';
+        }
+      }
+
+      // ===== 更新中間圖片 =====
+      function updateHeroImage(warningType) {
+        const config = WARNING_CONFIG[warningType];
+        if (config) {
+          heroImageSrc.src = config.heroImage;
+          heroImageSrc.alt = `SORA 鳥兒天氣 - ${warningType}`;
+        } else {
+          heroImageSrc.src = 'sora_bird_normal.jpeg';
+          heroImageSrc.alt = 'SORA 鳥兒天氣';
+        }
+      }
+
+      // ===== 更新警報框 =====
+      function updateAlertBox(warningType) {
+        const config = WARNING_CONFIG[warningType];
+        
+        newsAlert.className = 'news-alert';
+        
+        if (!config) {
+          newsAlert.classList.add('news-alert-hidden');
+          return;
+        }
+        
+        newsAlert.classList.add(config.alertClass);
+        newsIcon.className = `fas ${config.icon}`;
+        newsTitle.textContent = config.title;
+      }
+
+      // ===== 更新天氣（完整功能） =====
+      function updateWeather(warningType, feels, humid, wind, newsBodyText) {
+        const config = WARNING_CONFIG[warningType];
+
+        if (config) {
+          updateAnimation(config.animation);
+        } else {
+          updateAnimation('none');
+        }
+
+        updateWarningBadge(warningType, feels);
+        updateHeroImage(warningType);
+        updateAlertBox(warningType);
+
+        if (newsBodyText) {
+          newsBody.textContent = newsBodyText;
+        } else if (config) {
+          newsBody.textContent = config.defaultBody;
+        } else {
+          newsBody.textContent = '目前沒有惡劣天氣警告，天氣狀況良好。';
+        }
+
+        const fullDate = formatFullDate();
+        newsTime.textContent = `🕒 ${fullDate}`;
+
+        feelsLike.textContent = Math.round(feels);
+        humidity.textContent = Math.round(humid);
+        windSpeed.textContent = Math.round(wind);
+
+        updateTimestamp();
+      }
+
+      // ===== 初始化（8號風球） =====
+      createRain();
+      createWindLines();
+
+      window.addEventListener('load', function() {
+        // ⭐ 特別天氣提示
+        fetchSpecialWeatherTips();
+        setInterval(fetchSpecialWeatherTips, 600000);
+        
+        // 🌬️ 設定為 8號風球
+        updateWeather('8號風球', 26, 85, 60);
+        console.log('🌀 SORA HK · 8號風球 Demo');
+      });
+
+      window.setSORAWeather = updateWeather;
+      console.log('🕊️ SORA HK 已載入 (8號風球模式)');
+      console.log('📌 可呼叫 setSORAWeather(警告類型, 體感, 濕度, 風速)');
+    })();
+  </script>
+</body>
+</html>
