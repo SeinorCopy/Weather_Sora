@@ -1,0 +1,113 @@
+const hkTyphoonsT8AndAbove = [
+  // 2025
+  {
+    year: 2025,
+    name: "韋帕 (Wipha)",
+    highest_signal: 9,
+    hoisted_time: "2025-07-19 14:00",
+    lowered_time: "2025-07-20 10:00",
+    duration: "20小時00分鐘"
+  },
+  {
+    year: 2025,
+    name: "塔巴 (Tapah)",
+    highest_signal: 8,
+    hoisted_time: "2025-09-07 16:00",
+    lowered_time: "2025-09-08 11:00",
+    duration: "19小時00分鐘"
+  },
+  {
+    year: 2025,
+    name: "樺加沙 (Ragasa)",
+    highest_signal: 9,
+    hoisted_time: "2025-09-23 14:20",
+    lowered_time: "2025-09-24 10:20",
+    duration: "20小時00分鐘"
+  },
+  // 2024
+  {
+    year: 2024,
+    name: "摩羯 (Yagi)",
+    highest_signal: 8,
+    hoisted_time: "2024-09-05 18:20",
+    lowered_time: "2024-09-06 12:40",
+    duration: "18小時20分鐘"
+  },
+  {
+    year: 2024,
+    name: "桃芝 (Toraji)",
+    highest_signal: 8,
+    hoisted_time: "2024-11-13 23:10",
+    lowered_time: "2024-11-14 10:20",
+    duration: "11小時10分鐘"
+  },
+  // 2023
+  {
+    year: 2023,
+    name: "泰利 (Talim)",
+    highest_signal: 8,
+    hoisted_time: "2023-07-17 00:40",
+    lowered_time: "2023-07-17 16:20",
+    duration: "15小時40分鐘"
+  },
+  {
+    year: 2023,
+    name: "蘇拉 (Saola)",
+    highest_signal: 10,
+    hoisted_time: "2023-09-01 02:40",
+    lowered_time: "2023-09-02 20:20",
+    duration: "41小時40分鐘"
+  },
+  {
+    year: 2023,
+    name: "小犬 (Koinu)",
+    highest_signal: 9,
+    hoisted_time: "2023-10-08 12:40",
+    lowered_time: "2023-10-09 11:40",
+    duration: "23小時00分鐘"
+  },
+  // 2022
+  {
+    year: 2022,
+    name: "暹芭 (Chaba)",
+    highest_signal: 8,
+    hoisted_time: "2022-07-01 19:10",
+    lowered_time: "2022-07-02 16:20",
+    duration: "21小時10分鐘"
+  },
+  {
+    year: 2022,
+    name: "馬鞍 (Ma-on)",
+    highest_signal: 8,
+    hoisted_time: "2022-08-24 19:25",
+    lowered_time: "2022-08-25 09:20",
+    duration: "13小時55分鐘"
+  },
+  {
+    year: 2022,
+    name: "尼格 (Nalgae)",
+    highest_signal: 8,
+    hoisted_time: "2022-11-02 13:40",
+    lowered_time: "2022-11-03 05:20",
+    duration: "15小時40分鐘"
+  },
+  // 2021
+  {
+    year: 2021,
+    name: "獅子山 (Lionrock)",
+    highest_signal: 8,
+    hoisted_time: "2021-10-09 06:40",
+    lowered_time: "2021-10-10 04:40",
+    duration: "22小時00分鐘"
+  },
+  {
+    year: 2021,
+    name: "圓規 (Kompasu)",
+    highest_signal: 8,
+    hoisted_time: "2021-10-12 17:20",
+    lowered_time: "2021-10-13 16:40",
+    duration: "23小時20分鐘"
+  }
+];
+
+export default hkTyphoonsT8AndAbove;
