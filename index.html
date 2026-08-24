@@ -270,12 +270,12 @@
 
     .city-section {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
       margin-top: 2px;
       margin-bottom: 12px;
     }
-
+    
     .city-name {
       display: flex;
       align-items: center;
@@ -285,11 +285,90 @@
       letter-spacing: 0.5px;
       color: #3d525c;
     }
-
+    
     .city-name i {
       color: #7a9bb5;
       font-size: 1.1rem;
     }
+    
+    /* ===== 🌪️ 風暴檔案按鈕 ===== */
+    /* ===== 🌪️ 風暴檔案按鈕 - SORA HK 藍灰風格 ===== */
+    .storm-archive-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #eef2f6;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(180, 195, 210, 0.2);
+      color: #3d525c;
+      padding: 8px 18px 8px 16px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: 12px;
+      letter-spacing: 0.3px;
+    }
+    
+    .storm-archive-btn i {
+      color: #7a9bb5;
+      font-size: 0.85rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* 骷髏 Icon 浮動 */
+    .storm-archive-btn .fa-skull {
+      animation: skullFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes skullFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-2px) rotate(-3deg);
+      }
+    }
+    
+    /* Hover 效果 */
+    .storm-archive-btn:hover {
+      background: #e2e8ef;
+      border-color: rgba(122, 155, 181, 0.3);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(122, 155, 181, 0.1);
+    }
+    
+    .storm-archive-btn:hover i {
+      color: #5a7a8a;
+      transform: rotate(-8deg) scale(1.15);
+      animation: none;
+    }
+    
+    .storm-archive-btn:active {
+      transform: scale(0.95);
+    }
+    
+    /* 手機細畫面 */
+    @media (max-width: 450px) {
+      .city-name {
+        font-size: 1.3rem;
+      }
+      .storm-archive-btn {
+        font-size: 0.7rem;
+        padding: 6px 12px 6px 10px;
+        gap: 5px;
+        margin-left: 8px;
+      }
+      .storm-archive-btn i {
+        font-size: 0.75rem;
+      }
+    }
+
 
     .hero-image {
       width: 100%;
@@ -641,12 +720,15 @@
         </span>
       </div>
     </div>
-
+    
     <div class="city-section">
       <div class="city-name">
         <i class="fas fa-location-dot"></i>
         <span id="cityDisplay">SORA HK</span>
       </div>
+      <a href="typhoon-history.html" class="storm-archive-btn">
+        <i class="fas fa-skull"></i> 風暴檔案
+      </a>
     </div>
 
     <div class="hero-image" id="heroImage">
