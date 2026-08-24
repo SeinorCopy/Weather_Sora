@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>風暴檔案 · SORA HK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== SORA HK Design System ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8edf2;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: #3d525c;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            background: #f5f7fa;
+            border-radius: 32px;
+            padding: 28px 24px 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(180, 195, 210, 0.2);
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== 🌀 右上角 SVG 動畫 ===== */
+        .storm-animation {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .storm-animation svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 旋轉風圈 */
+        .spiral-ring {
+            animation: spin 12s linear infinite;
+            transform-origin: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 吹飛嘅雀仔 */
+        .bird {
+            animation: blowBird 3s ease-in-out infinite;
+        }
+
+        @keyframes blowBird {
+            0% {
+                transform: translate(0px, 0px) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translate(15px, -12px) rotate(-10deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(30px, -20px) rotate(-20deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translate(45px, -25px) rotate(-30deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(60px, -30px) rotate(-40deg);
+                opacity: 0;
+            }
+        }
+
+        /* 風線 */
+        .wind-line {
+            animation: windSweep 2.5s ease-in-out infinite;
+        }
+
+        .wind-line:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+        .wind-line:nth-child(3) {
+            animation-delay: 1.6s;
+        }
+
+        @keyframes windSweep {
+            0% {
+                transform: translateX(-20px) scaleX(0.3);
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.6;
+            }
+            70% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateX(40px) scaleX(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* ===== Header ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(180, 195, 210, 0.15);
+            padding-right: 80px;
+        }
+
+        .back-btn {
+            background: #eef2f6;
+            border: 1px solid rgba(180, 195, 210, 0.15);
+            color: #3d525c;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .back-btn:hover {
+            background: #dce3ea;
+            transform: scale(0.95);
+        }
+
+        .header h2 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #3d525c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h2 i {
+            color: #7a9bb5;
+        }
+
+        /* ===== 加載狀態 ===== */
+        #loading {
+            text-align: center;
+            padding: 40px 0;
+            color: #8a9ba8;
+            font-size: 0.9rem;
+        }
+
+        /* ===== 歷史列表（按年份分類） ===== */
+        #historyList {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .year-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .year-group .year-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #3d525c;
+            padding: 4px 0 6px 4px;
+            border-bottom: 2px solid rgba(122, 155, 181, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .year-group .year-title i {
+            color: #7a9bb5;
+            font-size: 0.8rem;
+        }
+
+        .year-group .year-title .count {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: #8a9ba8;
+            margin-left: auto;
+        }
+
+        .history-item {
+            background: #eef2f6;
+            border: 1px solid rgba(180, 195, 210, 0.1);
+            border-radius: 14px;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+        }
+
+        .history-item:hover {
+            background: #e8edf2;
+        }
+
+        .history-item .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .history-item .storm-name {
+            font-weight: 500;
+            color: #3d525c;
+            font-size: 0.95rem;
+        }
+
+        .history-item .storm-name .year-tag {
+            display: none;
+        }
+
+        /* 信號標籤 */
+        .signal-tag {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .signal-8 { background: #f39c12; }
+        .signal-9 { background: #e67e22; }
+        .signal-10 { background: #c0392b; }
+
+        .history-item .detail-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.7rem;
+            color: #8a9ba8;
+        }
+
+        .history-item .detail-row span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .history-item .detail-row i {
+            color: #7a9bb5;
+            width: 14px;
+            font-size: 0.65rem;
+        }
+
+        /* ===== 空狀態 ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #8a9ba8;
+        }
+        .empty-state i {
+            font-size: 2.5rem;
+            color: #d0d8e0;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* ===== 響應式 ===== */
+        @media (max-width: 450px) {
+            .container { padding: 18px 14px 22px; }
+            .header { padding-right: 70px; }
+            .header h2 { font-size: 1rem; }
+            .history-item { padding: 10px 12px; margin-left: 4px; }
+            .storm-animation { width: 55px; height: 55px; top: 16px; right: 14px; }
+            .history-item .top-row { flex-wrap: wrap; gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== 🌀 右上角打風動畫 ===== -->
+        <div class="storm-animation">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- 風圈 -->
+                <g class="spiral-ring">
+                    <circle cx="50" cy="50" r="28" fill="none" stroke="#7a9bb5" stroke-width="1.5" opacity="0.15"/>
+                    <circle cx="50" cy="50" r="20" fill="none" stroke="#7a9bb5" stroke-width="1.2" opacity="0.2"/>
+                    <circle cx="50" cy="50" r="12" fill="none" stroke="#7a9bb5" stroke-width="0.8" opacity="0.25"/>
+                </g>
+
+                <!-- 風線 -->
+                <line class="wind-line" x1="10" y1="35" x2="30" y2="35" stroke="#7a9bb5" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+                <line class="wind-line" x1="10" y1="50" x2="25" y2="50" stroke="#7a9bb5" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+                <line class="wind-line" x1="10" y1="65" x2="30" y2="65" stroke="#7a9bb5" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+
+                <!-- 吹飛嘅雀仔 -->
+                <g class="bird" transform="translate(10, 45)">
+                    <!-- 身體 -->
+                    <ellipse cx="6" cy="4" rx="5" ry="3" fill="#7a9bb5" opacity="0.7"/>
+                    <!-- 頭 -->
+                    <circle cx="11" cy="3" r="2.5" fill="#7a9bb5" opacity="0.7"/>
+                    <!-- 眼 -->
+                    <circle cx="12" cy="2.5" r="0.8" fill="#3d525c"/>
+                    <!-- 翼（向上） -->
+                    <path d="M6,2 L2,-4 L5,-1 Z" fill="#8a9ba8" opacity="0.6"/>
+                    <path d="M8,2 L4,-5 L7,-2 Z" fill="#8a9ba8" opacity="0.6"/>
+                    <!-- 尾 -->
+                    <path d="M1,4 L-3,2 L-1,5 Z" fill="#8a9ba8" opacity="0.5"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- ===== Header ===== -->
+        <div class="header">
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h2>
+                <i class="fas fa-skull"></i> 風暴檔案
+            </h2>
+        </div>
+
+        <!-- ===== 內容 ===== -->
+        <div id="loading">
+            <i class="fas fa-spinner fa-pulse" style="margin-right: 6px;"></i> 載入風暴檔案中...
+        </div>
+        <div id="historyList"></div>
+
+    </div>
+
+    <script>
+        (function() {
+            const loading = document.getElementById('loading');
+            const list = document.getElementById('historyList');
+
+            async function loadHistory() {
+                const url = 'https://raw.githubusercontent.com/SeinorCopy/Weather_Sora/refs/heads/main/hk_typhoon_history.json';
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('HTTP error: ' + response.status);
+                    const data = await response.json();
+
+                    if (!data || data.length === 0) {
+                        loading.innerHTML = `<div class="empty-state"><i class="fas fa-cloud"></i> 暫時沒有風暴記錄</div>`;
+                        return;
+                    }
+
+                    // 按年份分組（由新到舊）
+                    const groups = {};
+                    data.forEach(item => {
+                        const year = item.year;
+                        if (!groups[year]) groups[year] = [];
+                        groups[year].push(item);
+                    });
+
+                    const sortedYears = Object.keys(groups).sort((a, b) => b - a);
+
+                    let html = '';
+                    sortedYears.forEach(year => {
+                        const items = groups[year];
+                        // 排序：由最高信號到低
+                        items.sort((a, b) => b.highest_signal - a.highest_signal);
+
+                        let itemsHtml = '';
+                        items.forEach(item => {
+                            let signalClass = '';
+                            if (item.highest_signal >= 10) signalClass = 'signal-10';
+                            else if (item.highest_signal >= 9) signalClass = 'signal-9';
+                            else if (item.highest_signal >= 8) signalClass = 'signal-8';
+
+                            itemsHtml += `
+                                <div class="history-item">
+                                    <div class="top-row">
+                                        <span class="storm-name">${item.name}</span>
+                                        <span class="signal-tag ${signalClass}">${item.highest_signal}號</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span><i class="fas fa-flag-checkered"></i> ${item.hoisted_time}</span>
+                                        <span><i class="fas fa-flag"></i> ${item.lowered_time}</span>
+                                        <span><i class="fas fa-clock"></i> ${item.duration}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        html += `
+                            <div class="year-group">
+                                <div class="year-title">
+                                    <i class="fas fa-calendar-alt"></i> ${year}
+                                    <span class="count">${items.length} 個</span>
+                                </div>
+                                ${itemsHtml}
+                            </div>
+                        `;
+                    });
+
+                    list.innerHTML = html;
+                    loading.style.display = 'none';
+
+                } catch (error) {
+                    console.error('載入風暴檔案失敗：', error);
+                    loading.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            無法載入風暴檔案<br>
+                            <span style="font-size:0.75rem; color:#8a9ba8;">請檢查網絡連線</span>
+                        </div>
+                    `;
+                }
+            }
+
+            loadHistory();
+
+        })();
+    </script>
+
+</body>
+</html>
