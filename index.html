@@ -84,7 +84,119 @@
       overflow: hidden;
       z-index: 2;
     }
+/* ===== 城市名稱 + 風暴檔案按鈕（同一行） ===== */
+.city-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+    margin-bottom: 12px;
+}
 
+.city-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #3d525c;
+}
+
+.city-name i {
+    color: #7a9bb5;
+    font-size: 1.1rem;
+}
+//========================================================================
+    
+      /* ===== 風暴檔案按鈕（跟返你個 design） ===== */
+     /* ===== 城市名稱 + 風暴檔案按鈕（同一行） ===== */
+      .city-section {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 2px;
+          margin-bottom: 12px;
+      }
+      
+      .city-name {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 1.6rem;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          color: #3d525c;
+      }
+      
+      .city-name i {
+          color: #7a9bb5;
+          font-size: 1.1rem;
+      }
+      
+      /* ===== 🌪️ 風暴檔案按鈕（有設計！） ===== */
+      .storm-archive-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.55);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.4);
+          color: #3d525c;
+          padding: 8px 18px 8px 16px;
+          border-radius: 40px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          text-decoration: none;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+          white-space: nowrap;
+          flex-shrink: 0;
+          margin-left: 12px;
+          letter-spacing: 0.3px;
+      }
+      
+      .storm-archive-btn i {
+          color: #7a9bb5;
+          font-size: 0.85rem;
+          transition: transform 0.3s ease;
+      }
+      
+      .storm-archive-btn:hover {
+          background: rgba(255, 255, 255, 0.85);
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 8px 30px rgba(122, 155, 181, 0.15);
+          border-color: rgba(122, 155, 181, 0.25);
+      }
+      
+      .storm-archive-btn:hover i {
+          transform: rotate(-8deg) scale(1.1);
+      }
+      
+      .storm-archive-btn:active {
+          transform: scale(0.96);
+      }
+      
+      /* ===== 手機細畫面 ===== */
+      @media (max-width: 450px) {
+          .city-name {
+              font-size: 1.3rem;
+          }
+          .storm-archive-btn {
+              font-size: 0.7rem;
+              padding: 6px 12px 6px 10px;
+              gap: 5px;
+              margin-left: 8px;
+          }
+          .storm-archive-btn i {
+              font-size: 0.75rem;
+          }
+      }
+
+//========================================================================
+
+    
     /* ===== 🌧️ 落雨動畫 ===== */
     .rain-container {
       position: fixed;
@@ -219,7 +331,9 @@
       height: auto;
       display: block;
     }
+//========================================================================
 
+    
     /* ===== 頂部 ===== */
     .top-bar {
       display: flex;
@@ -302,6 +416,8 @@
       position: relative;
     }
 
+//========================================================================
+    
     /* ===== 🌧️ 降雨分佈按鈕 ===== */
     .rain-btn-wrapper {
       text-align: center;
@@ -397,6 +513,8 @@
       display: none;
     }
 
+//========================================================================
+    
     /* ===== ⭐ 特別天氣提示 ===== */
     #specialTipContainer {
       background: #f0f4f8;
@@ -643,11 +761,16 @@
     </div>
 
     <div class="city-section">
-      <div class="city-name">
-        <i class="fas fa-location-dot"></i>
-        <span id="cityDisplay">SORA HK</span>
-      </div>
+        <div class="city-name">
+            <i class="fas fa-location-dot"></i>
+            <span id="cityDisplay">SORA HK</span>
+        </div>
+        <a href="typhoon-history.html" class="storm-archive-btn">
+            <i class="fas fa-skull"></i> 風暴檔案
+        </a>
     </div>
+
+   
 
     <div class="hero-image" id="heroImage">
       <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
@@ -896,8 +1019,8 @@
         heroImage: 'sora_bird_rain.jpeg',
         alertClass: 'news-alert-other',
         icon: 'fa-bolt',
-        title: '⚡ 雷暴警告',
-        defaultBody: '雷暴警告現正生效，請留意閃電及局部地區性大雨。',
+        title: '雷暴警告',
+        defaultBody: '⚡ 雷暴警告現正生效，請留意閃電及局部地區性大雨。',
         animation: 'rain'
       },
       '酷熱': {
@@ -905,8 +1028,8 @@
         heroImage: 'sora_bird_normal.jpeg',
         alertClass: 'news-alert-other',
         icon: 'fa-sun',
-        title: '☀️ 酷熱天氣警告',
-        defaultBody: '酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
+        title: '酷熱天氣警告',
+        defaultBody: '☀️ 酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
         animation: 'none'
       },
       '寒冷': {
@@ -914,8 +1037,8 @@
         heroImage: 'sora_bird_normal.jpeg',
         alertClass: 'news-alert-other',
         icon: 'fa-snowflake',
-        title: '❄️ 寒冷天氣警告',
-        defaultBody: '寒冷天氣警告現正生效，請注意保暖。',
+        title: '寒冷天氣警告',
+        defaultBody: '❄️ 寒冷天氣警告現正生效，請注意保暖。',
         animation: 'none'
       },
       '晴朗': {
@@ -923,7 +1046,7 @@
         heroImage: 'sora_bird_normal.jpeg',
         alertClass: 'news-alert-none',
         icon: 'fa-check-circle',
-        title: '✅ 天氣概況',
+        title: '天氣概況',
         defaultBody: '目前沒有惡劣天氣警告，天氣狀況良好。',
         animation: 'none'
       },
@@ -932,7 +1055,7 @@
         heroImage: 'sora_bird_normal.jpeg',
         alertClass: 'news-alert-none',
         icon: 'fa-check-circle',
-        title: '✅ 天氣概況',
+        title: '天氣概況',
         defaultBody: '天氣多雲，部分地區有微雨。',
         animation: 'none'
       }
