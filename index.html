@@ -1,15 +1,3 @@
-你個 Code 「跪左」（掛掉/爆 Code） 的主要原因是 JavaScript 語法切片嚴重錯誤（Syntax Error），導致整段 JavaScript 腳本根本無法執行！
-🔍 錯誤原因分析
-問題出在 JavaScript 第 532 行至 555 行 之間：
- * 語法中斷與字串未閉合：
-   var showRainBtn = ['黑雨', '紅雨',
-if (showRainBtn) {
-
-   陣列 ['黑雨', '紅雨' 寫到一半未關閉，後面直接插了 if 判斷式，導致瀏覽器報 Uncaught SyntaxError，後面的 API 請求同所有 Function 全部癱瘓。
- * 閉合括號缺失（Missing Brackets）：
-   updateWeather 函數的的結尾 } 遺失，導致整段 IIFE（立即執行函數）結構崩壞。
-🛠️ 修正後的完整代碼
-已幫你修復語法錯誤，整理好邏輯（同時保留你最後設定「降雨分佈按鈕永遠顯示」的邏輯），直接複製貼上覆蓋即可：
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -304,6 +292,7 @@ if (showRainBtn) {
     }
     
     /* ===== 🌪️ 風暴檔案按鈕 ===== */
+    /* ===== 🌪️ 風暴檔案按鈕 - SORA HK 藍灰風格 ===== */
     .storm-archive-btn {
       display: inline-flex;
       align-items: center;
@@ -332,6 +321,7 @@ if (showRainBtn) {
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
+    /* 骷髏 Icon 浮動 */
     .storm-archive-btn .fa-skull {
       animation: skullFloat 3s ease-in-out infinite;
     }
@@ -345,6 +335,7 @@ if (showRainBtn) {
       }
     }
     
+    /* Hover 效果 */
     .storm-archive-btn:hover {
       background: #e2e8ef;
       border-color: rgba(122, 155, 181, 0.3);
@@ -362,6 +353,7 @@ if (showRainBtn) {
       transform: scale(0.95);
     }
     
+    /* 手機細畫面 */
     @media (max-width: 450px) {
       .city-name {
         font-size: 1.3rem;
@@ -376,6 +368,7 @@ if (showRainBtn) {
         font-size: 0.75rem;
       }
     }
+
 
     .hero-image {
       width: 100%;
@@ -418,6 +411,7 @@ if (showRainBtn) {
       pointer-events: none;
       transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       cursor: pointer;
+      border: none;
     }
 
     .rain-btn.show {
@@ -1090,11 +1084,19 @@ if (showRainBtn) {
       windSpeed.textContent = Math.round(wind);
       updateTimestamp();
 
-      // ===== 控制降雨分布按鈕 (永遠顯示) =====
-      rainBtn.classList.remove('hidden');
-      setTimeout(function() {
-        rainBtn.classList.add('show');
-      }, 300);
+      // ===== 控制降雨分佈按鈕 =====
+      var showRainBtn = ['黑雨', '紅雨', '黃雨', '雷暴', '8號風球', '9號風球', '10號風球'].indexOf(warningType) !== -1;
+      if (showRainBtn) {
+        rainBtn.classList.remove('hidden');
+        setTimeout(function() {
+          rainBtn.classList.add('show');
+        }, 300);
+      } else {
+        rainBtn.classList.remove('show');
+        setTimeout(function() {
+          rainBtn.classList.add('hidden');
+        }, 400);
+      }
     }
 
     // ============================================================
@@ -1127,6 +1129,7 @@ if (showRainBtn) {
           return response.json();
         })
         .then(function(data) {
+          // data 係 object，key 係 WRAIN / WTCSGNL / WTS 等
           var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '雷暴', '酷熱', '寒冷'];
           var found = '晴朗';
           var foundList = [];
@@ -1172,6 +1175,7 @@ if (showRainBtn) {
 
           if (data.temperature && data.temperature.data) {
             for (var i = 0; i < data.temperature.data.length; i++) {
+              // 正確站名係「香港天文台」
               if (data.temperature.data[i].place === '香港天文台') {
                 temp = data.temperature.data[i].value;
                 break;
@@ -1251,4 +1255,3 @@ if (showRainBtn) {
 </script>
 </body>
 </html>
-
