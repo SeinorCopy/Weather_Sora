@@ -747,9 +747,9 @@
     var rainBtn = document.getElementById('rainBtn');
 
     // ===== 真實數據變數 =====
-    var currentTemp = 24;
-    var currentHumid = 62;
-    var currentWind = 12;
+    var currentTemp = 0;
+    var currentHumid = 0;
+    var currentWind = 0;
     var currentWarning = '晴朗';
 
     // ===== 🌀 轉場：撳掣去 rain-map =====
@@ -1065,7 +1065,7 @@
     // ===== 2. 拎天氣報告（溫度、濕度、風速） =====
     function fetchWeatherReport() {
       var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc';
-
+      var weed = '';
       fetch(url)
         .then(function(response) {
           if (!response.ok) throw new Error('HTTP error: ' + response.status);
