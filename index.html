@@ -1085,10 +1085,25 @@
       updateTimestamp();
 
       // ===== 控制降雨分佈按鈕 =====
-      // ===== 控制降雨分佈按鈕（永遠顯示） =====
+      // 加入 '雷暴警告' 以確保 match 到
+      var showRainBtn = ['黑雨', '紅雨',
+      if (showRainBtn) {
+          rainBtn.classList.remove('hidden');
+          setTimeout(function() {
+          rainBtn.classList.add('show');
+          }, 300);
+      } else {
+          rainBtn.classList.remove('show');
+          setTimeout(function() {
+          rainBtn.classList.add('hidden');
+          }, 400);
+      }
+      
+      // ===== 控制降雨分布按钮 (永遠顯示) =====
+      
       rainBtn.classList.remove('hidden');
       setTimeout(function() {
-        rainBtn.classList.add('show');
+          rainBtn.classList.add('show');
       }, 300);
 
 
