@@ -1072,9 +1072,9 @@
           return response.json();
         })
         .then(function(data) {
-          var temp = 24;
-          var humid = 62;
-          var wind = 12;
+          var temp = 0;
+          var humid = 0;
+          var wind = 0;
 
           if (data.temperature && data.temperature.data) {
             for (var i = 0; i < data.temperature.data.length; i++) {
