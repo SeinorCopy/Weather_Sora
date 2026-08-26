@@ -1085,21 +1085,12 @@
       updateTimestamp();
 
       // ===== 控制降雨分佈按鈕 =====
-      //var showRainBtn = ['黑雨', '紅雨', '黃雨', '雷暴', '8號風球', '9號風球', '10號風球'].indexOf(warningType) !== -1;
-      // 加入 '雷暴警告' 以確保 match 到
-      var showRainBtn = ['黑雨', '紅雨', '黃雨', '雷暴', '雷暴警告', '8號風球', '9號風球', '10號風球'].indexOf(warningType) !== -1;
-      if (showRainBtn) {
-        rainBtn.classList.remove('hidden');
-        setTimeout(function() {
-          rainBtn.classList.add('show');
-        }, 300);
-      } else {
-        rainBtn.classList.remove('show');
-        setTimeout(function() {
-          rainBtn.classList.add('hidden');
-        }, 400);
-      }
-    }
+      // ===== 控制降雨分佈按鈕（永遠顯示） =====
+      rainBtn.classList.remove('hidden');
+      setTimeout(function() {
+        rainBtn.classList.add('show');
+      }, 300);
+
 
     // ============================================================
     // ===== 🔥 PRODUCTION: 直接打天文台 API（唔使 proxy） =====
