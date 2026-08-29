@@ -1186,31 +1186,51 @@
     }
 
     // ===== 3. 拎特別天氣提示 =====
-    function fetchSpecialWeatherTips() {
-      var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
-
-      fetch(url)
-        .then(function(response) {
-          if (!response.ok) throw new Error('HTTP error: ' + response.status);
-          return response.json();
-        })
-        .then(function(data) {
-          if (data.swt && data.swt.length > 0) {
-            var firstTip = data.swt[0];
-            specialTip.textContent = firstTip.desc;
-            var formattedTime = firstTip.updateTime.replace('T', ' ').slice(0, 16);
-            specialTipTime.textContent = '🕒 ' + formattedTime;
-            console.log('✅ 特別天氣提示已更新');
-          } else {
-            specialTip.textContent = '目前沒有特別天氣提示';
-            specialTipTime.textContent = ' ';
-          }
-        })
-        .catch(function(error) {
-          console.error('❌ 拎唔到特別天氣提示：', error);
-          specialTip.textContent = '⚠️ 無法載入天氣提示';
-        });
-    }
+    // ===== 3. 拎特別天氣提示（讀取全部提示） =====
+        function fetchSpecialWeatherTips() {
+          var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
+    
+          fetch(url)
+            .then(function(response) {
+              if (!response.ok) throw new Error('HTTP error: ' + response.status);
+              return response.json();
+            })
+            .then(function(data) {
+              var container = document.getElementById('specialTipContainer');
+    
+              if (data.swt && data.swt.length > 0) {
+                var headerHtml = '<div class="tip-header" style="margin-bottom: 8px;"><span class="tip-label">📢 特別天氣提示</span></div>';
+    
+                var tipsListHtml = data.swt.map(function(item) {
+                  var formattedTime = item.updateTime ? item.updateTime.replace('T', ' ').slice(0, 16) : '--:--';
+                  return '<div class="tip-block">' +
+                           '<div class="tip-body" style="line-height: 1.5;">' + item.desc + '</div>' +
+                           '<div class="tip-time" style="font-size: 0.65rem; color: #8a9ba8; text-align: right; margin-top: 4px;">🕒 ' + formattedTime + '</div>' +
+                         '</div>';
+                }).join('<hr style="border: 0; border-top: 1px dashed rgba(122, 155, 181, 0.35); margin: 10px 0;">');
+    
+                container.innerHTML = headerHtml + tipsListHtml;
+                console.log('✅ 特別天氣提示已更新，共 ' + data.swt.length + ' 條');
+              } else {
+                container.innerHTML = 
+                  '<div class="tip-header">' +
+                    '<span class="tip-label">📢 特別天氣提示</span>' +
+                    '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;">🕒 --:--</span>' +
+                  '</div>' +
+                  '<div class="tip-body" style="margin-top: 4px;">目前沒有特別天氣提示</div>';
+              }
+            })
+            .catch(function(error) {
+              console.error('❌ 拎唔到特別天氣提示：', error);
+              var container = document.getElementById('specialTipContainer');
+              container.innerHTML = 
+                '<div class="tip-header">' +
+                  '<span class="tip-label">📢 特別天氣提示</span>' +
+                  '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;">🕒 --:--</span>' +
+                '</div>' +
+                '<div class="tip-body" style="margin-top: 4px;">⚠️ 無法載入天氣提示</div>';
+            });
+        }
 
     // ===== 4. 全部更新 =====
     function refreshAllData() {
