@@ -92,41 +92,10 @@
             100% { transform: translateX(40px) scaleX(1.2); opacity: 0; }
         }
 
-        /* ===== Header ===== */
+        /* ===== Header - 隱藏 ===== */
         .header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(180, 195, 210, 0.15);
+            display: none !important;
         }
-
-        .back-btn {
-            background: #eef2f6;
-            border: 1px solid rgba(180, 195, 210, 0.15);
-            color: #3d525c;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        .back-btn:hover { background: #dce3ea; transform: scale(0.95); }
-
-        .header h2 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #3d525c;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .header h2 i { color: #7a9bb5; }
 
         /* ===== 風暴資訊卡片（合併版） ===== */
         .storm-info-card {
@@ -198,34 +167,65 @@
             color: var(--text-sub);
         }
 
-        /* ===== 歷史卡片 ===== */
+        /* ===== 歷史卡片 - 重新設計 ===== */
         .history-card {
             background: var(--bg-card);
             border: 1px solid var(--border-card);
             border-radius: 18px;
-            padding: 14px 16px;
+            padding: 16px 16px 12px;
         }
 
         .history-title {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-sub);
-            margin-bottom: 10px;
+            margin-bottom: 14px;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: 0.5px;
         }
-        .history-title i { color: #7a9bb5; }
+        .history-title i { color: #7a9bb5; font-size: 0.9rem; }
 
+        /* 年份分隔 */
+        .year-group {
+            margin-bottom: 14px;
+        }
+        .year-group:last-child { margin-bottom: 0; }
+
+        .year-group .year-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-main);
+            padding: 4px 0 6px 4px;
+            border-bottom: 2px solid rgba(122, 155, 181, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .year-group .year-title i { color: #7a9bb5; font-size: 0.7rem; }
+        .year-group .year-title .count {
+            font-weight: 400;
+            color: var(--text-sub);
+            margin-left: auto;
+            font-size: 0.65rem;
+            background: rgba(122, 155, 181, 0.08);
+            padding: 0 10px;
+            border-radius: 20px;
+        }
+
+        /* 歷史項目 - 更精緻 */
         .history-item {
-            background: #e8edf2;
+            background: #f5f7fa;
             border-radius: 12px;
             padding: 10px 14px;
             margin-bottom: 6px;
             transition: all 0.2s ease;
+            border: 1px solid rgba(180, 195, 210, 0.06);
         }
         .history-item:last-child { margin-bottom: 0; }
-        .history-item:hover { background: #dce3ea; }
+        .history-item:hover { background: #eef2f6; }
 
         .history-item .top-row {
             display: flex;
@@ -234,77 +234,100 @@
             flex-wrap: wrap;
             gap: 4px;
         }
-        .history-item .storm-name { font-weight: 500; font-size: 0.9rem; }
+        .history-item .storm-name { 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            color: var(--text-main);
+        }
         .history-item .detail-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            font-size: 0.7rem;
+            gap: 12px;
+            font-size: 0.65rem;
             color: var(--text-sub);
-            margin-top: 3px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(180, 195, 210, 0.2);
         }
-        .history-item .detail-row i { width: 14px; font-size: 0.65rem; color: #7a9bb5; }
+        .history-item .detail-row i { 
+            width: 14px; 
+            font-size: 0.6rem; 
+            color: #7a9bb5; 
+            margin-right: 2px;
+        }
+        .history-item .detail-row .detail-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
 
         .signal-tag {
             display: inline-block;
-            padding: 1px 10px;
+            padding: 2px 12px;
             border-radius: 20px;
             font-size: 0.65rem;
-            font-weight: 500;
+            font-weight: 600;
             color: #fff;
             flex-shrink: 0;
+            letter-spacing: 0.3px;
         }
         .signal-8 { background: #f39c12; }
         .signal-9 { background: #e67e22; }
         .signal-10 { background: #c0392b; }
-
-        .year-group .year-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-main);
-            padding: 6px 0 4px 4px;
-            border-bottom: 1px solid rgba(122, 155, 181, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .year-group .year-title .count {
-            font-weight: 400;
-            color: var(--text-sub);
-            margin-left: auto;
-            font-size: 0.7rem;
-        }
+        .signal-other { background: #7a9bb5; }
 
         /* ===== 加載狀態 ===== */
         #loading {
             text-align: center;
-            padding: 20px 0;
+            padding: 30px 0;
             color: var(--text-sub);
             font-size: 0.85rem;
         }
+        #loading i { margin-right: 8px; }
 
         /* ===== 時間標籤 ===== */
         .time-label {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-sub);
+            letter-spacing: 0.5px;
+            padding-top: 2px;
         }
 
         /* ===== 空狀態 ===== */
         .empty-state {
             text-align: center;
-            padding: 20px 0;
+            padding: 30px 0;
             color: var(--text-sub);
         }
-        .empty-state i { font-size: 2rem; color: #d0d8e0; margin-bottom: 8px; display: block; }
+        .empty-state i { 
+            font-size: 2.5rem; 
+            color: #d0d8e0; 
+            margin-bottom: 10px; 
+            display: block; 
+        }
+        .empty-state .sub-text {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
 
         /* ===== 響應式 ===== */
         @media (max-width: 450px) {
             .storm-container { padding: 18px 14px 22px; }
-            .header h2 { font-size: 1rem; }
             .history-item { padding: 8px 12px; }
-            .storm-info-card .bottom-row { flex-direction: column; align-items: flex-start; gap: 6px; }
-            .storm-info-card .bottom-row .right { text-align: left; width: 100%; }
+            .storm-info-card .bottom-row { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 6px; 
+            }
+            .storm-info-card .bottom-row .right { 
+                text-align: left; 
+                width: 100%; 
+            }
+            .history-item .detail-row { gap: 8px; font-size: 0.6rem; }
+            .history-item .storm-name { font-size: 0.85rem; }
+            .year-group .year-title { font-size: 0.7rem; }
+            .signal-tag { font-size: 0.6rem; padding: 1px 10px; }
         }
     </style>
 </head>
@@ -312,7 +335,7 @@
 
     <div class="storm-container">
 
-        <!-- ===== 🌀 風暴動畫 ===== -->
+        <!-- ===== 🌀 風暴動畫（保留） ===== -->
         <div class="storm-animation">
             <svg viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
                 <g class="spiral-ring">
@@ -334,15 +357,7 @@
             </svg>
         </div>
 
-        <!-- ===== Header ===== -->
-        <div class="header">
-            <a href="index.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h2>
-                <i class="fas fa-skull"></i> 風暴紀錄
-            </h2>
-        </div>
+        <!-- ===== Header 已隱藏 ===== -->
 
         <!-- ============================================================ -->
         <!-- 第一部分：風暴資訊（即時） -->
@@ -370,7 +385,7 @@
         <!-- ============================================================ -->
         <div class="history-card">
             <div class="history-title">
-                <i class="fas fa-archive"></i> 📜 風暴檔案（歷史紀錄）
+                <i class="fas fa-archive"></i> 📜 風暴歷史紀錄
             </div>
             <div id="historyList">
                 <div id="loading"><i class="fas fa-spinner fa-pulse"></i> 載入中...</div>
@@ -388,6 +403,9 @@
             const historyList = document.getElementById('historyList');
             const loadingEl = document.getElementById('loading');
 
+            // 信號等級排序（8號最低，10號最高）
+            const SIGNAL_ORDER = { '8': 0, '9': 1, '10': 2 };
+
             async function loadHistory() {
                 const url = 'https://raw.githubusercontent.com/SeinorCopy/Weather_Sora/refs/heads/main/hk_typhoon_history.json';
 
@@ -397,10 +415,17 @@
                     const data = await response.json();
 
                     if (!data || data.length === 0) {
-                        loadingEl.innerHTML = `<div class="empty-state"><i class="fas fa-cloud"></i> 暫時沒有風暴記錄</div>`;
+                        loadingEl.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-cloud"></i>
+                                暫時沒有風暴記錄
+                                <div class="sub-text">稍後會自動更新</div>
+                            </div>
+                        `;
                         return;
                     }
 
+                    // 按年份分組
                     const groups = {};
                     data.forEach(item => {
                         const year = item.year;
@@ -408,30 +433,42 @@
                         groups[year].push(item);
                     });
 
+                    // 年份由新到舊排序
                     const sortedYears = Object.keys(groups).sort((a, b) => b - a);
 
                     let html = '';
                     sortedYears.forEach(year => {
                         const items = groups[year];
-                        items.sort((a, b) => b.highest_signal - a.highest_signal);
+                        // 按信號等級排序（8 < 9 < 10）
+                        items.sort((a, b) => {
+                            const orderA = SIGNAL_ORDER[String(a.highest_signal)] ?? -1;
+                            const orderB = SIGNAL_ORDER[String(b.highest_signal)] ?? -1;
+                            return orderB - orderA; // 高信號排先
+                        });
 
                         let itemsHtml = '';
                         items.forEach(item => {
-                            let signalClass = '';
+                            let signalClass = 'signal-other';
+                            let signalLabel = item.highest_signal + '號';
                             if (item.highest_signal >= 10) signalClass = 'signal-10';
                             else if (item.highest_signal >= 9) signalClass = 'signal-9';
                             else if (item.highest_signal >= 8) signalClass = 'signal-8';
+
+                            // 格式化時間顯示
+                            const hoisted = item.hoisted_time || '--';
+                            const lowered = item.lowered_time || '--';
+                            const duration = item.duration || '--';
 
                             itemsHtml += `
                                 <div class="history-item">
                                     <div class="top-row">
                                         <span class="storm-name">${item.name}</span>
-                                        <span class="signal-tag ${signalClass}">${item.highest_signal}號</span>
+                                        <span class="signal-tag ${signalClass}">${signalLabel}</span>
                                     </div>
                                     <div class="detail-row">
-                                        <span><i class="fas fa-flag-checkered"></i> ${item.hoisted_time}</span>
-                                        <span><i class="fas fa-flag"></i> ${item.lowered_time}</span>
-                                        <span><i class="fas fa-clock"></i> ${item.duration}</span>
+                                        <span class="detail-item"><i class="fas fa-flag-checkered"></i> 懸掛 ${hoisted}</span>
+                                        <span class="detail-item"><i class="fas fa-flag"></i> 除下 ${lowered}</span>
+                                        <span class="detail-item"><i class="fas fa-clock"></i> ${duration}</span>
                                     </div>
                                 </div>
                             `;
@@ -456,8 +493,8 @@
                     loadingEl.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-exclamation-triangle"></i>
-                            無法載入風暴檔案<br>
-                            <span style="font-size:0.75rem; color:#8a9ba8;">請檢查網絡連線</span>
+                            無法載入風暴檔案
+                            <div class="sub-text">請檢查網絡連線後重試</div>
                         </div>
                     `;
                 }
@@ -470,7 +507,6 @@
             const stormLocationEl = document.getElementById('stormLocation');
             const stormMovementEl = document.getElementById('stormMovement');
             const stormWindEl = document.getElementById('stormWind');
-            const stormInfoCard = document.getElementById('stormInfoCard');
             const updateTimeLabel = document.getElementById('updateTimeLabel');
 
             function getWindCategory(wind) {
@@ -483,7 +519,6 @@
             }
 
             function renderNoStorm(timeStr) {
-                // 改為顯示「現時無熱帶氣旋」嘅樣式
                 stormStatusEl.textContent = '安全';
                 stormStatusEl.className = 'status-value no-storm';
                 stormLocationEl.textContent = '香港 800 公里範圍內無風暴';
@@ -498,12 +533,10 @@
                 const lat = tc.latitude || '--';
                 const lon = tc.longitude || '--';
 
-                // 更新狀態
                 stormStatusEl.textContent = category;
                 stormStatusEl.className = 'status-value';
                 stormLocationEl.textContent = `位置：北緯 ${lat}° / 東經 ${lon}°`;
 
-                // 顯示移動方向
                 if (tc.movement) {
                     stormMovementEl.style.display = 'block';
                     stormMovementEl.textContent = `移動：${tc.movement.direction} (${tc.movement.speed} km/h)`;
