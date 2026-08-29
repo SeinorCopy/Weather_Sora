@@ -600,6 +600,16 @@
     }
 
     .footer-spacer { height: 4px; }
+    
+    .weather-footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #888888; /* 柔和灰字，可依主題自行調整 */
+      margin-top: 20px;
+      padding-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+    
 
     @media (max-width: 450px) {
       .weather-card { padding: 20px 16px 24px; }
@@ -719,7 +729,10 @@
       </div>
     </div>
 
-    <div class="footer-spacer"></div>
+    // <div class="footer-spacer"></div>
+    <footer class="weather-footer">
+      氣象數據由香港天文台提供 ｜ 系統每 5 分鐘自動更新
+    </footer>
   </div>
 
 <script>
@@ -1085,6 +1098,16 @@
             }
           }
 
+          if (data.uvindex && data.uvindex.data) {
+            for (var i = 0; i < data.uvindex.data.length; i++) {
+              if (data.uvindex.data[i].place === '京士柏') {
+                uvValue = data.uvindex.data[i].value; // 取得數字（例如：2）
+                uvDesc = data.uvindex.data[i].desc;   // 取得描述（例如："低"）
+                break;
+              }
+            }
+          }
+
           if (data.humidity && data.humidity.data) {
             for (var j = 0; j < data.humidity.data.length; j++) {
               if (data.humidity.data[j].place === '香港天文台') {
@@ -1107,12 +1130,14 @@
           currentTemp = temp;
           currentHumid = humid;
           currentWind = wind;
-          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h');
-          updateWeather(currentWarning, currentTemp, currentHumid, currentWind);
+          currentUV = uvValue;
+          currentUVdesc = uvDesc;
+          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h' + '%，紫外線指數' + uvValue + ' 屬' +uvDesc);
+          updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         })
         .catch(function(error) {
           console.error('❌ 拎唔到天氣報告：', error);
-          updateWeather(currentWarning, currentTemp, currentHumid, currentWind);
+          updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         });
     }
 
