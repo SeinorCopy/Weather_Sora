@@ -743,7 +743,7 @@
 
     <div class="footer-spacer"></div>
     <footer class="weather-footer">
-      <div>系統每 5 分鐘自動更新</div>
+      <div>系統睇心情自動更新</div>
       <div>資料來源：香港天文台</div>
     </footer>
   </div>
@@ -1080,7 +1080,7 @@
       }
 
       var fullDate = formatFullDate();
-      newsTime.textContent = '🕒 ' + fullDate;
+      newsTime.textContent = '';
 
       if (uvValueEl) uvValueEl.textContent = (uvVal !== undefined && uvVal !== null) ? uvVal : '--';
       if (uvDescEl) uvDescEl.textContent = uvDescText || '';
