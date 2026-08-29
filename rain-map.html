@@ -94,7 +94,7 @@
         .map-wrapper {
             background: #eef2f6;
             border-radius: 18px;
-            padding: 12px; /* 增加內部邊距，避免地圖邊框太貼 */
+            padding: 12px;
             border: 1px solid rgba(180, 195, 210, 0.12);
             margin-bottom: 12px;
             position: relative;
@@ -222,10 +222,10 @@
             <span class="legend-item"><span class="dot rain-light"></span> 輕度</span>
             <span class="legend-item"><span class="dot rain-moderate"></span> 中度</span>
             <span class="legend-item"><span class="dot rain-heavy"></span> 重度</span>
-            <span class="legend-item"><span class="dot rain-extreme"></span> 印度</span>
+            <span class="legend-item"><span class="dot rain-extreme"></span> 極度</span>
         </div>
 
-        <!-- ===== Map (viewBox 經優化：頂部增加留白，寬高完美居中) ===== -->
+        <!-- ===== Map ===== -->
         <div class="map-wrapper">
             <svg viewBox="15 75 400 385" xmlns="http://www.w3.org/2000/svg">
                 
@@ -262,22 +262,22 @@
                 <text class="district-label" x="285" y="318">東區</text>
                 <text class="district-label" x="178" y="380">南區</text>
 
-                <text class="district-label" x="172" y="278">油尖旺</text>
-                <text class="district-label" x="142" y="268">深水埗</text>
-                <text class="district-label" x="222" y="272">九龍城</text>
-                <text class="district-label" x="270" y="268">黃大仙</text>
+                <text class="district-label" x="184" y="275">油尖旺</text>
+                <text class="district-label" x="150" y="260">深水埗</text>
+                <text class="district-label" x="222" y="268">九龍城</text>
+                <text class="district-label" x="270" y="265">黃大仙</text>
                 <text class="district-label" x="315" y="268">觀塘</text>
 
-                <text class="district-label" x="228" y="222">沙田</text>
-                <text class="district-label" x="290" y="185">大埔</text>
+                <text class="district-label" x="235" y="212">沙田</text>
+                <text class="district-label" x="295" y="180">大埔</text>
                 <text class="district-label" x="268" y="142">北區</text>
                 <text class="district-label" x="355" y="205">西貢</text>
                 <text class="district-label" x="348" y="258">將軍澳</text>
 
-                <text class="district-label" x="105" y="208">屯門</text>
+                <text class="district-label" x="105" y="200">屯門</text>
                 <text class="district-label" x="138" y="165">元朗</text>
-                <text class="district-label" x="170" y="225">荃灣</text>
-                <text class="district-label" x="195" y="252">葵青</text>
+                <text class="district-label" x="170" y="215">荃灣</text>
+                <text class="district-label" x="195" y="241">葵青</text>
                 <text class="district-label" x="78" y="370">離島</text>
 
                 <!-- 動態更新時間標籤 -->
@@ -328,9 +328,10 @@
                 '昂坪': '離島', '橫瀾島': '離島', '香港國際機場': '離島'
             };
 
-            function formatTime() {
-                const now = new Date();
-                return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            // ===== 修正：formatTime 處理 undefined =====
+            function formatTime(obsTime) {
+                if (!obsTime) return '--:--';
+                return obsTime.slice(11, 16);
             }
 
             function getRainClass(rain) {
@@ -341,7 +342,8 @@
                 return 'rain-extreme';
             }
 
-            function updateUI() {
+            // ===== 修正：updateUI 接收 obsTime 參數 =====
+            function updateUI(obsTime) {
                 let max = -1, maxName = '';
 
                 document.querySelectorAll('.district').forEach(el => {
@@ -359,7 +361,9 @@
 
                 maxRainEl.textContent = maxName || '--';
                 rainAreaEl.textContent = (max >= 0 ? max : 0) + ' mm';
-                mapTimeLabel.textContent = `— 過去一小時數據 (${formatTime()} 更新) —`;
+                
+                // ✅ 傳入 obsTime 顯示時間
+                mapTimeLabel.textContent = `— 過去一小時數據 (${formatTime(obsTime)} 更新) —`;
             }
 
             async function fetchRealRainfall() {
@@ -368,6 +372,8 @@
                     if (!response.ok) throw new Error('API Error');
 
                     const data = await response.json();
+                    
+                    // Reset 數據
                     for (const key in districtData) districtData[key] = 0;
 
                     if (data.hourlyRainfall) {
@@ -382,7 +388,9 @@
                             }
                         });
                     }
-                    updateUI();
+                    
+                    // ✅ 傳入 obsTime
+                    updateUI(data.obsTime);
                 } catch (error) {
                     useFallbackData();
                 }
@@ -396,10 +404,13 @@
                     '屯門': 25, '元朗': 48, '荃灣': 14, '葵青': 1, '離島': 20
                 };
                 Object.assign(districtData, fallbackData);
-                updateUI();
-                mapTimeLabel.textContent = `— 過去一小時數據 (${formatTime()} 模擬) —`;
+                
+                // ✅ 傳入 null，formatTime 會顯示 '--:--'
+                updateUI(null);
+                mapTimeLabel.textContent = `— 過去一小時數據 (模擬) —`;
             }
 
+            // ===== 事件監聽 =====
             document.querySelectorAll('.district').forEach(el => {
                 el.addEventListener('mouseenter', function() {
                     const name = this.dataset.district;
@@ -418,6 +429,7 @@
                 });
             });
 
+            // ===== 啟動 =====
             fetchRealRainfall();
             setInterval(fetchRealRainfall, 300000);
         })();
