@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #e8edf2;
+            --bg-color: transparent;
             --card-bg: #f5f7fa;
             --card-border: rgba(180, 195, 210, 0.2);
             --text-main: #3d525c;
@@ -28,117 +28,40 @@
         }
 
         body {
-            background: var(--bg-color);
+            background: transparent;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 16px;
+            min-height: auto;
+            padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: var(--text-main);
-            
-            /* ===== 淡入淡出轉場 ===== */
-            animation: pageFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: pageFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         @keyframes pageFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        body.page-out {
-            animation: pageFadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes pageFadeOut {
-            0% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-8px);
-            }
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .container {
-            max-width: 480px;
             width: 100%;
-            background: var(--card-bg);
-            border-radius: 28px;
-            padding: 20px 20px 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-            border: 1px solid var(--card-border);
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            border: none;
         }
 
-        /* ===== Header with Back Button ===== */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .back-btn {
-            background: #eef2f6;
-            border: 1px solid rgba(180, 195, 210, 0.15);
-            color: var(--text-main);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 1rem;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background: #dce3ea;
-            transform: scale(0.95);
-        }
-
-        .header h2 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-main);
-        }
-
-        .header h2 i {
-            color: #7a9bb5;
-        }
-
-        .update-tag {
-            font-size: 0.7rem;
-            background: #eef2f6;
-            padding: 4px 12px;
-            border-radius: 20px;
-            color: var(--text-sub);
-            border: 1px solid rgba(180, 195, 210, 0.15);
+            display: none !important;
         }
 
         /* ===== Legend ===== */
         .legend {
             display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 6px;
+            margin-bottom: 10px;
             justify-content: space-between;
             background: #eef2f6;
             padding: 8px 12px;
@@ -150,7 +73,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             color: var(--text-sub);
         }
 
@@ -171,9 +94,9 @@
         .map-wrapper {
             background: #eef2f6;
             border-radius: 18px;
-            padding: 10px;
+            padding: 4px;
             border: 1px solid rgba(180, 195, 210, 0.12);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             position: relative;
         }
 
@@ -209,13 +132,13 @@
         .rain-extreme { fill: var(--rain-extreme); }
 
         .district-label {
-            font-size: 7px;
+            font-size: 8.5px;
             fill: #3d525c;
             font-weight: 500;
             pointer-events: none;
             text-anchor: middle;
             dominant-baseline: central;
-            opacity: 0.8;
+            opacity: 0.85;
         }
 
         /* ===== Footer ===== */
@@ -228,36 +151,28 @@
         .info-card {
             background: #eef2f6;
             border: 1px solid rgba(180, 195, 210, 0.1);
-            padding: 12px 14px;
+            padding: 10px 14px;
             border-radius: 14px;
-            text-align: left;              /* ← 改左 */
+            text-align: left;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;       /* ← 改左 */
+            align-items: flex-start;
             gap: 4px;
         }
         
         .info-card .label {
-            font-size: 0.6rem;
-            font-weight: 400;                            /* ← 正常字重 */
-            letter-spacing: 0.5px;                       /* ← 靚少少 */
+            font-size: 0.65rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
             color: var(--text-sub);
-            text-transform: uppercase;                   /* ← 大階 */
+            text-transform: uppercase;
         }
         
         .info-card .value {
             font-size: 0.95rem;
-            font-weight: 400;                            /* ← 唔再粗體！ */
+            font-weight: 500;
             color: var(--text-main);
-            letter-spacing: 0.3px;                       /* ← 靚少少 */
-        }
-
-        /* ===== 加載狀態 ===== */
-        .loading-text {
-            color: var(--text-sub);
-            font-size: 0.8rem;
-            text-align: center;
-            padding: 20px 0;
+            letter-spacing: 0.3px;
         }
 
         /* ===== Tooltip ===== */
@@ -291,15 +206,6 @@
         .tooltip-val {
             color: #7a9bb5;
         }
-
-        @media (max-width: 450px) {
-            .container { padding: 16px 14px 20px; }
-            .legend { padding: 6px 10px; flex-wrap: wrap; justify-content: center; gap: 4px 10px; }
-            .legend-item { font-size: 0.6rem; }
-            .district-label { font-size: 5.5px; }
-            .info-card { padding: 8px 12px; }
-            .info-card .value { font-size: 0.85rem; }
-        }
     </style>
 </head>
 <body>
@@ -310,29 +216,18 @@
     </div>
 
     <div class="container">
-        <!-- ===== Header with Back Button ===== -->
-        <div class="header">
-            <div class="header-left">
-                <a href="index.html" class="back-btn" id="backBtn">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </a>
-                <h2><i class="fa-solid fa-cloud-rain"></i> 降雨分佈</h2>
-            </div>
-            <span class="update-tag" id="updateTime"><i class="fa-regular fa-clock"></i> 更新中...</span>
-        </div>
-
         <!-- ===== Legend ===== -->
         <div class="legend">
             <span class="legend-item"><span class="dot rain-none"></span> 無</span>
             <span class="legend-item"><span class="dot rain-light"></span> 輕度</span>
             <span class="legend-item"><span class="dot rain-moderate"></span> 中度</span>
             <span class="legend-item"><span class="dot rain-heavy"></span> 重度</span>
-            <span class="legend-item"><span class="dot rain-extreme"></span> 印度</span>
+            <span class="legend-item"><span class="dot rain-extreme"></span> 極度</span>
         </div>
 
         <!-- ===== Map ===== -->
         <div class="map-wrapper">
-            <svg viewBox="0 0 500 560" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="25 95 380 365" xmlns="http://www.w3.org/2000/svg">
                 
                 <!-- 香港島 -->
                 <path class="district" data-district="中西區" d="M130,310 L155,295 L180,290 L200,300 L205,320 L195,340 L175,348 L155,345 L138,328 Z"/>
@@ -385,7 +280,8 @@
                 <text class="district-label" x="195" y="252">葵青</text>
                 <text class="district-label" x="78" y="370">離島</text>
 
-                <text x="250" y="450" font-size="9" fill="#b0c0cc" text-anchor="middle" font-weight="300" letter-spacing="3">— 過去一小時的數據 —</text>
+                <!-- 動態更新時間標籤 -->
+                <text id="mapTimeLabel" x="215" y="445" font-size="8.5" fill="#b0c0cc" text-anchor="middle" font-weight="300" letter-spacing="1.5">— 過去一小時數據 —</text>
             </svg>
         </div>
 
@@ -396,7 +292,7 @@
                 <span class="value" id="maxRain">--</span>
             </div>
             <div class="info-card">
-                <span class="label">🌧️ 降雨量 </span>
+                <span class="label">🌧️ 降雨量</span>
                 <span class="value" id="rainArea">--</span>
             </div>
         </div>
@@ -407,222 +303,123 @@
             const tooltip = document.getElementById('tooltip');
             const ttTitle = document.getElementById('ttTitle');
             const ttVal = document.getElementById('ttVal');
-            const updateTime = document.getElementById('updateTime');
             const maxRainEl = document.getElementById('maxRain');
             const rainAreaEl = document.getElementById('rainArea');
-            const backBtn = document.getElementById('backBtn');
-            const body = document.body;
-    
-            // ===== 🌀 返回掣轉場 =====
-            backBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                body.classList.add('page-out');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 300);
-            });
-    
-            // ===== 🗺️ 各區雨量數據 =====
+            const mapTimeLabel = document.getElementById('mapTimeLabel');
+
             const districtData = {
                 '中西區': 0, '灣仔': 0, '東區': 0, '南區': 0,
                 '油尖旺': 0, '深水埗': 0, '九龍城': 0, '黃大仙': 0, '觀塘': 0,
-                '沙田': 0, '大埔': 0, '北區': 0, '西貢': 0,
-                '將軍澳': 0,
+                '沙田': 0, '大埔': 0, '北區': 0, '西貢': 0, '將軍澳': 0,
                 '屯門': 0, '元朗': 0, '荃灣': 0, '葵青': 0, '離島': 0
             };
-    
-            // ===== 站名 → 區名 Mapping（用最大雨量代表該區）=====
+
             const stationToDistrict = {
-                // 香港島
-                '香港天文台': '中西區',
-                '山頂': '中西區',
-                '馬己仙峽': '中西區',
-                '跑馬地': '灣仔',
-                '筲箕灣': '東區',
-                '赤柱': '南區',
-                '黃竹坑': '南區',
-    
-                // 九龍
-                '京士柏': '油尖旺',
-                '深水埗': '深水埗',
-                '啟德': '九龍城',
-                '新蒲崗': '黃大仙',
-                '廣播道': '黃大仙',
-                '觀塘': '觀塘',
-    
-                // 新界東
-                '沙田': '沙田',
-                '大埔墟': '大埔',
-                '大美督': '大埔',
-                '打鼓嶺': '北區',
-                '上水': '北區',
-                '西貢': '西貢',
-                '北潭涌': '西貢',
-                '清水灣': '西貢',
-                '將軍澳': '將軍澳',
-    
-                // 新界西
-                '屯門': '屯門',
-                '流浮山': '元朗',
-                '石崗': '元朗',
-                '水邊圍': '元朗',
-                '濕地公園': '元朗',
-                '荃灣可觀': '荃灣',
-                '長青': '葵青',
-    
-                // 離島
-                '長洲': '離島',
-                '坪洲': '離島',
-                '昂坪': '離島',
-                '橫瀾島': '離島',
-                '香港國際機場': '離島'
+                '香港天文台': '中西區', '山頂': '中西區', '馬己仙峽': '中西區',
+                '跑馬地': '灣仔', '筲箕灣': '東區', '赤柱': '南區', '黃竹坑': '南區',
+                '京士柏': '油尖旺', '深水埗': '深水埗', '啟德': '九龍城',
+                '新蒲崗': '黃大仙', '廣播道': '黃大仙', '觀塘': '觀塘',
+                '沙田': '沙田', '大埔墟': '大埔', '大美督': '大埔',
+                '打鼓嶺': '北區', '上水': '北區', '西貢': '西貢',
+                '北潭涌': '西貢', '清水灣': '西貢', '將軍澳': '將軍澳',
+                '屯門': '屯門', '流浮山': '元朗', '石崗': '元朗',
+                '水邊圍': '元朗', '濕地公園': '元朗', '荃灣可觀': '荃灣',
+                '長青': '葵青', '長洲': '離島', '坪洲': '離島',
+                '昂坪': '離島', '橫瀾島': '離島', '香港國際機場': '離島'
             };
-    
-            let isLoading = true;
-            let loadAttempts = 0;
-            const MAX_ATTEMPTS = 3;
-    
+
             function formatTime() {
                 const now = new Date();
                 return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
             }
-    
+
             function getRainClass(rain) {
-                if (rain === 0 || rain === null || rain === undefined) return 'rain-none';
+                if (!rain || rain === 0) return 'rain-none';
                 if (rain < 5) return 'rain-light';
                 if (rain < 20) return 'rain-moderate';
                 if (rain < 50) return 'rain-heavy';
                 return 'rain-extreme';
             }
-    
+
             function updateUI() {
-                let max = -1, maxName = '', rainCount = 0;
-    
+                let max = -1, maxName = '';
+
                 document.querySelectorAll('.district').forEach(el => {
                     const name = el.dataset.district;
                     const rain = districtData[name] || 0;
-    
+
                     el.classList.remove('rain-none', 'rain-light', 'rain-moderate', 'rain-heavy', 'rain-extreme');
                     el.classList.add(getRainClass(rain));
-    
+
                     if (rain > max) {
                         max = rain;
                         maxName = name;
                     }
-                    if (rain > 0) rainCount++;
                 });
-    
-                maxRainEl.textContent = maxName;
-                rainAreaEl.textContent =  max + ' mm';      //🌧️ 降雨量 (rainCount = 區）
-                updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + formatTime();
+
+                maxRainEl.textContent = maxName || '--';
+                rainAreaEl.textContent = (max >= 0 ? max : 0) + ' mm';
+                mapTimeLabel.textContent = `— 過去一小時數據 (${formatTime()} 更新) —`;
             }
-    
-            // ===== 🔥 從天文台 API 獲取真實雨量數據 =====
+
             async function fetchRealRainfall() {
                 try {
-                    const apiUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc';
+                    const response = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc');
+                    if (!response.ok) throw new Error('API Error');
 
-                    const response = await fetch(apiUrl);
-    
-                    if (!response.ok) {
-                        throw new Error('HTTP error! status: ' + response.status);
-                    }
-    
                     const data = await response.json();
-    
-                    // 先清空
-                    for (const key in districtData) {
-                        districtData[key] = 0;
-                    }
-    
-                    if (data.hourlyRainfall && data.hourlyRainfall.length > 0) {
+                    for (const key in districtData) districtData[key] = 0;
+
+                    if (data.hourlyRainfall) {
                         data.hourlyRainfall.forEach(station => {
-                            const stationName = station.automaticWeatherStation;
-                            const district = stationToDistrict[stationName];
-    
+                            const district = stationToDistrict[station.automaticWeatherStation];
                             if (district) {
                                 let val = parseFloat(station.value);
                                 if (isNaN(val) || station.value === 'M') val = 0;
-    
-                                // 同一區有多個站時，取最大雨量
                                 if (val > districtData[district]) {
                                     districtData[district] = Math.round(val * 10) / 10;
                                 }
                             }
                         });
                     }
-    
                     updateUI();
-                    isLoading = false;
-                    console.log('✅ 雨量數據更新成功！', districtData);
-                    return true;
-    
                 } catch (error) {
-                    console.error('❌ 拎唔到雨量數據：', error);
-                    loadAttempts++;
-    
-                    if (loadAttempts < MAX_ATTEMPTS) {
-                        console.log('🔄 重試中... (' + loadAttempts + '/' + MAX_ATTEMPTS + ')');
-                        setTimeout(fetchRealRainfall, 3000);
-                    } else {
-                        console.log('⚠️ 使用模擬數據（API 無法連接）');
-                        useFallbackData();
-                        updateUI();
-                    }
-                    return false;
+                    useFallbackData();
                 }
             }
-    
-            // ===== 🆘 Fallback 模擬數據 =====
+
             function useFallbackData() {
                 const fallbackData = {
                     '中西區': 45, '灣仔': 22, '東區': 8, '南區': 0,
                     '油尖旺': 18, '深水埗': 38, '九龍城': 12, '黃大仙': 2, '觀塘': 9,
-                    '沙田': 42, '大埔': 28, '北區': 68, '西貢': 6,
-                    '將軍澳': 35,
+                    '沙田': 42, '大埔': 28, '北區': 68, '西貢': 6, '將軍澳': 35,
                     '屯門': 25, '元朗': 48, '荃灣': 14, '葵青': 1, '離島': 20
                 };
-    
-                for (const key in districtData) {
-                    if (fallbackData[key] !== undefined) {
-                        districtData[key] = fallbackData[key];
-                    }
-                }
-                updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> ' + formatTime() + ' (模擬數據)';
+                Object.assign(districtData, fallbackData);
+                updateUI();
+                mapTimeLabel.textContent = `— 過去一小時數據 (${formatTime()} 模擬) —`;
             }
-    
-            // ===== 🖱️ 地圖互動事件 =====
+
             document.querySelectorAll('.district').forEach(el => {
-                el.addEventListener('mouseenter', function(e) {
+                el.addEventListener('mouseenter', function() {
                     const name = this.dataset.district;
-                    const rain = districtData[name] || 0;
                     ttTitle.textContent = name;
-                    ttVal.textContent = '雨量：' + rain + ' mm';
+                    ttVal.textContent = '雨量：' + (districtData[name] || 0) + ' mm';
                     tooltip.classList.add('show');
                 });
                 el.addEventListener('mousemove', function(e) {
                     tooltip.style.left = (e.clientX + 14) + 'px';
                     tooltip.style.top = (e.clientY - 12) + 'px';
                 });
-                el.addEventListener('mouseleave', function() {
-                    tooltip.classList.remove('show');
-                });
+                el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
                 el.addEventListener('click', function() {
                     document.querySelectorAll('.district').forEach(d => d.classList.remove('active'));
                     this.classList.add('active');
                 });
             });
-    
-            // ===== 🚀 初始化 =====
-            function init() {
-                updateTime.innerHTML = '<i class="fa-regular fa-clock"></i> 載入中...';
-                fetchRealRainfall();
-                setInterval(fetchRealRainfall, 300000); // 每 5 分鐘更新
-            }
-    
-            init();
-            console.log('🌧️ SORA HK 降雨分佈圖已載入 (Fixed 版)');
-            console.log('📡 數據來源：香港天文台 hourlyRainfall API');
+
+            fetchRealRainfall();
+            setInterval(fetchRealRainfall, 300000);
         })();
     </script>
 </body>
