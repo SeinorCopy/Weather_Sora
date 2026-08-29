@@ -17,6 +17,7 @@
   <meta property="og:type" content="website">
 
   <style>
+    /* ===== 所有原有 style 保持不變 ===== */
     * {
       margin: 0;
       padding: 0;
@@ -32,20 +33,12 @@
       align-items: center;
       padding: 16px;
       transition: background 0.5s ease;
-      
-      /* ===== 淡入淡出轉場 ===== */
       animation: pageFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
     @keyframes pageFadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     body.page-out {
@@ -53,23 +46,12 @@
     }
 
     @keyframes pageFadeOut {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-8px); }
     }
 
-    body.rainy-bg {
-      background: #2c3e50;
-    }
-
-    body.typhoon-bg {
-      background: #2c3e50;
-    }
+    body.rainy-bg { background: #2c3e50; }
+    body.typhoon-bg { background: #2c3e50; }
 
     .weather-card {
       max-width: 480px;
@@ -99,10 +81,7 @@
       opacity: 0;
       transition: opacity 1s ease;
     }
-
-    .rain-container.active {
-      opacity: 1;
-    }
+    .rain-container.active { opacity: 1; }
 
     .rain-drop {
       position: absolute;
@@ -114,14 +93,8 @@
     }
 
     @keyframes rainFall {
-      0% {
-        transform: translateY(-20px) rotate(10deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(110vh) rotate(10deg);
-        opacity: 0.2;
-      }
+      0% { transform: translateY(-20px) rotate(10deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(10deg); opacity: 0.2; }
     }
 
     /* ===== 🌬️ 打風動畫 ===== */
@@ -137,10 +110,7 @@
       transition: opacity 1.5s ease;
       overflow: hidden;
     }
-
-    .typhoon-overlay.active {
-      opacity: 1;
-    }
+    .typhoon-overlay.active { opacity: 1; }
 
     .wind-line {
       position: absolute;
@@ -151,20 +121,10 @@
     }
 
     @keyframes windBlow {
-      0% {
-        transform: translateX(-200px) scaleX(0.5);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      80% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(calc(100vw + 200px)) scaleX(1.5);
-        opacity: 0;
-      }
+      0% { transform: translateX(-200px) scaleX(0.5); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateX(calc(100vw + 200px)) scaleX(1.5); opacity: 0; }
     }
 
     .typhoon-spiral {
@@ -178,19 +138,8 @@
       animation: spiralRotate 20s linear infinite;
       transform: translate(-50%, -50%);
     }
-
-    .typhoon-spiral:nth-child(2) {
-      width: 450px;
-      height: 450px;
-      animation-duration: 30s;
-      animation-direction: reverse;
-    }
-
-    .typhoon-spiral:nth-child(3) {
-      width: 600px;
-      height: 600px;
-      animation-duration: 40s;
-    }
+    .typhoon-spiral:nth-child(2) { width: 450px; height: 450px; animation-duration: 30s; animation-direction: reverse; }
+    .typhoon-spiral:nth-child(3) { width: 600px; height: 600px; animation-duration: 40s; }
 
     @keyframes spiralRotate {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
@@ -210,10 +159,7 @@
       90% { transform: rotate(0.1deg) translateX(0); }
     }
 
-    .hero-image.shake {
-      animation: shake 0.8s ease-in-out infinite;
-    }
-
+    .hero-image.shake { animation: shake 0.8s ease-in-out infinite; }
     .hero-image img {
       transition: opacity 0.8s ease, transform 0.8s ease;
       width: 100%;
@@ -249,7 +195,6 @@
       align-items: center;
       justify-content: center;
     }
-
     .warning-badge-icon img {
       width: 100%;
       height: 100%;
@@ -262,7 +207,6 @@
       color: #3d525c;
       letter-spacing: 0.3px;
     }
-
     .warning-badge-temp .temp-unit {
       font-size: 0.7rem;
       font-weight: 400;
@@ -287,11 +231,7 @@
       color: #096a99;
       font-family: 'Montserrat', sans-serif;
     }
-    
-    .city-name i {
-      color: #7a9bb5;
-      font-size: 1.1rem;
-    }
+    .city-name i { color: #7a9bb5; font-size: 1.1rem; }
     
     /* ===== 🌪️ 風暴檔案按鈕 ===== */
     .storm-archive-btn {
@@ -314,6 +254,8 @@
       flex-shrink: 0;
       margin-left: 12px;
       letter-spacing: 0.3px;
+      cursor: pointer;
+      border: none;
     }
     
     .storm-archive-btn i {
@@ -321,10 +263,7 @@
       font-size: 0.85rem;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    .storm-archive-btn .fa-skull {
-      animation: skullFloat 3s ease-in-out infinite;
-    }
+    .storm-archive-btn .fa-skull { animation: skullFloat 3s ease-in-out infinite; }
     
     @keyframes skullFloat {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -337,16 +276,12 @@
       transform: translateY(-2px) scale(1.03);
       box-shadow: 0 8px 25px rgba(122, 155, 181, 0.1);
     }
-    
     .storm-archive-btn:hover i {
       color: #5a7a8a;
       transform: rotate(-8deg) scale(1.15);
       animation: none;
     }
-    
-    .storm-archive-btn:active {
-      transform: scale(0.95);
-    }
+    .storm-archive-btn:active { transform: scale(0.95); }
 
     .hero-image {
       width: 100%;
@@ -359,7 +294,7 @@
       position: relative;
     }
 
-    /* ===== 🌧️ 降雨分佈按鈕 (長期顯示) ===== */
+    /* ===== 🌧️ 降雨分佈按鈕 ===== */
     .rain-btn-wrapper {
       text-align: center;
       margin: 2px 0 14px;
@@ -397,26 +332,11 @@
       transform: translateY(-2px) scale(1.02);
       border-color: rgba(56, 189, 248, 0.3);
     }
+    .rain-btn:active { transform: scale(0.96); }
+    .rain-btn i { font-size: 1rem; }
 
-    .rain-btn:active {
-      transform: scale(0.96);
-    }
-
-    .rain-btn i {
-      font-size: 1rem;
-    }
-
-    .rain-btn .btn-icon {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .rain-btn .raindrop {
-      display: inline-block;
-      animation: dropFloat 1.8s ease-in-out infinite;
-    }
-
+    .rain-btn .btn-icon { display: flex; align-items: center; gap: 4px; }
+    .rain-btn .raindrop { display: inline-block; animation: dropFloat 1.8s ease-in-out infinite; }
     .rain-btn .raindrop:nth-child(2) { animation-delay: 0.3s; }
     .rain-btn .raindrop:nth-child(3) { animation-delay: 0.6s; }
 
@@ -425,13 +345,8 @@
       50% { transform: translateY(-4px) scale(1.1); opacity: 0.7; }
     }
 
-    .rain-btn .btn-arrow {
-      transition: transform 0.3s ease;
-    }
-
-    .rain-btn:hover .btn-arrow {
-      transform: translateX(4px);
-    }
+    .rain-btn .btn-arrow { transition: transform 0.3s ease; }
+    .rain-btn:hover .btn-arrow { transform: translateX(4px); }
 
     /* ===== ⭐ 特別天氣提示 ===== */
     #specialTipContainer {
@@ -444,13 +359,11 @@
       color: #3d525c;
       transition: all 0.3s ease;
     }
-
     #specialTipContainer .tip-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
     #specialTipContainer .tip-label { font-weight: 500; }
     #specialTipContainer .tip-time { font-size: 0.65rem; color: #8a9ba8; }
     #specialTipContainer .tip-body { margin-top: 4px; line-height: 1.5; }
@@ -630,6 +543,83 @@
       letter-spacing: 0.5px;
     }
 
+    /* ===== Modal 共用樣式 ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 480px;
+      height: 90vh;
+      background: #f5f7fa;
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: #eef2f6;
+      border-bottom: 1px solid rgba(180, 195, 210, 0.2);
+      flex-shrink: 0;
+    }
+
+    .modal-header .modal-title {
+      font-weight: 500;
+      color: #3d525c;
+      font-size: 0.95rem;
+    }
+
+    .modal-header .modal-title i {
+      color: #7a9bb5;
+      margin-right: 6px;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #8a9ba8;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close-btn:hover {
+      color: #3d525c;
+      transform: scale(1.1);
+    }
+
+    .modal-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      flex: 1;
+    }
+
     @media (max-width: 450px) {
       .weather-card { padding: 20px 16px 24px; }
       .city-name { font-size: 1rem; }
@@ -642,6 +632,9 @@
       .rain-btn { padding: 8px 16px; font-size: 0.8rem; }
       .storm-archive-btn { font-size: 0.7rem; padding: 6px 12px 6px 10px; gap: 5px; margin-left: 8px; }
       .storm-archive-btn i { font-size: 0.75rem; }
+      .modal-box { height: 92vh; border-radius: 20px; }
+      .modal-header { padding: 12px 16px; }
+      .modal-header .modal-title { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -679,16 +672,16 @@
         <i class="fas fa-location-dot"></i>
         <span id="cityDisplay">SORA HK</span>
       </div>
-      <a href="typhoon-history.html" class="storm-archive-btn">
+      <button class="storm-archive-btn" id="stormArchiveBtn">
         <i class="fas fa-skull"></i> 風暴檔案
-      </a>
+      </button>
     </div>
 
     <div class="hero-image" id="heroImage">
       <img src="sora_bird_normal.jpeg" alt="SORA 鳥兒天氣" id="heroImageSrc">
     </div>
 
-    <!-- ===== 🌧️ 降雨分佈按鈕 (長期顯示) ===== -->
+    <!-- ===== 🌧️ 降雨分佈按鈕 ===== -->
     <div class="rain-btn-wrapper">
       <button class="rain-btn" id="rainBtn">
         <span class="btn-icon">
@@ -722,7 +715,6 @@
     </div>
 
     <div class="extra-grid">
-      <!-- 1. 紫外線區塊 -->
       <div class="extra-item">
         <i class="fas fa-sun"></i>
         <span class="label">紫外線指數</span>
@@ -731,7 +723,6 @@
           <span class="unit" id="uvDesc">--</span>
         </div>
       </div>
-      <!-- 2. 濕度區塊 -->
       <div class="extra-item">
         <i class="fas fa-droplet"></i>
         <span class="label">濕度</span>
@@ -740,7 +731,6 @@
           <span class="unit">%</span>
         </div>
       </div>
-      <!-- 3. 風速區塊 -->
       <div class="extra-item">
         <i class="fas fa-wind"></i>
         <span class="label">風速(維修)</span>
@@ -758,20 +748,27 @@
     </footer>
   </div>
 
-      <!-- 降雨地圖 Modal 視窗 -->
-    <div id="rainModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; justify-content: center; align-items: center; padding: 16px;">
-        <div style="width: 100%; max-width: 480px; height: 90vh; background: #f5f7fa; border-radius: 28px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column;">
-            <!-- 頂部關閉列 -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: #eef2f6; border-bottom: 1px solid rgba(180, 195, 210, 0.2);">
-                <span style="font-weight: 500; color: #3d525c; font-size: 0.95rem;"><i class="fa-solid fa-cloud-rain" style="color: #7a9bb5; margin-right: 6px;"></i> 即時降雨分佈</span>
-                <button id="closeRainModal" style="background: none; border: none; font-size: 1.2rem; color: #8a9ba8; cursor: pointer;">&times;</button>
-            </div>
-            <!-- 地圖內容 -->
-            <iframe src="rain-map.html" style="width: 100%; height: 100%; border: none;"></iframe>
-        </div>
+  <!-- ===== 🌧️ 降雨地圖 Modal ===== -->
+  <div class="modal-overlay" id="rainModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fa-solid fa-cloud-rain"></i> 即時降雨分佈</span>
+        <button class="modal-close-btn" id="closeRainModal">&times;</button>
+      </div>
+      <iframe class="modal-iframe" src="rain-map.html"></iframe>
     </div>
+  </div>
 
-  
+  <!-- ===== 🌀 風暴檔案 Modal ===== -->
+  <div class="modal-overlay" id="stormModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-skull"></i> 風暴檔案</span>
+        <button class="modal-close-btn" id="closeStormModal">&times;</button>
+      </div>
+      <iframe class="modal-iframe" src="typhoon-history.html"></iframe>
+    </div>
+  </div>
 
 <script>
   (function() {
@@ -799,6 +796,41 @@
     var specialTipTime = document.getElementById('specialTipTime');
     var rainBtn = document.getElementById('rainBtn');
 
+    // ===== Modal 控制 =====
+    var rainModal = document.getElementById('rainModal');
+    var stormModal = document.getElementById('stormModal');
+    var closeRainModal = document.getElementById('closeRainModal');
+    var closeStormModal = document.getElementById('closeStormModal');
+    var stormArchiveBtn = document.getElementById('stormArchiveBtn');
+
+    // 開關 Rain Modal
+    rainBtn.addEventListener('click', function() {
+      rainModal.classList.add('active');
+    });
+    closeRainModal.addEventListener('click', function() {
+      rainModal.classList.remove('active');
+    });
+
+    // 開關 Storm Modal
+    stormArchiveBtn.addEventListener('click', function() {
+      stormModal.classList.add('active');
+    });
+    closeStormModal.addEventListener('click', function() {
+      stormModal.classList.remove('active');
+    });
+
+    // 點擊背景關閉
+    rainModal.addEventListener('click', function(e) {
+      if (e.target === rainModal) {
+        rainModal.classList.remove('active');
+      }
+    });
+    stormModal.addEventListener('click', function(e) {
+      if (e.target === stormModal) {
+        stormModal.classList.remove('active');
+      }
+    });
+
     // ===== 真實數據變數 =====
     var currentTemp = 0;
     var currentHumid = 0;
@@ -806,26 +838,6 @@
     var currentUV = '--';
     var currentUVdesc = '';
     var currentWarning = '晴朗';
-
-    // ===== 🌀 轉場：撳掣去 rain-map ===== 
-    // ===== 🌀 撳掣去 rain-map Modal 彈出邏輯 ===== 20260829
-    var rainModal = document.getElementById('rainModal');
-    var closeRainModal = document.getElementById('closeRainModal');
-    
-    rainBtn.addEventListener('click', function() {
-      rainModal.style.display = 'flex';
-    });
-    
-    closeRainModal.addEventListener('click', function() {
-      rainModal.style.display = 'none';
-    });
-    
-    // 點擊背景遮罩關閉
-    rainModal.addEventListener('click', function(e) {
-      if (e.target === rainModal) {
-        rainModal.style.display = 'none';
-      }
-    });
 
     // ===== helpers =====
     function formatTime() {
@@ -1070,7 +1082,6 @@
       var fullDate = formatFullDate();
       newsTime.textContent = '🕒 ' + fullDate;
 
-      // 更新紫外線數據
       if (uvValueEl) uvValueEl.textContent = (uvVal !== undefined && uvVal !== null) ? uvVal : '--';
       if (uvDescEl) uvDescEl.textContent = uvDescText || '';
 
@@ -1079,7 +1090,6 @@
       updateTimestamp();
     }
 
-    // 將 warnsum 嘅 code 轉成中文 key
     function mapWarningCode(code) {
       if (!code) return null;
       code = code.toUpperCase();
@@ -1135,7 +1145,7 @@
         });
     }
 
-    // ===== 2. 拎天氣報告（溫度、濕度、風速、紫外線） =====
+    // ===== 2. 拎天氣報告 =====
     function fetchWeatherReport() {
       var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc';
 
@@ -1151,7 +1161,6 @@
           var uvVal = '--';
           var uvDescText = '';
 
-          // 擷取溫度
           if (data.temperature && data.temperature.data) {
             for (var i = 0; i < data.temperature.data.length; i++) {
               if (data.temperature.data[i].place === '香港天文台') {
@@ -1161,7 +1170,6 @@
             }
           }
 
-          // 擷取紫外線數據
           if (data.uvindex && data.uvindex.data && data.uvindex.data.length > 0) {
             for (var u = 0; u < data.uvindex.data.length; u++) {
               var uvData = data.uvindex.data[u];
@@ -1172,12 +1180,10 @@
               }
             }
           } else {
-            // 晚上或天文台未提供紫外線指數時
             uvVal = '0';
             uvDescText = '低';
           }
 
-          // 擷取濕度
           if (data.humidity && data.humidity.data) {
             for (var j = 0; j < data.humidity.data.length; j++) {
               if (data.humidity.data[j].place === '香港天文台') {
@@ -1187,7 +1193,6 @@
             }
           }
 
-          // 擷取風速（搜尋「啟德」或「香港天文台」）
           if (data.windSpeed && data.windSpeed.data) {
             for (var k = 0; k < data.windSpeed.data.length; k++) {
               if (data.windSpeed.data[k].place === '啟德' || data.windSpeed.data[k].place === '香港天文台') {
@@ -1213,51 +1218,50 @@
     }
 
     // ===== 3. 拎特別天氣提示 =====
-    // ===== 3. 拎特別天氣提示（讀取全部提示） =====
-        function fetchSpecialWeatherTips() {
-          var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
-    
-          fetch(url)
-            .then(function(response) {
-              if (!response.ok) throw new Error('HTTP error: ' + response.status);
-              return response.json();
-            })
-            .then(function(data) {
-              var container = document.getElementById('specialTipContainer');
-    
-              if (data.swt && data.swt.length > 0) {
-                var headerHtml = '<div class="tip-header" style="margin-bottom: 8px;"><span class="tip-label">📢 特別天氣提示</span></div>';
-    
-                var tipsListHtml = data.swt.map(function(item) {
-                  var formattedTime = item.updateTime ? item.updateTime.replace('T', ' ').slice(0, 16) : '--:--';
-                  return '<div class="tip-block">' +
-                           '<div class="tip-body" style="line-height: 1.5;">' + item.desc + '</div>' +
-                           '<div class="tip-time" style="font-size: 0.65rem; color: #8a9ba8; text-align: right; margin-top: 4px;">🕒 ' + formattedTime + '</div>' +
-                         '</div>';
-                }).join('<hr style="border: 0; border-top: 1px dashed rgba(122, 155, 181, 0.35); margin: 10px 0;">');
-    
-                container.innerHTML = headerHtml + tipsListHtml;
-                console.log('✅ 特別天氣提示已更新，共 ' + data.swt.length + ' 條');
-              } else {
-                container.innerHTML = 
-                  '<div class="tip-header">' +
-                    '<span class="tip-label">📢 特別天氣提示</span>' +
-                    '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
-                  '</div>' +
-                  '<div class="tip-body" style="margin-top: 4px;">目前沒有特別天氣提示</div>';
-              }
-            })
-            .catch(function(error) {
-              console.error('❌ 拎唔到特別天氣提示：', error);
-              var container = document.getElementById('specialTipContainer');
-              container.innerHTML = 
-                '<div class="tip-header">' +
-                  '<span class="tip-label">📢 特別天氣提示</span>' +
-                  '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
-                '</div>' +
-                '<div class="tip-body" style="margin-top: 4px;">⚠️ 無法載入天氣提示</div>';
-            });
-        }
+    function fetchSpecialWeatherTips() {
+      var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
+
+      fetch(url)
+        .then(function(response) {
+          if (!response.ok) throw new Error('HTTP error: ' + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          var container = document.getElementById('specialTipContainer');
+
+          if (data.swt && data.swt.length > 0) {
+            var headerHtml = '<div class="tip-header" style="margin-bottom: 8px;"><span class="tip-label">📢 特別天氣提示</span></div>';
+
+            var tipsListHtml = data.swt.map(function(item) {
+              var formattedTime = item.updateTime ? item.updateTime.replace('T', ' ').slice(0, 16) : '--:--';
+              return '<div class="tip-block">' +
+                       '<div class="tip-body" style="line-height: 1.5;">' + item.desc + '</div>' +
+                       '<div class="tip-time" style="font-size: 0.65rem; color: #8a9ba8; text-align: right; margin-top: 4px;">🕒 ' + formattedTime + '</div>' +
+                     '</div>';
+            }).join('<hr style="border: 0; border-top: 1px dashed rgba(122, 155, 181, 0.35); margin: 10px 0;">');
+
+            container.innerHTML = headerHtml + tipsListHtml;
+            console.log('✅ 特別天氣提示已更新，共 ' + data.swt.length + ' 條');
+          } else {
+            container.innerHTML = 
+              '<div class="tip-header">' +
+                '<span class="tip-label">📢 特別天氣提示</span>' +
+                '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
+              '</div>' +
+              '<div class="tip-body" style="margin-top: 4px;">目前沒有特別天氣提示</div>';
+          }
+        })
+        .catch(function(error) {
+          console.error('❌ 拎唔到特別天氣提示：', error);
+          var container = document.getElementById('specialTipContainer');
+          container.innerHTML = 
+            '<div class="tip-header">' +
+              '<span class="tip-label">📢 特別天氣提示</span>' +
+              '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
+            '</div>' +
+            '<div class="tip-body" style="margin-top: 4px;">⚠️ 無法載入天氣提示</div>';
+        });
+    }
 
     // ===== 4. 全部更新 =====
     function refreshAllData() {
@@ -1275,7 +1279,7 @@
     createWindLines();
     window.addEventListener('load', function() {
       refreshAllData();
-      setInterval(refreshAllData, 300000); // 每 5 分鐘更新一次
+      setInterval(refreshAllData, 300000);
       console.log('🌧️ SORA HK Production 版已啟動（直接 API）');
       console.log('📡 數據來源：香港天文台 Open Data API');
     });
