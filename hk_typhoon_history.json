@@ -1,5 +1,13 @@
 [
-    {
+  {
+    "year": 2026,
+    "name": "準備中 (Are you Ready?)",
+    "highest_signal": 10,
+    "hoisted_time": "2026-00-00 00:00",
+    "lowered_time": "2026-00-00 00:00",
+    "duration": "24小時00分鐘"
+  },
+  {
     "year": 2025,
     "name": "樺加沙 (Ragasa)",
     "highest_signal": 9,
@@ -7,7 +15,7 @@
     "lowered_time": "2025-09-24 10:20",
     "duration": "20小時00分鐘"
   },
-   {
+  {
     "year": 2025,
     "name": "塔巴 (Tapah)",
     "highest_signal": 8,
@@ -102,5 +110,5 @@
     "hoisted_time": "2021-10-09 06:40",
     "lowered_time": "2021-10-10 04:40",
     "duration": "22小時00分鐘"
-  },
+  }
 ]
