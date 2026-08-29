@@ -47,14 +47,14 @@
             border: none;
         }
 
-        /* ===== Legend - 無框貼頂 ===== */
+        /* ===== Legend - 置中 ===== */
         .legend {
             display: flex;
-            gap: 6px;
-            margin: 0 0 8px 0;
-            justify-content: space-between;
+            gap: 12px;
+            margin: 0 0 10px 0;
+            justify-content: center;
             background: transparent;
-            padding: 4px 0;
+            padding: 6px 0;
             border-radius: 0;
             border: none;
         }
@@ -139,18 +139,19 @@
             gap: 8px;
         }
         
+
         .info-card {
             background: #eef2f6;
             border: 1px solid rgba(180, 195, 210, 0.12);
             padding: 8px 12px;
             border-radius: 14px;
-            text-align: left;
+            text-align: center;          /* ← 加埋呢句 */
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;         /* ← flex-start 改做 center */
             gap: 2px;
         }
-        
+                
         .info-card .label {
             font-size: 0.6rem;
             font-weight: 400;
@@ -197,11 +198,6 @@
         .tooltip-val {
             color: #7a9bb5;
         }
-
-        /* ===== 修正極度標籤 ===== */
-        .legend-item:last-child .dot.rain-extreme {
-            background: var(--rain-extreme);
-        }
     </style>
 </head>
 <body>
@@ -212,7 +208,7 @@
     </div>
 
     <div class="container">
-        <!-- ===== Legend - 無框貼頂 ===== -->
+        <!-- ===== Legend - 置中 ===== -->
         <div class="legend">
             <span class="legend-item"><span class="dot rain-none"></span> 無</span>
             <span class="legend-item"><span class="dot rain-light"></span> 輕度</span>
