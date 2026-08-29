@@ -9,6 +9,7 @@
   <link rel="icon" type="image/jpeg" href="favicon.jpeg">
   <link rel="apple-touch-icon" href="apple-touch-icon.jpeg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@100;400;700&display=swap" rel="stylesheet">
 
   <meta property="og:title" content="SORA HK · 天文台預警">
   <meta property="og:description" content="香港天文台惡劣天氣警告即時監測">
@@ -280,10 +281,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 1.6rem;
-      font-weight: 500;
+      font-size: 1rem;
+      font-weight: 700; /* 👈 建議改為 400 或 700 */
       letter-spacing: 0.5px;
-      color: #3d525c;
+      color: #096a99;
+      font-family: 'Montserrat', sans-serif; /* 👈 改為 sans-serif */
     }
     
     .city-name i {
@@ -603,10 +605,10 @@
     
     .weather-footer {
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.6rem;
       color: #888888; /* 柔和灰字，可依主題自行調整 */
-      margin-top: 20px;
-      padding-bottom: 15px;
+      margin-top: 30px;
+      padding-bottom: 5px;
       letter-spacing: 0.5px;
     }
     
@@ -729,9 +731,10 @@
       </div>
     </div>
 
-    // <div class="footer-spacer"></div>
+    <div class="footer-spacer"></div>
     <footer class="weather-footer">
-      氣象數據由香港天文台提供 ｜ 系統每 5 分鐘自動更新
+      <div>系統每 5 分鐘自動更新</div>
+      <div>資料來源：香港天文台</div>
     </footer>
   </div>
 
