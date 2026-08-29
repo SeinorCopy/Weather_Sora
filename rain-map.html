@@ -27,44 +27,17 @@
             padding: 16px;
         }
 
-        /* 彈窗主體容器 */
         .modal-container {
             max-width: 420px;
             margin: 0 auto;
             background: var(--bg-canvas);
             border-radius: 24px;
-            padding: 16px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        /* 頂部 Header */
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 8px;
-        }
-
-        .modal-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-main);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--text-sub);
-            cursor: pointer;
-        }
-
-        /* 風暴風格通用白底卡片 */
         .card-box {
             background: var(--bg-card);
             border-radius: 18px;
@@ -73,7 +46,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
-        /* 1. 當前雨勢概況卡片 */
+        /* 1. 當前雨勢概況 */
         .status-card {
             display: flex;
             justify-content: space-between;
@@ -113,7 +86,7 @@
             margin-top: 4px;
         }
 
-        /* 2. 圖例欄 (Pill 樣式) */
+        /* 2. 圖例欄 */
         .legend-row {
             display: flex;
             justify-content: center;
@@ -130,25 +103,36 @@
 
         .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* 3. 地圖區域卡片 */
+        /* 地圖區域 */
         .map-card {
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
         }
 
-        .map-placeholder {
+        .svg-container {
             width: 100%;
-            height: 200px;
+            height: auto;
             background: #f8fafc;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-sub);
-            font-size: 0.85rem;
-            border: 1px dashed var(--border-card);
+            border-radius: 16px;
+            padding: 12px;
+        }
+
+        .district-poly {
+            fill: #e2e8f0;
+            stroke: #ffffff;
+            stroke-width: 2;
+            stroke-linejoin: round;
+            transition: fill 0.3s ease;
+        }
+
+        .district-label {
+            font-size: 11px;
+            fill: #64748b;
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
         }
 
         .time-label {
@@ -158,7 +142,7 @@
             text-align: center;
         }
 
-        /* 4. 各區雨量排行榜 (參照風暴歷史紀錄風格) */
+        /* 3. 各區雨量排行榜 */
         .section-title {
             font-size: 0.8rem;
             font-weight: 600;
@@ -210,12 +194,6 @@
 <body>
 
     <div class="modal-container">
-        <!-- Header -->
-        <div class="modal-header">
-            <div class="modal-title">🌧️ 即時降雨分佈</div>
-            <button class="close-btn">✕</button>
-        </div>
-
         <!-- 1. 當前雨勢概況卡片 -->
         <div class="card-box status-card">
             <div class="status-info">
@@ -230,38 +208,90 @@
 
         <!-- 2. 地圖主卡片 -->
         <div class="card-box map-card">
-            <!-- 圖例 (已修正極度) -->
             <div class="legend-row" style="margin-bottom: 12px;">
-                <div class="legend-pill"><div class="dot" style="background:#cbd5e1;"></div>無</div>
+                <div class="legend-pill"><div class="dot" style="background:#e2e8f0;"></div>無</div>
                 <div class="legend-pill"><div class="dot" style="background:#fde047;"></div>輕度</div>
                 <div class="legend-pill"><div class="dot" style="background:#fb923c;"></div>中度</div>
                 <div class="legend-pill"><div class="dot" style="background:#ef4444;"></div>重度</div>
                 <div class="legend-pill"><div class="dot" style="background:#a855f7;"></div>極度</div>
             </div>
 
-            <!-- 你的 SVG 雨量地圖填入這裡 -->
-            <div class="map-placeholder" id="mapArea">
-                [ 雨量 SVG 地圖 ]
+            <div class="svg-container">
+                <svg viewBox="0 0 400 320" width="100%" height="100%">
+                    <polygon id="poly-屯門區" class="district-poly" points="40,110 80,100 110,130 80,160 40,140" />
+                    <text x="70" y="128" class="district-label">屯門</text>
+
+                    <polygon id="poly-元朗區" class="district-poly" points="70,50 140,40 150,90 90,100" />
+                    <text x="110" y="70" class="district-label">元朗</text>
+
+                    <polygon id="poly-北區" class="district-poly" points="180,20 260,20 250,70 170,60" />
+                    <text x="215" y="45" class="district-label">北區</text>
+
+                    <polygon id="poly-大埔區" class="district-poly" points="240,60 300,60 280,110 210,90" />
+                    <text x="255" y="80" class="district-label">大埔</text>
+
+                    <polygon id="poly-荃灣區" class="district-poly" points="110,110 160,100 170,130 120,140" />
+                    <text x="140" y="120" class="district-label">荃灣</text>
+
+                    <polygon id="poly-葵青區" class="district-poly" points="130,145 170,135 180,160 140,165" />
+                    <text x="155" y="150" class="district-label">葵青</text>
+
+                    <polygon id="poly-沙田區" class="district-poly" points="180,95 240,90 240,135 180,130" />
+                    <text x="210" y="112" class="district-label">沙田</text>
+
+                    <polygon id="poly-西貢區" class="district-poly" points="280,100 350,110 320,170 260,140" />
+                    <text x="300" y="135" class="district-label">西貢</text>
+
+                    <polygon id="poly-深水埗區" class="district-poly" points="135,170 170,165 175,185 140,190" />
+                    <text x="155" y="178" class="district-label">深水埗</text>
+
+                    <polygon id="poly-九龍城區" class="district-poly" points="195,165 225,165 220,190 190,190" />
+                    <text x="208" y="178" class="district-label">九龍城</text>
+
+                    <polygon id="poly-黃大仙區" class="district-poly" points="210,140 250,140 245,160 205,160" />
+                    <text x="228" y="150" class="district-label">黃大仙</text>
+
+                    <polygon id="poly-觀塘區" class="district-poly" points="250,165 285,165 280,190 245,190" />
+                    <text x="265" y="178" class="district-label">觀塘</text>
+
+                    <polygon id="poly-將軍澳" class="district-poly" points="285,165 330,170 320,195 280,190" />
+                    <text x="302" y="180" class="district-label">將軍澳</text>
+
+                    <polygon id="poly-油尖旺區" class="district-poly" points="160,195 195,195 190,215 155,215" />
+                    <text x="175" y="205" class="district-label">油尖旺</text>
+
+                    <polygon id="poly-中西區" class="district-poly" points="130,230 180,225 185,255 135,260" />
+                    <text x="158" y="242" class="district-label">中西區</text>
+
+                    <polygon id="poly-灣仔區" class="district-poly" points="190,230 220,230 220,255 190,255" />
+                    <text x="205" y="242" class="district-label">灣仔</text>
+
+                    <polygon id="poly-東區" class="district-poly" points="225,225 275,225 265,260 225,255" />
+                    <text x="248" y="242" class="district-label">東區</text>
+
+                    <polygon id="poly-南區" class="district-poly" points="140,265 220,260 210,295 150,295" />
+                    <text x="180" y="278" class="district-label">南區</text>
+
+                    <polygon id="poly-離島區" class="district-poly" points="20,200 110,210 100,280 20,260" />
+                    <text x="65" y="240" class="district-label">離島</text>
+                </svg>
             </div>
 
             <div class="time-label" id="mapTimeLabel">— 過去一小時數據 (-- 更新) —</div>
         </div>
 
-        <!-- 3. 雨量重點區域卡片 (風暴歷史列表風格) -->
+        <!-- 3. 各區雨量排行榜卡片 -->
         <div class="card-box">
             <div class="section-title">
                 <span>📍 各區雨量排行榜</span>
                 <span class="status-badge">即時數據</span>
             </div>
             
-            <div class="district-list" id="districtList">
-                <!-- 由 JS 動態生成列表 -->
-            </div>
+            <div class="district-list" id="districtList"></div>
         </div>
     </div>
 
     <script>
-        // 氣象站與地區對應表
         const stationToDistrict = {
             "HKA": "離島區", "CCH": "離島區", "LCK": "葵青區", "NKB": "北區",
             "SHA": "沙田區", "SKG": "西貢區", "TAP": "大埔區", "TW": "荃灣區",
@@ -274,30 +304,36 @@
             '離島區': 0, '葵青區': 0, '北區': 0, '沙田區': 0, '西貢區': 0, 
             '大埔區': 0, '荃灣區': 0, '屯門區': 0, '元朗區': 0, '九龍城區': 0, 
             '觀塘區': 0, '深水埗區': 0, '黃大仙區': 0, '油尖旺區': 0, '中西區': 0, 
-            '東區': 0, '南區': 0, '灣仔區': 0
+            '東區': 0, '南區': 0, '灣仔區': 0, '將軍澳': 0
         };
 
-        // 更新 UI 畫面
+        function getColor(rain) {
+            if (!rain || rain <= 0) return '#e2e8f0';
+            if (rain < 10) return '#fde047';
+            if (rain < 20) return '#fb923c';
+            if (rain < 40) return '#ef4444';
+            return '#a855f7';
+        }
+
         function updateUI(timeStr) {
-            let max = -1;
+            let max = 0;
             let maxName = '';
 
-            // 1. 計算最高雨量
             for (const name in districtData) {
                 const val = districtData[name];
                 if (val > max) {
                     max = val;
                     maxName = name;
                 }
+                const poly = document.getElementById(`poly-${name}`);
+                if (poly) poly.style.fill = getColor(val);
             }
 
-            // 2. 更新頂部狀態卡片
-            const maxValEl = document.getElementById('maxVal');
+            document.getElementById('maxVal').innerHTML = `${max} <span style="font-size:0.7rem;">mm</span>`;
+            
             const statusBadgeEl = document.getElementById('statusBadge');
             const statusSubEl = document.getElementById('statusSub');
 
-            maxValEl.innerHTML = `${max >= 0 ? max : 0} <span style="font-size:0.7rem;">mm</span>`;
-            
             if (max > 0) {
                 statusBadgeEl.textContent = '有降雨';
                 statusBadgeEl.className = 'status-badge warning';
@@ -308,16 +344,13 @@
                 statusSubEl.textContent = '現時各區均無顯著降雨';
             }
 
-            // 3. 更新時間標籤
             document.getElementById('mapTimeLabel').textContent = `— 過去一小時數據 (${timeStr} 更新) —`;
 
-            // 4. 動態生成各區雨量 Top 3 列表
             const sortedDistricts = Object.entries(districtData)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 3);
 
-            const districtListEl = document.getElementById('districtList');
-            districtListEl.innerHTML = sortedDistricts.map(([name, val], index) => `
+            document.getElementById('districtList').innerHTML = sortedDistricts.map(([name, val], index) => `
                 <div class="district-item">
                     <div class="district-name">
                         <span class="rank-tag">${index + 1}</span> ${name}
@@ -327,7 +360,6 @@
             `).join('');
         }
 
-        // 抓取天文台即時雨量 API
         async function fetchRealRainfall() {
             try {
                 const response = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc');
@@ -349,17 +381,14 @@
                     });
                 }
 
-                // 簡單用 slice(11, 16) 截取 15:45 時間字串並更新 UI
-                const dataTime = data.obsTime ? data.obsTime.slice(11, 16) : '';
+                const dataTime = data.obsTime ? data.obsTime.slice(11, 16) : '--:--';
                 updateUI(dataTime);
 
             } catch (error) {
-                console.error("抓取失敗，使用預設值", error);
                 updateUI('--:--');
             }
         }
 
-        // 初始化載入
         fetchRealRainfall();
     </script>
 </body>
