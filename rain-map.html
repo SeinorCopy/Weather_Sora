@@ -31,17 +31,11 @@
             background: transparent;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: auto;
-            padding: 4px;
+            padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: var(--text-main);
-            animation: pageFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes pageFadeIn {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
 
         .container {
@@ -53,27 +47,23 @@
             border: none;
         }
 
-        .header {
-            display: none !important;
-        }
-
-        /* ===== Legend ===== */
+        /* ===== Legend - 無框貼頂 ===== */
         .legend {
             display: flex;
             gap: 6px;
-            margin: 2px 0 12px 0;
+            margin: 0 0 8px 0;
             justify-content: space-between;
-            background: #eef2f6;
-            padding: 10px 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(180, 195, 210, 0.12);
+            background: transparent;
+            padding: 4px 0;
+            border-radius: 0;
+            border: none;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.72rem;
+            gap: 4px;
+            font-size: 0.7rem;
             color: var(--text-sub);
         }
 
@@ -82,6 +72,7 @@
             height: 10px;
             border-radius: 50%;
             border: 1px solid rgba(0,0,0,0.04);
+            flex-shrink: 0;
         }
 
         .dot.rain-none { background: var(--rain-none); }
@@ -94,9 +85,9 @@
         .map-wrapper {
             background: #eef2f6;
             border-radius: 18px;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid rgba(180, 195, 210, 0.12);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             position: relative;
         }
 
@@ -145,23 +136,23 @@
         .footer-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
         
         .info-card {
             background: #eef2f6;
             border: 1px solid rgba(180, 195, 210, 0.12);
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 14px;
             text-align: left;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 4px;
+            gap: 2px;
         }
         
         .info-card .label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 400;
             letter-spacing: 0.5px;
             color: var(--text-sub);
@@ -169,7 +160,7 @@
         }
         
         .info-card .value {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: var(--text-main);
             letter-spacing: 0.3px;
@@ -206,6 +197,11 @@
         .tooltip-val {
             color: #7a9bb5;
         }
+
+        /* ===== 修正極度標籤 ===== */
+        .legend-item:last-child .dot.rain-extreme {
+            background: var(--rain-extreme);
+        }
     </style>
 </head>
 <body>
@@ -216,13 +212,13 @@
     </div>
 
     <div class="container">
-        <!-- ===== Legend ===== -->
+        <!-- ===== Legend - 無框貼頂 ===== -->
         <div class="legend">
             <span class="legend-item"><span class="dot rain-none"></span> 無</span>
             <span class="legend-item"><span class="dot rain-light"></span> 輕度</span>
             <span class="legend-item"><span class="dot rain-moderate"></span> 中度</span>
             <span class="legend-item"><span class="dot rain-heavy"></span> 重度</span>
-            <span class="legend-item"><span class="dot rain-extreme"></span> 極度</span>
+            <span class="legend-item"><span class="dot rain-extreme"></span> 印度</span>
         </div>
 
         <!-- ===== Map ===== -->
@@ -328,7 +324,6 @@
                 '昂坪': '離島', '橫瀾島': '離島', '香港國際機場': '離島'
             };
 
-            // ===== 修正：formatTime 處理 undefined =====
             function formatTime(obsTime) {
                 if (!obsTime) return '--:--';
                 return obsTime.slice(11, 16);
@@ -342,7 +337,6 @@
                 return 'rain-extreme';
             }
 
-            // ===== 修正：updateUI 接收 obsTime 參數 =====
             function updateUI(obsTime) {
                 let max = -1, maxName = '';
 
@@ -361,8 +355,6 @@
 
                 maxRainEl.textContent = maxName || '--';
                 rainAreaEl.textContent = (max >= 0 ? max : 0) + ' mm';
-                
-                // ✅ 傳入 obsTime 顯示時間
                 mapTimeLabel.textContent = `— 過去一小時數據 (${formatTime(obsTime)} 更新) —`;
             }
 
@@ -373,7 +365,6 @@
 
                     const data = await response.json();
                     
-                    // Reset 數據
                     for (const key in districtData) districtData[key] = 0;
 
                     if (data.hourlyRainfall) {
@@ -389,7 +380,6 @@
                         });
                     }
                     
-                    // ✅ 傳入 obsTime
                     updateUI(data.obsTime);
                 } catch (error) {
                     useFallbackData();
@@ -404,13 +394,10 @@
                     '屯門': 25, '元朗': 48, '荃灣': 14, '葵青': 1, '離島': 20
                 };
                 Object.assign(districtData, fallbackData);
-                
-                // ✅ 傳入 null，formatTime 會顯示 '--:--'
                 updateUI(null);
                 mapTimeLabel.textContent = `— 過去一小時數據 (模擬) —`;
             }
 
-            // ===== 事件監聽 =====
             document.querySelectorAll('.district').forEach(el => {
                 el.addEventListener('mouseenter', function() {
                     const name = this.dataset.district;
@@ -429,7 +416,6 @@
                 });
             });
 
-            // ===== 啟動 =====
             fetchRealRainfall();
             setInterval(fetchRealRainfall, 300000);
         })();
