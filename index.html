@@ -530,6 +530,35 @@
     .news-alert-yellow i { color: #d4a843; }
     .news-alert-yellow .news-title { color: #b8942e; }
 
+    .news-alert-thunderstorm{
+      background: #f0f5c9;
+      border-left: 3px solid #fa5437;
+      border: 1px solid rgba(212, 168, 67, 0.2);
+    }
+    .news-alert-other i { color: #d4a843; }
+    .news-alert-other .news-title { color: #b8942e; }
+
+
+    .news-alert-hot{
+      background: #fcb1cc;
+      border-left: 3px solid #fa5437;
+      border: 1px solid rgba(212, 168, 67, 0.2);
+    }
+    .news-alert-other i { color: #d4a843; }
+    .news-alert-other .news-title { color: #b8942e; }
+
+    .news-alert-cold{
+      background: #c3f6f7;
+      border-left: 3px solid #fa5437;
+      border: 1px solid rgba(212, 168, 67, 0.2);
+    }
+    .news-alert-other i { color: #d4a843; }
+    .news-alert-other .news-title { color: #b8942e; }
+
+    
+
+
+    
     .news-alert-other {
       background: #fcf8f0;
       border-left: 3px solid #d4a843;
@@ -916,7 +945,7 @@
       '雷暴': {
         warningImage: 'warning-thunderstorm.png',
         heroImage: 'sora_bird_thunderstorm.jpeg',
-        alertClass: 'news-alert-other',
+        alertClass: 'news-alert-thunderstorm',
         icon: 'fa-bolt',
         title: '雷暴警告',
         defaultBody: '⚡ 雷暴警告現正生效，請留意閃電及局部地區性大雨。',
@@ -925,7 +954,7 @@
       '酷熱': {
         warningImage: 'warning-hot.png',
         heroImage: 'sora_bird_hot.jpeg',
-        alertClass: 'news-alert-other',
+        alertClass: 'news-alert-hot',
         icon: 'fa-sun',
         title: '酷熱天氣警告',
         defaultBody: '☀️ 酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
@@ -934,7 +963,7 @@
       '寒冷': {
         warningImage: 'warning-cold.png',
         heroImage: 'sora_bird_cold.jpeg',
-        alertClass: 'news-alert-other',
+        alertClass: 'news-alert-cold',
         icon: 'fa-snowflake',
         title: '寒冷天氣警告',
         defaultBody: '❄️ 寒冷天氣警告現正生效，請注意保暖。',
