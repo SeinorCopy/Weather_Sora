@@ -792,12 +792,24 @@
     var currentUVdesc = '';
     var currentWarning = '晴朗';
 
-    // ===== 🌀 轉場：撳掣去 rain-map =====
+    // ===== 🌀 轉場：撳掣去 rain-map ===== 
+    // ===== 🌀 撳掣去 rain-map Modal 彈出邏輯 ===== 20260829
+    var rainModal = document.getElementById('rainModal');
+    var closeRainModal = document.getElementById('closeRainModal');
+    
     rainBtn.addEventListener('click', function() {
-      body.classList.add('page-out');
-      setTimeout(function() {
-        window.location.href = 'rain-map.html';
-      }, 300);
+      rainModal.style.display = 'flex';
+    });
+    
+    closeRainModal.addEventListener('click', function() {
+      rainModal.style.display = 'none';
+    });
+    
+    // 點擊背景遮罩關閉
+    rainModal.addEventListener('click', function(e) {
+      if (e.target === rainModal) {
+        rainModal.style.display = 'none';
+      }
     });
 
     // ===== helpers =====
@@ -1255,5 +1267,19 @@
     window.refreshSORA = refreshAllData;
   })();
 </script>
+      <!-- 降雨地圖 Modal 視窗 -->
+    <div id="rainModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; justify-content: center; align-items: center; padding: 16px;">
+        <div style="width: 100%; max-width: 480px; height: 90vh; background: #f5f7fa; border-radius: 28px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column;">
+            <!-- 頂部關閉列 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: #eef2f6; border-bottom: 1px solid rgba(180, 195, 210, 0.2);">
+                <span style="font-weight: 500; color: #3d525c; font-size: 0.95rem;"><i class="fa-solid fa-cloud-rain" style="color: #7a9bb5; margin-right: 6px;"></i> 即時降雨分佈</span>
+                <button id="closeRainModal" style="background: none; border: none; font-size: 1.2rem; color: #8a9ba8; cursor: pointer;">&times;</button>
+            </div>
+            <!-- 地圖內容 -->
+            <iframe src="rain-map.html" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
+  
 </body>
 </html>
