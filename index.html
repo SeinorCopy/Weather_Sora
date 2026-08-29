@@ -9,7 +9,7 @@
   <link rel="icon" type="image/jpeg" href="favicon.jpeg">
   <link rel="apple-touch-icon" href="apple-touch-icon.jpeg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@100;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Noto+Sans+HK:wght@100;400;700&display=swap" rel="stylesheet">
 
   <meta property="og:title" content="SORA HK · 天文台預警">
   <meta property="og:description" content="香港天文台惡劣天氣警告即時監測">
@@ -281,11 +281,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 1rem;
-      font-weight: 700; /* 👈 建議改為 400 或 700 */
+      font-size: 1.1rem;
+      font-weight: 800;
       letter-spacing: 0.5px;
       color: #096a99;
-      font-family: 'Montserrat', sans-serif; /* 👈 改為 sans-serif */
+      font-family: 'Montserrat', sans-serif;
     }
     
     .city-name i {
@@ -535,30 +535,19 @@
       border-left: 3px solid #fa5437;
       border: 1px solid rgba(212, 168, 67, 0.2);
     }
-    .news-alert-other i { color: #d4a843; }
-    .news-alert-other .news-title { color: #b8942e; }
-
 
     .news-alert-hot{
       background: #fcb1cc;
       border-left: 3px solid #fa5437;
       border: 1px solid rgba(212, 168, 67, 0.2);
     }
-    .news-alert-other i { color: #d4a843; }
-    .news-alert-other .news-title { color: #b8942e; }
 
     .news-alert-cold{
       background: #c3f6f7;
       border-left: 3px solid #fa5437;
       border: 1px solid rgba(212, 168, 67, 0.2);
     }
-    .news-alert-other i { color: #d4a843; }
-    .news-alert-other .news-title { color: #b8942e; }
 
-    
-
-
-    
     .news-alert-other {
       background: #fcf8f0;
       border-left: 3px solid #d4a843;
@@ -614,11 +603,11 @@
       display: flex;
       align-items: baseline;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
     }
 
     .extra-item .number {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 600;
       color: #3d525c;
       line-height: 1.2;
@@ -626,7 +615,7 @@
 
     .extra-item .unit {
       font-size: 0.75rem;
-      font-weight: 300;
+      font-weight: 400;
       color: #8a9ba8;
     }
 
@@ -635,16 +624,15 @@
     .weather-footer {
       text-align: center;
       font-size: 0.6rem;
-      color: #888888; /* 柔和灰字，可依主題自行調整 */
+      color: #888888;
       margin-top: 30px;
       padding-bottom: 5px;
       letter-spacing: 0.5px;
     }
-    
 
     @media (max-width: 450px) {
       .weather-card { padding: 20px 16px 24px; }
-      .city-name { font-size: 1.3rem; }
+      .city-name { font-size: 1rem; }
       .hero-image { min-height: 80px; }
       .extra-item { padding: 12px 6px 10px; }
       .extra-item .number { font-size: 1.3rem; }
@@ -734,14 +722,16 @@
     </div>
 
     <div class="extra-grid">
+      <!-- 1. 紫外線區塊 -->
       <div class="extra-item">
-        <i class="fas fa-temperature-low"></i>
-        <span class="label">體感溫度</span>
+        <i class="fas fa-sun"></i>
+        <span class="label">紫外線指數</span>
         <div class="value">
-          <span class="number" id="feelsLike">--</span>
-          <span class="unit">°C</span>
+          <span class="number" id="uvValue">--</span>
+          <span class="unit" id="uvDesc">--</span>
         </div>
       </div>
+      <!-- 2. 濕度區塊 -->
       <div class="extra-item">
         <i class="fas fa-droplet"></i>
         <span class="label">濕度</span>
@@ -750,6 +740,7 @@
           <span class="unit">%</span>
         </div>
       </div>
+      <!-- 3. 風速區塊 -->
       <div class="extra-item">
         <i class="fas fa-wind"></i>
         <span class="label">風速(維修)</span>
@@ -771,11 +762,10 @@
   (function() {
     // ===== DOM refs =====
     var cityDisplay = document.getElementById('cityDisplay');
-    var feelsLike = document.getElementById('feelsLike');
+    var uvValueEl = document.getElementById('uvValue');
+    var uvDescEl = document.getElementById('uvDesc');
     var humidity = document.getElementById('humidity');
     var windSpeed = document.getElementById('windSpeed');
-    var uvVale = 
-    var uvDesc = 
     
     var updateTimeTop = document.getElementById('updateTimeTop');
     var newsAlert = document.getElementById('newsAlert');
@@ -798,8 +788,8 @@
     var currentTemp = 0;
     var currentHumid = 0;
     var currentWind = 0;
-    var currentUV = 0;
-    var currentUVdesc = ' ';
+    var currentUV = '--';
+    var currentUVdesc = '';
     var currentWarning = '晴朗';
 
     // ===== 🌀 轉場：撳掣去 rain-map =====
@@ -1030,17 +1020,18 @@
       newsTitle.textContent = config.title;
     }
 
-    // ===== 更新天氣 =====
-    function updateWeather(warningType, feels, humid, wind, newsBodyText) {
+    // ===== 更新天氣數據畫面 =====
+    function updateWeather(warningType, temp, humid, wind, uvVal, uvDescText, newsBodyText) {
       var config = WARNING_CONFIG[warningType];
       if (config) {
         updateAnimation(config.animation);
       } else {
         updateAnimation('none');
       }
-      updateWarningBadge(warningType, feels);
+      updateWarningBadge(warningType, temp);
       updateHeroImage(warningType);
       updateAlertBox(warningType);
+
       if (newsBodyText) {
         newsBody.textContent = newsBodyText;
       } else if (config) {
@@ -1048,9 +1039,14 @@
       } else {
         newsBody.textContent = '目前沒有惡劣天氣警告，天氣狀況良好。';
       }
+
       var fullDate = formatFullDate();
       newsTime.textContent = '🕒 ' + fullDate;
-      feelsLike.textContent = Math.round(feels);
+
+      // 更新紫外線數據
+      if (uvValueEl) uvValueEl.textContent = (uvVal !== undefined && uvVal !== null) ? uvVal : '--';
+      if (uvDescEl) uvDescEl.textContent = uvDescText || '';
+
       humidity.textContent = Math.round(humid);
       windSpeed.textContent = Math.round(wind);
       updateTimestamp();
@@ -1104,18 +1100,18 @@
 
           currentWarning = found;
           console.log('✅ 警告摘要：', found, foundList, data);
-          updateWeather(found, currentTemp, currentHumid, currentWind);
+          updateWeather(found, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         })
         .catch(function(error) {
           console.error('❌ 拎唔到警告摘要：', error);
-          updateWeather('晴朗', currentTemp, currentHumid, currentWind);
+          updateWeather('晴朗', currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         });
     }
 
-    // ===== 2. 拎天氣報告（溫度、濕度、風速） =====
+    // ===== 2. 拎天氣報告（溫度、濕度、風速、紫外線） =====
     function fetchWeatherReport() {
       var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc';
-      var weed = '';
+
       fetch(url)
         .then(function(response) {
           if (!response.ok) throw new Error('HTTP error: ' + response.status);
@@ -1125,7 +1121,10 @@
           var temp = 0;
           var humid = 0;
           var wind = 0;
+          var uvVal = '--';
+          var uvDescText = '';
 
+          // 擷取溫度
           if (data.temperature && data.temperature.data) {
             for (var i = 0; i < data.temperature.data.length; i++) {
               if (data.temperature.data[i].place === '香港天文台') {
@@ -1135,16 +1134,23 @@
             }
           }
 
-          if (data.uvindex && data.uvindex.data) {
-            for (var i = 0; i < data.uvindex.data.length; i++) {
-              if (data.uvindex.data[i].place === '京士柏') {
-                uvValue = data.uvindex.data[i].value; // 取得數字（例如：2）
-                uvDesc = data.uvindex.data[i].desc;   // 取得描述（例如："低"）
+          // 擷取紫外線數據
+          if (data.uvindex && data.uvindex.data && data.uvindex.data.length > 0) {
+            for (var u = 0; u < data.uvindex.data.length; u++) {
+              var uvData = data.uvindex.data[u];
+              if (uvData.place === '京士柏' || !uvData.place) {
+                uvVal = uvData.value !== undefined ? uvData.value : '--';
+                uvDescText = uvData.desc || '';
                 break;
               }
             }
+          } else {
+            // 晚上或天文台未提供紫外線指數時
+            uvVal = '0';
+            uvDescText = '低';
           }
 
+          // 擷取濕度
           if (data.humidity && data.humidity.data) {
             for (var j = 0; j < data.humidity.data.length; j++) {
               if (data.humidity.data[j].place === '香港天文台') {
@@ -1167,9 +1173,10 @@
           currentTemp = temp;
           currentHumid = humid;
           currentWind = wind;
-          currentUV = uvValue;
-          currentUVdesc = uvDesc;
-          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h' + '%，紫外線指數' + uvValue + ' 屬' +uvDesc);
+          currentUV = uvVal;
+          currentUVdesc = uvDescText;
+
+          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h，紫外線指數 ' + uvVal + ' (' + uvDescText + ')');
           updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         })
         .catch(function(error) {
