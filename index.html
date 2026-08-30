@@ -387,6 +387,15 @@
     .news-alert-none i { color: #4caf50; }
     .news-alert-none .news-title { color: #2e7d32; }
 
+    /* ===== 🆕 新增：降雨 alert style ===== */
+    .news-alert-rain {
+      background: #d4e6f1;
+      border-left: 3px solid #2980b9;
+      border: 1px solid rgba(41, 128, 185, 0.25);
+    }
+    .news-alert-rain i { color: #2980b9; }
+    .news-alert-rain .news-title { color: #1a5276; }
+
     .news-alert-black {
       background: #1a1a1a;
       border-left: 3px solid #ffd700;
@@ -838,6 +847,7 @@
     var currentUV = '--';
     var currentUVdesc = '';
     var currentWarning = '晴朗';
+    var hasRainfallData = false; // 🆕 記錄有冇雨
 
     // ===== helpers =====
     function formatTime() {
@@ -922,6 +932,15 @@
 
     // ===== 警告配置 =====
     var WARNING_CONFIG = {
+      '降雨': {
+        warningImage: 'warning-rain_2.png',
+        heroImage: 'sora_bird_rain_2.jpeg',
+        alertClass: 'news-alert-rain',
+        icon: 'fa-cloud-rain',
+        title: ' 降雨提醒',
+        defaultBody: '🌧️ 香港部分地區有雨，出門記得帶雨傘。',
+        animation: 'rain'
+      },
       '黑雨': {
         warningImage: 'warning-black.png',
         heroImage: 'sora_bird_rain.jpeg',
@@ -955,7 +974,7 @@
         alertClass: 'news-alert-typhoon-8',
         icon: 'fa-bullhorn',
         title: '八號烈風或暴風信號',
-        defaultBody: '🌀 八號烈風或暴風信號現正生效，平均風速每小時63公里或以上，請勿外出。',
+        defaultBody: ' 🌀 八號烈風或暴風信號現正生效，平均風速每小時63公里或以上，請勿外出。',
         animation: 'typhoon'
       },
       '9號風球': {
@@ -964,7 +983,7 @@
         alertClass: 'news-alert-typhoon-9',
         icon: 'fa-bullhorn',
         title: '九號烈風或暴風增強信號',
-        defaultBody: '🌀 九號烈風或暴風增強信號現正生效，風力正在增強，請留在安全地方。',
+        defaultBody: ' 🌀 九號烈風或暴風增強信號現正生效，風力正在增強，請留在安全地方。',
         animation: 'typhoon'
       },
       '10號風球': {
@@ -973,7 +992,7 @@
         alertClass: 'news-alert-typhoon-10',
         icon: 'fa-bullhorn',
         title: '十號颶風信號',
-        defaultBody: '🌀 十號颶風信號現正生效，風力達颶風程度，請遠離窗邊。',
+        defaultBody: ' 🌀 十號颶風信號現正生效，風力達颶風程度，請遠離窗邊。',
         animation: 'typhoon'
       },
       '雷暴': {
@@ -982,7 +1001,7 @@
         alertClass: 'news-alert-thunderstorm',
         icon: 'fa-bolt',
         title: '雷暴警告',
-        defaultBody: '⚡ 雷暴警告現正生效，請留意閃電及局部地區性大雨。',
+        defaultBody: ' ⚡ 雷暴警告現正生效，請留意閃電及局部地區性大雨。',
         animation: 'rain'
       },
       '酷熱': {
@@ -991,7 +1010,7 @@
         alertClass: 'news-alert-hot',
         icon: 'fa-sun',
         title: '酷熱天氣警告',
-        defaultBody: '☀️ 酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
+        defaultBody: ' ☀️ 酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
         animation: 'none'
       },
       '寒冷': {
@@ -1000,7 +1019,7 @@
         alertClass: 'news-alert-cold',
         icon: 'fa-snowflake',
         title: '寒冷天氣警告',
-        defaultBody: '❄️ 寒冷天氣警告現正生效，請注意保暖。',
+        defaultBody: ' ❄️ 寒冷天氣警告現正生效，請注意保暖。',
         animation: 'none'
       },
       '晴朗': {
@@ -1102,6 +1121,7 @@
       if (code === 'WTS') return '雷暴';
       if (code === 'WHOT') return '酷熱';
       if (code === 'WCOLD') return '寒冷';
+      if (code === 'RAINFALL') return '降雨';
       return null;
     }
 
@@ -1115,8 +1135,8 @@
           return response.json();
         })
         .then(function(data) {
-          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '雷暴', '酷熱', '寒冷'];
-          var found = '晴朗';
+          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '酷熱', '寒冷', '雷暴'];
+          var foundWarning = null;
           var foundList = [];
 
           for (var key in data) {
@@ -1128,20 +1148,32 @@
             }
           }
 
+          // 先睇有冇正式警告
           for (var j = 0; j < priority.length; j++) {
             if (foundList.indexOf(priority[j]) !== -1) {
-              found = priority[j];
+              foundWarning = priority[j];
               break;
             }
           }
 
-          currentWarning = found;
-          console.log('✅ 警告摘要：', found, foundList, data);
-          updateWeather(found, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
+          // 如果有正式警告，就用佢
+          if (foundWarning) {
+            currentWarning = foundWarning;
+          } else {
+            // 冇正式警告：如果有雨就 keep 降雨，否則晴朗
+            if (hasRainfallData) {
+              currentWarning = '降雨';
+            } else {
+              currentWarning = '晴朗';
+            }
+          }
+
+          console.log('✅ 警告摘要：', foundWarning, foundList, 'hasRain:', hasRainfallData, '最終 warning:', currentWarning);
+          updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         })
         .catch(function(error) {
           console.error('❌ 拎唔到警告摘要：', error);
-          updateWeather('晴朗', currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
+          updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         });
     }
 
@@ -1208,7 +1240,29 @@
           currentUV = uvVal;
           currentUVdesc = uvDescText;
 
-          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h，紫外線指數 ' + uvVal + ' (' + uvDescText + ')');
+          // ===== 🆕 檢查有冇地區落雨 =====
+          hasRainfallData = false;
+          if (data.rainfall && data.rainfall.data) {
+            for (var r = 0; r < data.rainfall.data.length; r++) {
+              if (data.rainfall.data[r].max > 0) {
+                hasRainfallData = true;
+                break;
+              }
+            }
+          }
+
+          console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h，紫外線指數 ' + uvVal + ' (' + uvDescText + ')，hasRain: ' + hasRainfallData);
+          
+          // 如果冇正式警告，根據 hasRainfallData 決定
+          var severeWarnings = ['黑雨', '紅雨', '黃雨', '8號風球', '9號風球', '10號風球', '酷熱', '寒冷', '雷暴'];
+          if (severeWarnings.indexOf(currentWarning) === -1) {
+            if (hasRainfallData) {
+              currentWarning = '降雨';
+            } else {
+              currentWarning = '晴朗';
+            }
+          }
+          
           updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
         })
         .catch(function(error) {
