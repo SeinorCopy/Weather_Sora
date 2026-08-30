@@ -935,7 +935,7 @@
       '降雨': {
         warningImage: 'warning-rain_2.png',
         heroImage: 'sora_bird_rain_2.jpeg',
-        alertClass: 'news-alert-rain',
+        : 'news-alert-rain',
         icon: 'fa-cloud-rain',
         title: ' 降雨提醒',
         defaultBody: '🌧️ 香港部分地區有雨，出門記得帶雨傘。',
@@ -944,7 +944,7 @@
       '黑雨': {
         warningImage: 'warning-black.png',
         heroImage: 'sora_bird_rain.jpeg',
-        alertClass: 'news-alert-black',
+        : 'news-alert-black',
         icon: 'fa-bullhorn',
         title: '黑色暴雨警告信號',
         defaultBody: '🚨 天文台發出黑色暴雨警告信號，香港廣泛地區已錄得超過70毫米雨量，山洪暴發風險極高。',
@@ -953,7 +953,7 @@
       '紅雨': {
         warningImage: 'warning-red.png',
         heroImage: 'sora_bird_rain.jpeg',
-        alertClass: 'news-alert-red',
+        : 'news-alert-red',
         icon: 'fa-bullhorn',
         title: '紅色暴雨警告信號',
         defaultBody: '⚠️ 天文台發出紅色暴雨警告信號，香港廣泛地區已錄得超過50毫米雨量，請注意安全。',
@@ -962,7 +962,7 @@
       '黃雨': {
         warningImage: 'warning-yellow.png',
         heroImage: 'sora_bird_rain.jpeg',
-        alertClass: 'news-alert-yellow',
+        : 'news-alert-yellow',
         icon: 'fa-bullhorn',
         title: '黃色暴雨警告信號',
         defaultBody: '⚠️ 天文台發出黃色暴雨警告信號，香港部分地區已錄得超過30毫米雨量。',
@@ -979,7 +979,7 @@
       },
       '9號風球': {
         warningImage: 'warning-typhoon_9.png',
-        heroImage: 'sora_bird_typhoon.jpeg',
+        heroImage: 'sora_bird_typhoon_2.jpeg',
         alertClass: 'news-alert-typhoon-9',
         icon: 'fa-bullhorn',
         title: '九號烈風或暴風增強信號',
@@ -988,7 +988,7 @@
       },
       '10號風球': {
         warningImage: 'warning-typhoon_10.png',
-        heroImage: 'sora_bird_typhoon.jpeg',
+        heroImage: 'sora_bird_typhoon_2.jpeg',
         alertClass: 'news-alert-typhoon-10',
         icon: 'fa-bullhorn',
         title: '十號颶風信號',
@@ -998,7 +998,7 @@
       '雷暴': {
         warningImage: 'warning-thunderstorm.png',
         heroImage: 'sora_bird_thunderstorm.jpeg',
-        alertClass: 'news-alert-thunderstorm',
+        : 'news-alert-thunderstorm',
         icon: 'fa-bolt',
         title: '雷暴警告',
         defaultBody: ' ⚡ 雷暴警告現正生效，請留意閃電及局部地區性大雨。',
@@ -1007,7 +1007,7 @@
       '酷熱': {
         warningImage: 'warning-hot.png',
         heroImage: 'sora_bird_hot.jpeg',
-        alertClass: 'news-alert-hot',
+        : 'news-alert-hot',
         icon: 'fa-sun',
         title: '酷熱天氣警告',
         defaultBody: ' ☀️ 酷熱天氣警告現正生效，請避免長時間戶外活動，多補充水分。',
@@ -1016,7 +1016,7 @@
       '寒冷': {
         warningImage: 'warning-cold.png',
         heroImage: 'sora_bird_cold.jpeg',
-        alertClass: 'news-alert-cold',
+        : 'news-alert-cold',
         icon: 'fa-snowflake',
         title: '寒冷天氣警告',
         defaultBody: ' ❄️ 寒冷天氣警告現正生效，請注意保暖。',
@@ -1025,7 +1025,7 @@
       '晴朗': {
         warningImage: 'warning-sunny_2.png',
         heroImage: 'sora_bird_normal.jpeg',
-        alertClass: 'news-alert-none',
+        : 'news-alert-none',
         icon: 'fa-check-circle',
         title: '天氣概況',
         defaultBody: '目前沒有惡劣天氣警告，天氣狀況良好。',
@@ -1034,7 +1034,7 @@
       '多雲': {
         warningImage: 'warning-cloudy.png',
         heroImage: 'sora_bird_cloudy.jpeg',
-        alertClass: 'news-alert-none',
+        : 'news-alert-none',
         icon: 'fa-check-circle',
         title: '天氣概況',
         defaultBody: '天氣多雲，部分地區有微雨。',
@@ -1073,7 +1073,7 @@
         newsAlert.classList.add('news-alert-hidden');
         return;
       }
-      newsAlert.classList.add(config.alertClass);
+      newsAlert.classList.add(config.);
       newsIcon.className = 'fas ' + config.icon;
       newsTitle.textContent = config.title;
     }
