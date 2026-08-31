@@ -681,9 +681,14 @@
         <i class="fas fa-location-dot"></i>
         <span id="cityDisplay">SORA HK</span>
       </div>
-      <button class="storm-archive-btn" id="stormArchiveBtn">
-        <i class="fas fa-skull"></i> 風暴檔案
-      </button>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="storm-archive-btn" id="refreshBtn" style="background: #d4e6f1; border-color: rgba(41, 128, 185, 0.3);">
+          <i class="fas fa-sync-alt"></i> 更新
+        </button>
+        <button class="storm-archive-btn" id="stormArchiveBtn">
+          <i class="fas fa-skull"></i> 風暴檔案
+        </button>
+      </div>
     </div>
 
     <div class="hero-image" id="heroImage">
@@ -742,7 +747,7 @@
       </div>
       <div class="extra-item">
         <i class="fas fa-wind"></i>
-        <span class="label">風速(維修)</span>
+        <span class="label">風速</span>
         <div class="value">
           <span class="number" id="windSpeed">--</span>
           <span class="unit">km/h</span>
@@ -838,6 +843,22 @@
       if (e.target === stormModal) {
         stormModal.classList.remove('active');
       }
+    });
+
+    // ===== Refresh 按鈕 =====
+    var refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', function() {
+      // 加個旋轉動畫
+      var icon = refreshBtn.querySelector('i');
+      icon.style.transition = 'transform 0.6s ease';
+      icon.style.transform = 'rotate(360deg)';
+      setTimeout(function() {
+        icon.style.transform = 'rotate(0deg)';
+      }, 600);
+      
+      // 強制更新
+      refreshAllData();
+      console.log('🔄 手動更新已觸發');
     });
 
     // ===== 真實數據變數 =====
@@ -939,6 +960,24 @@
         icon: 'fa-cloud-rain',
         title: ' 降雨提醒',
         defaultBody: '🌧️ 香港部分地區有雨，出門記得帶雨傘。',
+        animation: 'rain'
+      },
+      '1號風球': {
+        warningImage: 'warning-rain_2.png',
+        heroImage: 'sora_bird_rain_2.jpeg',
+        alertClass: 'news-alert-rain',
+        icon: 'fa-cloud-rain',
+        title: ' 一號戒備信號',
+        defaultBody: ' 本港部分地區雨勢較大，請留意天文台的最新天氣消息。',
+        animation: 'rain'
+      },
+      '3號風球': {
+        warningImage: 'warning-rain_2.png',
+        heroImage: 'sora_bird_rain_2.jpeg',
+        alertClass: 'news-alert-rain',
+        icon: 'fa-cloud-rain',
+        title: ' 三號戒備信號',
+        defaultBody: ' 平均風速每小時41至62公里，請注意安全，應該遠離岸邊及停止所有水上活動。',
         animation: 'rain'
       },
       '黑雨': {
@@ -1118,6 +1157,8 @@
       if (code === 'TC10') return '10號風球';
       if (code === 'TC9') return '9號風球';
       if (code.indexOf('TC8') === 0) return '8號風球';
+      if (code.indexOf('TC3') === 0) return '3號風球';
+      if (code.indexOf('TC1') === 0) return '1號風球';
       if (code === 'WTS') return '雷暴';
       if (code === 'WHOT') return '酷熱';
       if (code === 'WCOLD') return '寒冷';
@@ -1135,7 +1176,7 @@
           return response.json();
         })
         .then(function(data) {
-          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '酷熱', '降雨', '寒冷', '雷暴'];
+          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '3號風球', '1號風球', '酷熱', '降雨', '寒冷', '雷暴'];
           var foundWarning = null;
           var foundList = [];
 
@@ -1230,12 +1271,20 @@
             }
           }
 
+          // ===== 真正風速數據 =====
           if (data.windSpeed && data.windSpeed.data) {
-            for (var k = 0; k < data.windSpeed.data.length; k++) {
-              if (data.windSpeed.data[k].place === '啟德' || data.windSpeed.data[k].place === '香港天文台') {
-                wind = data.windSpeed.data[k].value;
-                break;
+            // 優先搵香港天文台，冇就搵啟德
+            var windPlaces = ['香港天文台', '啟德', '京士柏'];
+            for (var p = 0; p < windPlaces.length; p++) {
+              var found = false;
+              for (var k = 0; k < data.windSpeed.data.length; k++) {
+                if (data.windSpeed.data[k].place === windPlaces[p]) {
+                  wind = data.windSpeed.data[k].value;
+                  found = true;
+                  break;
+                }
               }
+              if (found) break;
             }
           }
 
@@ -1259,7 +1308,7 @@
           console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h，紫外線指數 ' + uvVal + ' (' + uvDescText + ')，hasRain: ' + hasRainfallData);
           
           // 如果冇正式警告，根據 hasRainfallData 決定
-          var severeWarnings = ['黑雨', '紅雨', '黃雨', '8號風球', '9號風球', '10號風球', '酷熱', '降雨', '寒冷', '雷暴'];
+          var severeWarnings = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '3號風球', '1號風球', '酷熱', '降雨', '寒冷', '雷暴'];
           if (severeWarnings.indexOf(currentWarning) === -1) {
             if (hasRainfallData) {
               currentWarning = '降雨';
@@ -1278,48 +1327,83 @@
 
     // ===== 3. 拎特別天氣提示 =====
     function fetchSpecialWeatherTips() {
-      var url = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
+      // 1. 原本的特別天氣提示 API
+      var swtUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
+      // 2. 熱帶氣旋警告 API
+      var warningUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warningInfo&lang=tc';
 
-      fetch(url)
-        .then(function(response) {
-          if (!response.ok) throw new Error('HTTP error: ' + response.status);
-          return response.json();
-        })
-        .then(function(data) {
-          var container = document.getElementById('specialTipContainer');
+    
+      // 同時獲取兩個 API 的數據
+      Promise.all([
+        fetch(swtUrl).then(response => response.json()).catch(() => ({ swt: [] })),
+        fetch(warningUrl).then(response => response.json()).catch(() => ({}))
+      ]).then(function(results) {
+        var swtData = results[0];      // 特別天氣提示數據
+        var warningData = results[1];  // 熱帶氣旋警告數據
+        var container = document.getElementById('specialTipContainer');
+        
+        var allTips = [];
 
-          if (data.swt && data.swt.length > 0) {
-            var headerHtml = '<div class="tip-header" style="margin-bottom: 8px;"><span class="tip-label">📢 特別天氣提示</span></div>';
+        // --- 處理原本的特別天氣提示 ---
+        if (swtData.swt && swtData.swt.length > 0) {
+          swtData.swt.forEach(function(item) {
+            allTips.push({
+              desc: item.desc,
+              time: item.updateTime ? item.updateTime.replace('T', ' ').slice(0, 16) : '--:--',
+              type: 'swt'
+            });
+          });
+        }
 
-            var tipsListHtml = data.swt.map(function(item) {
-              var formattedTime = item.updateTime ? item.updateTime.replace('T', ' ').slice(0, 16) : '--:--';
-              return '<div class="tip-block">' +
-                       '<div class="tip-body" style="line-height: 1.5;">' + item.desc + '</div>' +
-                       '<div class="tip-time" style="font-size: 0.65rem; color: #8a9ba8; text-align: right; margin-top: 4px;">🕒 ' + formattedTime + '</div>' +
-                     '</div>';
-            }).join('<hr style="border: 0; border-top: 1px dashed rgba(122, 155, 181, 0.35); margin: 10px 0;">');
-
-            container.innerHTML = headerHtml + tipsListHtml;
-            console.log('✅ 特別天氣提示已更新，共 ' + data.swt.length + ' 條');
-          } else {
-            container.innerHTML = 
-              '<div class="tip-header">' +
-                '<span class="tip-label">📢 特別天氣提示</span>' +
-                '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
-              '</div>' +
-              '<div class="tip-body" style="margin-top: 4px;">目前沒有特別天氣提示</div>';
+    
+        // --- 處理熱帶氣旋警告 (warningInfo) ---
+        if (warningData.warningInfo && warningData.warningInfo.length > 0) {
+          // 搵 subtype 係 TC1（一號戒備信號）嘅警告
+          var tcData = warningData.warningInfo.filter(function(item) {
+            return item && item.subtype === 'TC1';
+          });
+        
+          if (tcData.length > 0) {
+            // 拎 contents 入面嘅文字
+            var contents = tcData[0].contents || [];
+            var tcFullDesc = contents.join(' ');
+            allTips.push({
+              desc: '🌀 ' + tcFullDesc,
+              time: tcData[0].updateTime ? tcData[0].updateTime.replace('T', ' ').slice(0, 16) : '--:--',
+              type: 'tc'
+            });
           }
-        })
-        .catch(function(error) {
-          console.error('❌ 拎唔到特別天氣提示：', error);
-          var container = document.getElementById('specialTipContainer');
+        }
+    
+        // --- 顯示所有提示 ---
+        if (allTips.length > 0) {
+          var headerHtml = '<div class="tip-header" style="margin-bottom: 8px;"><span class="tip-label">📢 特別天氣提示</span></div>';
+          var tipsListHtml = allTips.map(function(item) {
+            return '<div class="tip-block">' +
+                     '<div class="tip-body" style="line-height: 1.5;">' + item.desc + '</div>' +
+                     '<div class="tip-time" style="font-size: 0.65rem; color: #8a9ba8; text-align: right; margin-top: 4px;">🕒 ' + item.time + '</div>' +
+                   '</div>';
+          }).join('<hr style="border: 0; border-top: 1px dashed rgba(122, 155, 181, 0.35); margin: 10px 0;">');
+          
+          container.innerHTML = headerHtml + tipsListHtml;
+        } else {
           container.innerHTML = 
             '<div class="tip-header">' +
               '<span class="tip-label">📢 特別天氣提示</span>' +
               '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
             '</div>' +
-            '<div class="tip-body" style="margin-top: 4px;">⚠️ 無法載入天氣提示</div>';
-        });
+            '<div class="tip-body" style="margin-top: 4px;">目前沒有特別天氣提示</div>';
+        }
+      }).catch(function(error) {
+        console.error('❌ 拎唔到天氣提示：', error);
+        var container = document.getElementById('specialTipContainer');
+        container.innerHTML = 
+          '<div class="tip-header">' +
+            '<span class="tip-label">📢 特別天氣提示</span>' +
+            '<span class="tip-time" style="font-size: 0.65rem; color: #8a9ba8;"> </span>' +
+          '</div>' +
+          '<div class="tip-body" style="margin-top: 4px;">⚠️ 無法載入天氣提示</div>';
+      });
     }
 
     // ===== 4. 全部更新 =====
