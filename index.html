@@ -1135,7 +1135,7 @@
           return response.json();
         })
         .then(function(data) {
-          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '酷熱', '寒冷', '雷暴'];
+          var priority = ['黑雨', '紅雨', '黃雨', '10號風球', '9號風球', '8號風球', '酷熱', '降雨', '寒冷', '雷暴'];
           var foundWarning = null;
           var foundList = [];
 
@@ -1156,17 +1156,22 @@
             }
           }
 
-          // 如果有正式警告，就用佢
-          if (foundWarning) {
-            currentWarning = foundWarning;
-          } else {
-            // 冇正式警告：如果有雨就 keep 降雨，否則晴朗
-            if (hasRainfallData) {
-              currentWarning = '降雨';
+            // 如果有正式警告，就用佢
+            if (foundWarning) {
+              // 如果正式警告係雷暴，但同時有落雨，就顯示降雨
+              if (foundWarning === '雷暴' && hasRainfallData) {
+                currentWarning = '降雨';
+              } else {
+                currentWarning = foundWarning;
+              }
             } else {
-              currentWarning = '晴朗';
+              // 冇正式警告：如果有雨就 keep 降雨，否則晴朗
+              if (hasRainfallData) {
+                currentWarning = '降雨';
+              } else {
+                currentWarning = '晴朗';
+              }
             }
-          }
 
           console.log('✅ 警告摘要：', foundWarning, foundList, 'hasRain:', hasRainfallData, '最終 warning:', currentWarning);
           updateWeather(currentWarning, currentTemp, currentHumid, currentWind, currentUV, currentUVdesc);
@@ -1254,7 +1259,7 @@
           console.log('✅ 天氣報告：溫度 ' + temp + '°C，濕度 ' + humid + '%，風速 ' + wind + ' km/h，紫外線指數 ' + uvVal + ' (' + uvDescText + ')，hasRain: ' + hasRainfallData);
           
           // 如果冇正式警告，根據 hasRainfallData 決定
-          var severeWarnings = ['黑雨', '紅雨', '黃雨', '8號風球', '9號風球', '10號風球', '酷熱', '寒冷', '雷暴'];
+          var severeWarnings = ['黑雨', '紅雨', '黃雨', '8號風球', '9號風球', '10號風球', '酷熱', '降雨', '寒冷', '雷暴'];
           if (severeWarnings.indexOf(currentWarning) === -1) {
             if (hasRainfallData) {
               currentWarning = '降雨';
