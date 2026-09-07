@@ -773,6 +773,17 @@
     </div>
   </div>
 
+  <!-- ===== 🌡️ 溫度分佈 Modal ===== -->
+  <div class="modal-overlay" id="tempModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fa-solid fa-temperature-high"></i> 即時溫度分佈</span>
+        <button class="modal-close-btn" id="closeTempModal">&times;</button>
+      </div>
+      <iframe class="modal-iframe" src="temp-map.html"></iframe>
+    </div>
+  </div>
+
   <!-- ===== 🌀 風暴檔案 Modal ===== -->
   <div class="modal-overlay" id="stormModal">
     <div class="modal-box">
@@ -813,16 +824,28 @@
     // ===== Modal 控制 =====
     var rainModal = document.getElementById('rainModal');
     var stormModal = document.getElementById('stormModal');
+    var tempModal = document.getElementById('tempModal');
     var closeRainModal = document.getElementById('closeRainModal');
     var closeStormModal = document.getElementById('closeStormModal');
+    var closeTempModal = document.getElementById('closeTempModal');
     var stormArchiveBtn = document.getElementById('stormArchiveBtn');
 
-    // 開關 Rain Modal
+    // 開關 Rain Modal / Temp Modal
     rainBtn.addEventListener('click', function() {
-      rainModal.classList.add('active');
+      var btnText = document.getElementById('btnText');
+      if (btnText.textContent === '降雨分佈') {
+        rainModal.classList.add('active');
+      } else {
+        tempModal.classList.add('active');
+      }
     });
+
     closeRainModal.addEventListener('click', function() {
       rainModal.classList.remove('active');
+    });
+
+    closeTempModal.addEventListener('click', function() {
+      tempModal.classList.remove('active');
     });
 
     // 開關 Storm Modal
@@ -842,6 +865,11 @@
     stormModal.addEventListener('click', function(e) {
       if (e.target === stormModal) {
         stormModal.classList.remove('active');
+      }
+    });
+    tempModal.addEventListener('click', function(e) {
+      if (e.target === tempModal) {
+        tempModal.classList.remove('active');
       }
     });
 
@@ -1080,30 +1108,21 @@
       }
     };
 
-    // 🟢 新增：切換按鈕狀態（降雨 vs 溫度）
+    // 🟢 獨立控制按鈕 UI 切換
     function updateDistributionButton(isRainy) {
       var btnText = document.getElementById('btnText');
       var btnIconContainer = document.getElementById('btnIconContainer');
-    
-      if (isRainy) {
-        // 🌧️ 落雨狀態：顯示「降雨分佈」
-        btnText.textContent = '降雨分佈';
-        btnIconContainer.innerHTML = `
-          <span class="raindrop">🌧️</span>
-          <span class="raindrop">💧</span>
-          <span class="raindrop">🌧️</span>
-        `;
-      } else {
-        // ☀️ 晴天/無雨狀態：顯示「溫度分佈」
-        btnText.textContent = '溫度分佈';
-        btnIconContainer.innerHTML = `
-          <span class="raindrop">🌡️</span>
-          <span class="raindrop">☀️</span>
-          <span class="raindrop">🌡️</span>
-        `;
-      }
-    }       
 
+      if (!btnText || !btnIconContainer) return;
+
+      if (isRainy) {
+        btnText.textContent = '降雨分佈';
+        btnIconContainer.innerHTML = '<span class="raindrop">🌧️</span><span class="raindrop">💧</span><span class="raindrop">🌧️</span>';
+      } else {
+        btnText.textContent = '溫度分佈';
+        btnIconContainer.innerHTML = '<span class="raindrop">🌡️</span><span class="raindrop">☀️</span><span class="raindrop">🌡️</span>';
+      }
+    }
 
     function updateWarningBadge(warningType, temp) {
       var config = WARNING_CONFIG[warningType];
@@ -1345,22 +1364,6 @@
         });
     }
 
-    // 🟢 獨立控制按鈕 UI 切換
-    function updateDistributionButton(isRainy) {
-      var btnText = document.getElementById('btnText');
-      var btnIconContainer = document.getElementById('btnIconContainer');
-
-      if (!btnText || !btnIconContainer) return;
-
-      if (isRainy) {
-        btnText.textContent = '降雨分佈';
-        btnIconContainer.innerHTML = '<span class="raindrop">🌧️</span><span class="raindrop">💧</span><span class="raindrop">🌧️</span>';
-      } else {
-        btnText.textContent = '溫度分佈';
-        btnIconContainer.innerHTML = '<span class="raindrop">☀️</span><span class="raindrop">🔥️</span><span class="raindrop">☀️</span>';
-      }
-    }
-
     // ===== 3. 拎特別天氣提示 =====
     function fetchSpecialWeatherTips() {
       var swtUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc';
@@ -1409,10 +1412,8 @@
         }
     
         // 2. 處理 Warning Info (警告詳情，例如熱帶氣旋警報 TC1)
-        // ✅ 修正點：API 的陣列放在 details 內
         var details = warningData.details || [];
         if (details.length > 0) {
-          // ✅ 修正點：把參數名稱統一改為 item
           var tcData = details.filter(function(item) {
             return item && item.subtype && /^TC/.test(item.subtype);
           });
