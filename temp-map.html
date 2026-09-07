@@ -321,10 +321,10 @@
         // 氣溫顏色對應邏輯
         function getColor(temp) {
             if (temp === null || isNaN(temp)) return '#e2e8f0'; // 無數據
-            if (temp < 15) return '#3b82f6';  // 寒冷 (藍)
-            if (temp < 22) return '#81f7f3';  // 涼爽 (淺藍)
-            if (temp < 28) return '#d2f781';  // 舒適 (綠)
-            if (temp < 33) return '#f99316';  // 偏熱 (橙)
+            if (temp < 17) return '#3b82f6';  // 寒冷 (藍)
+            if (temp < 20) return '#81f7f3';  // 涼爽 (淺藍)
+            if (temp < 26) return '#d2f781';  // 舒適 (綠)
+            if (temp < 30) return '#f99316';  // 偏熱 (橙)
             return '#ef4444';                  // 酷熱 (紅)
         }
 
