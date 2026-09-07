@@ -46,7 +46,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
-        /* 1. 當前雨勢概況 */
+        /* 1. 當前溫度概況 */
         .status-card {
             display: flex;
             justify-content: space-between;
@@ -70,14 +70,14 @@
             font-weight: 500;
         }
 
-        .status-badge.safe {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .status-badge.warning {
+        .status-badge.hot {
             background: #ffedd5;
             color: #c2410c;
+        }
+
+        .status-badge.cool {
+            background: #e0f2fe;
+            color: #0369a1;
         }
 
         .status-sub {
@@ -90,8 +90,8 @@
         .legend-row {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            font-size: 0.7rem;
+            gap: 8px;
+            font-size: 0.68rem;
             color: var(--text-sub);
         }
 
@@ -128,7 +128,7 @@
 
         .district-label {
             font-size: 11px;
-            fill: #64748b;
+            fill: #334155;
             font-weight: 600;
             text-anchor: middle;
             dominant-baseline: middle;
@@ -142,7 +142,7 @@
             text-align: center;
         }
 
-        /* 3. 各區雨量排行榜 */
+        /* 3. 各區氣溫排行榜 */
         .section-title {
             font-size: 0.8rem;
             font-weight: 600;
@@ -187,37 +187,37 @@
         .district-val {
             font-size: 0.85rem;
             font-weight: 700;
-            color: var(--accent-blue);
+            color: var(--accent-orange);
         }
     </style>
 </head>
 <body>
 
     <div class="modal-container">
-        <!-- 1. 當前雨勢概況卡片 -->
+        <!-- 1. 當前氣溫概況卡片 -->
         <div class="card-box status-card">
             <div class="status-info">
-                <h3>雨 勢 圖 <span class="status-badge safe" id="statusBadge">更新中...</span></h3>
+                <h3>溫 度 地 圖 <span class="status-badge hot" id="statusBadge">更新中...</span></h3>
                 <div class="status-sub" id="statusSub">正在讀取天文台數據...</div>
             </div>
             <div style="text-align: right;">
-                <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent-blue);" id="maxVal">0 <span style="font-size:0.7rem;">mm</span></div>
-                <div style="font-size: 0.65rem; color: var(--text-sub);">最高雨量</div>
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent-orange);" id="maxVal">-- <span style="font-size:0.7rem;">°C</span></div>
+                <div style="font-size: 0.65rem; color: var(--text-sub);">最高氣溫</div>
             </div>
         </div>
 
         <!-- 2. 地圖主卡片 -->
         <div class="card-box map-card">
             <div class="legend-row" style="margin-bottom: 12px;">
-                <div class="legend-pill"><div class="dot" style="background:#e2e8f0;"></div>無</div>
-                <div class="legend-pill"><div class="dot" style="background:#fde047;"></div>輕度</div>
-                <div class="legend-pill"><div class="dot" style="background:#fb923c;"></div>中度</div>
-                <div class="legend-pill"><div class="dot" style="background:#ef4444;"></div>重度</div>
-                <div class="legend-pill"><div class="dot" style="background:#a855f7;"></div>印度</div>
+                <div class="legend-pill"><div class="dot" style="background:#3b82f6;"></div>西伯利亞</div>
+                <div class="legend-pill"><div class="dot" style="background:#38bdf8;"></div>好鬼凍</div>
+                <div class="legend-pill"><div class="dot" style="background:#22c55e;"></div>少少凍</div>
+                <div class="legend-pill"><div class="dot" style="background:#f97316;"></div>凍凍地</div>
+                <div class="legend-pill"><div class="dot" style="background:#ef4444;"></div>唔凍</div>
             </div>
 
             <div class="svg-container">
-                <svg viewBox="0 0 400 320" width="110%" height="100%">
+                <svg viewBox="0 0 400 320" width="100%" height="100%">
                 <!-- 新界西北 -->
                 <polygon id="poly-屯門區" class="district-poly" points="30,110 70,95 90,110 85,150 50,160 25,140" />
                 <text x="58" y="128" class="district-label">屯門</text>
@@ -278,20 +278,20 @@
                 <polygon id="poly-離島區" class="district-poly" points="15,180 110,190 115,230 90,260 20,280 10,230" />
                 <text x="60" y="235" class="district-label">離島</text>
             
-                <!-- 將軍澳（西貢一部分，可獨立顯示） -->
+                <!-- 將軍澳 -->
                 <polygon id="poly-將軍澳" class="district-poly" points="290,170 335,175 325,200 280,198" />
                 <text x="308" y="188" class="district-label">將軍澳</text>
             </svg>  
             </div>
 
-            <div class="time-label" id="mapTimeLabel">— 實時數據更新中... —</div>
+            <div class="time-label" id="mapTimeLabel">— 實時氣溫數據更新中... —</div>
         </div>
 
-        <!-- 3. 各區雨量排行榜卡片 -->
+        <!-- 3. 各區氣溫排行榜卡片 -->
         <div class="card-box">
             <div class="section-title">
-                <span>📍 各區雨量排行榜</span>
-                <span class="status-badge" style="background:#dbeafe; color:#1e40af;">實時監測</span>
+                <span>📍 各區氣溫排行榜</span>
+                <span class="status-badge" style="background:#dbeafe; color:#1e40af;">天文台實時</span>
             </div>
             
             <div class="district-list" id="districtList"></div>
@@ -300,120 +300,142 @@
 
     <script>
         const districtData = {
-            '離島區': 0, '葵青區': 0, '北區': 0, '沙田區': 0, '西貢區': 0, 
-            '大埔區': 0, '荃灣區': 0, '屯門區': 0, '元朗區': 0, '九龍城區': 0, 
-            '觀塘區': 0, '深水埗區': 0, '黃大仙區': 0, '油尖旺區': 0, '中西區': 0, 
-            '東區': 0, '南區': 0, '灣仔區': 0, '將軍澳': 0
+            '離島區': null, '葵青區': null, '北區': null, '沙田區': null, '西貢區': null, 
+            '大埔區': null, '荃灣區': null, '屯門區': null, '元朗區': null, '九龍城區': null, 
+            '觀塘區': null, '深水埗區': null, '黃大仙區': null, '油尖旺區': null, '中西區': null, 
+            '東區': null, '南區': null, '灣仔區': null, '將軍澳': null
         };
 
-        function getColor(rain) {
-            if (!rain || rain <= 0) return '#e2e8f0';
-            if (rain < 10) return '#fde047';
-            if (rain < 20) return '#fb923c';
-            if (rain < 40) return '#ef4444';
-            return '#a855f7';
+        // 天文台測站名稱轉 18 區名稱對照表
+        const placeToDistrict = {
+            '香港天文台': '油尖旺區', '京士柏': '油尖旺區', '黃竹坑': '南區',
+            '打鼓嶺': '北區', '流浮山': '元朗區', '大埔': '大埔區',
+            '沙田': '沙田區', '屯門': '屯門區', '西貢': '西貢區',
+            '將軍澳': '將軍澳', '荃灣可觀': '荃灣區', '荃灣城門谷': '荃灣區',
+            '香港公園': '中西區', '筲箕灣': '東區', '九龍城': '九龍城區',
+            '跑馬地': '灣仔區', '黃大仙': '黃大仙區', '赤鱲角': '離島區',
+            '長洲': '離島區', '坪洲': '離島區', '觀塘': '觀塘區',
+            '深水埗': '深水埗區', '青衣': '葵青區', '大美督': '大埔區'
+        };
+
+        // 氣溫顏色對應邏輯
+        function getColor(temp) {
+            if (temp === null || isNaN(temp)) return '#e2e8f0'; // 無數據
+            if (temp < 15) return '#3b82f6';  // 寒冷 (藍)
+            if (temp < 22) return '#81f7f3';  // 涼爽 (淺藍)
+            if (temp < 28) return '#d2f781';  // 舒適 (綠)
+            if (temp < 33) return '#f99316';  // 偏熱 (橙)
+            return '#ef4444';                  // 酷熱 (紅)
         }
 
         function updateUI(timeStr) {
-            let max = 0;
-            let maxName = '';
+            let max = -999;
             let maxNameList = [];
-        
-            // 第一階段：找出真正的最大值 (max)，同時幫地圖填色
+            let validDistrictCount = 0;
+
+            // 1. 更新地圖顏色與尋找最高溫
             for (const name in districtData) {
                 const val = districtData[name];
-                if (val > max) {
-                    max = val;
-                    maxName = name;
-                }
-        
-                // 填色邏輯放在迴圈內，才能正確拿到 name 同 val
+                
                 const poly = document.getElementById(`poly-${name}`);
                 if (poly) poly.style.fill = getColor(val);
-            }
-        
-            // 第二階段：如果雨量大於 0，找出所有等於 max 的地區
-            if (max > 0) {
-                for (const name in districtData) {
-                    if (districtData[name] === max) {
+
+                if (val !== null && !isNaN(val)) {
+                    validDistrictCount++;
+                    if (val > max) {
+                        max = val;
+                        maxNameList = [name];
+                    } else if (val === max) {
                         maxNameList.push(name);
                     }
                 }
             }
-                
-            const maxNameListStr = maxNameList.join('、');
-        
-        
-            // 接下來更新 UI 文字 (maxVal, statusBadge, statusSub 等)...
-            document.getElementById('maxVal').innerHTML = `${max} <span style="font-size:0.7rem;">mm</span>`;
-            
+
+            // 2. 更新狀態卡片
+            const maxValEl = document.getElementById('maxVal');
             const statusBadgeEl = document.getElementById('statusBadge');
             const statusSubEl = document.getElementById('statusSub');
 
-            if (max > 0) {
-                statusBadgeEl.textContent = '晴天';
-                statusBadgeEl.className = 'status-badge warning';
-                statusSubEl.textContent = `最 熱 ：${maxNameList}`;
+            if (validDistrictCount > 0) {
+                maxValEl.innerHTML = `${max} <span style="font-size:0.7rem;">°C</span>`;
+                
+                if (max >= 33) {
+                    statusBadgeEl.textContent = '酷熱';
+                    statusBadgeEl.className = 'status-badge hot';
+                } else if (max >= 28) {
+                    statusBadgeEl.textContent = '偏熱';
+                    statusBadgeEl.className = 'status-badge hot';
+                } else if (max >= 22) {
+                    statusBadgeEl.textContent = '宜人';
+                    statusBadgeEl.className = 'status-badge cool';
+                } else {
+                    statusBadgeEl.textContent = '清涼';
+                    statusBadgeEl.className = 'status-badge cool';
+                }
+
+                statusSubEl.textContent = `最高溫地區：${maxNameList.join('、')}`;
             } else {
-                statusBadgeEl.textContent = '乾爽';
-                statusBadgeEl.className = 'status-badge safe';
-                statusSubEl.textContent = '現時各區均無顯著降雨';
+                maxValEl.innerHTML = `-- <span style="font-size:0.7rem;">°C</span>`;
+                statusBadgeEl.textContent = '無數據';
+                statusSubEl.textContent = '暫時未能取得氣溫數據';
             }
 
-            document.getElementById('mapTimeLabel').textContent = `— 實時數據 (${timeStr} 更新) —`;
+            document.getElementById('mapTimeLabel').textContent = `— 實時氣溫 (${timeStr} 更新) —`;
 
+            // 3. 排行榜排序（由高溫至低溫）
             const sortedDistricts = Object.entries(districtData)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 20);
+                .filter(([_, val]) => val !== null)
+                .sort((a, b) => b[1] - a[1]);
 
             document.getElementById('districtList').innerHTML = sortedDistricts.map(([name, val], index) => `
                 <div class="district-item">
                     <div class="district-name">
                         <span class="rank-tag">${index + 1}</span> ${name}
                     </div>
-                    <div class="district-val">${val} mm</div>
+                    <div class="district-val" style="color:${getColor(val)}">${val} °C</div>
                 </div>
             `).join('');
         }
 
-        async function fetchRealtemperature() {
+        async function fetchRealTemperature() {
             try {
-                // 改用 rhrread 實時天氣 API (加 timestamp 防 cache)
                 const response = await fetch(`https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc&_t=${Date.now()}`);
                 if (!response.ok) throw new Error('API Error');
 
                 const data = await response.json();
                 
                 // 重置所有地區數值
-                for (const key in districtData) districtData[key] = 0;
+                for (const key in districtData) districtData[key] = null;
 
-                // 解析 rhrread 的雨量數據結構
+                // 解析天文台實時氣溫數據
                 if (data.temperature && data.temperature.data) {
                     data.temperature.data.forEach(item => {
-                        let placeName = item.place;
-                        
-                        // 地名標準化 (處理天文台寫法，如 "中西區" / "葵青")
-                        if (placeName && !placeName.endsWith('區') && placeName !== '將軍澳') {
-                            placeName += '區';
-                        }
+                        const rawPlace = item.place;
+                        const tempVal = parseFloat(item.value);
 
-                        if (districtData.hasOwnProperty(placeName)) {
-                            // rhrread 會提供 max 或 main 數值
-                            let val = parseFloat(item.max !== undefined ? item.max : item.main);
-                            if (!isNaN(val)) {
-                                districtData[placeName] = Math.round(val * 10) / 10;
+                        if (!isNaN(tempVal)) {
+                            // 比對對照表，將氣象站映照至對應區域
+                            let targetDistrict = placeToDistrict[rawPlace];
                             
-                                districtData['將軍澳'] = districtData['西貢區'];
-                                
+                            // 若無對照但名稱自帶「區」，直接匹配
+                            if (!targetDistrict && rawPlace.endsWith('區')) {
+                                targetDistrict = rawPlace;
+                            }
+
+                            if (targetDistrict && districtData.hasOwnProperty(targetDistrict)) {
+                                // 如果區域已有數據（例如油尖旺有多個站），保留較高者或最新者
+                                if (districtData[targetDistrict] === null || tempVal > districtData[targetDistrict]) {
+                                    districtData[targetDistrict] = tempVal;
+                                }
                             }
                         }
                     });
                 }
 
-                // 取得天文台資料的更新時間
+                // 取得資料更新時間
                 let dataTime = '--:--';
-                if (data.temperature && data.temperature.endTime) {
-                    dataTime = data.temperature.endTime.slice(11, 16);
+                if (data.recordTime) {
+                    dataTime = data.recordTime.slice(11, 16);
                 } else if (data.updateTime) {
                     dataTime = data.updateTime.slice(11, 16);
                 }
@@ -428,11 +450,11 @@
             }
         }
 
-        // 1. 頁面載入時立即執行第一次
-        fetchRealtemperature();
+        // 1. 頁面載入時執行
+        fetchRealTemperature();
 
-        // 2. 設定每 3 分鐘 (180,000 毫秒) 自動重新 Fetch 數據
-        setInterval(fetchRealtemperature, 180000);
+        // 2. 每 3 分鐘自動更新一次
+        setInterval(fetchRealTemperature, 180000);
     </script>
 </body>
 </html>
