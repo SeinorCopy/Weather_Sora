@@ -128,76 +128,6 @@
         }
         .header h2 i { color: #7a9bb5; }
 
-        /* ===== 風暴資訊卡片（合併版） ===== */
-        .storm-info-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 18px;
-            padding: 14px 16px;
-        }
-
-        .storm-info-card .status-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .storm-info-card .status-label {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            font-weight: 500;
-        }
-
-        .storm-info-card .status-value {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .storm-info-card .status-value.no-storm {
-            color: var(--text-sub);
-            font-weight: 400;
-        }
-
-        .storm-info-card .divider {
-            border: none;
-            border-top: 1px solid rgba(180, 195, 210, 0.12);
-            margin: 8px 0;
-        }
-
-        .storm-info-card .bottom-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .storm-info-card .bottom-row .left {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .storm-info-card .bottom-row .left .sub {
-            font-size: 0.7rem;
-            color: var(--text-sub);
-        }
-
-        .storm-info-card .bottom-row .right {
-            text-align: right;
-        }
-
-        .storm-info-card .bottom-row .right .val {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-red);
-        }
-
-        .storm-info-card .bottom-row .right .lbl {
-            font-size: 0.65rem;
-            color: var(--text-sub);
-        }
-
         /* ===== 歷史卡片 ===== */
         .history-card {
             background: var(--bg-card);
@@ -303,8 +233,6 @@
             .storm-container { padding: 18px 14px 22px; }
             .header h2 { font-size: 1rem; }
             .history-item { padding: 8px 12px; }
-            .storm-info-card .bottom-row { flex-direction: column; align-items: flex-start; gap: 6px; }
-            .storm-info-card .bottom-row .right { text-align: left; width: 100%; }
         }
     </style>
 </head>
@@ -334,41 +262,8 @@
             </svg>
         </div>
 
-        <!-- ===== Header ===== -->
-        <!-- 
-        <div class="header">
-            <a href="index.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h2>
-                <i class="fas fa-skull"></i> 風 暴 檔 案
-            </h2>
-        </div>
-        -->
-
         <!-- ============================================================ -->
-        <!-- 第一部分：風暴資訊（即時） -->
-        <!-- ============================================================ -->
-        <div class="storm-info-card" id="stormInfoCard">
-            <div class="status-row">
-                <span class="status-label">🌤️ 現時無熱帶氣旋</span>
-                <span class="status-value no-storm" id="stormStatus">安全</span>
-            </div>
-            <hr class="divider">
-            <div class="bottom-row">
-                <div class="left">
-                    <span class="sub" id="stormLocation">香港 800 公里範圍內無風暴</span>
-                    <span class="sub" id="stormMovement" style="display:none;">移動：--</span>
-                </div>
-                <div class="right">
-                    <div class="val" id="stormWind">0</div>
-                    <div class="lbl">中心最高風力 (km/h)</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- 第二部分：風暴檔案（歷史紀錄） -->
+        <!-- 風暴檔案（歷史紀錄） -->
         <!-- ============================================================ -->
         <div class="history-card">
             <div class="history-title">
@@ -385,10 +280,11 @@
     <script>
         (function() {
             // ============================================================
-            // 第一部分：風暴檔案（歷史）
+            // 風暴檔案（歷史）
             // ============================================================
             const historyList = document.getElementById('historyList');
             const loadingEl = document.getElementById('loading');
+            const updateTimeLabel = document.getElementById('updateTimeLabel');
 
             async function loadHistory() {
                 const url = 'https://cdn.jsdelivr.net/gh/SeinorCopy/Weather_Sora@main/hk_typhoon_history.json';
@@ -415,7 +311,6 @@
                     let html = '';
                     sortedYears.forEach(year => {
                         const items = groups[year];
-                        //items.sort((a, b) => b.highest_signal - a.highest_signal);
 
                         let itemsHtml = '';
                         items.forEach(item => {
@@ -453,6 +348,9 @@
                     historyList.innerHTML = html;
                     loadingEl.style.display = 'none';
 
+                    // 更新時間標籤
+                    updateTimeLabel.textContent = `— ${new Date().toTimeString().slice(0, 5)} —`;
+
                 } catch (error) {
                     console.error('載入風暴檔案失敗：', error);
                     loadingEl.innerHTML = `
@@ -466,85 +364,9 @@
             }
 
             // ============================================================
-            // 第二部分：即時風暴數據
-            // ============================================================
-            const stormStatusEl = document.getElementById('stormStatus');
-            const stormLocationEl = document.getElementById('stormLocation');
-            const stormMovementEl = document.getElementById('stormMovement');
-            const stormWindEl = document.getElementById('stormWind');
-            const stormInfoCard = document.getElementById('stormInfoCard');
-            const updateTimeLabel = document.getElementById('updateTimeLabel');
-
-            function getWindCategory(wind) {
-                if (wind < 63) return '🌀 熱帶低氣壓';
-                if (wind < 88) return '🌀 熱帶風暴';
-                if (wind < 118) return '💨 強烈熱帶風暴';
-                if (wind < 150) return '💨 颱 風';
-                if (wind < 185) return '🌪️強 颱 風';
-                return '🌪️ 超 強 颱 風 ';
-            }
-
-            function renderNoStorm(timeStr) {
-                // 改為顯示「現時無熱帶氣旋」嘅樣式
-                stormStatusEl.textContent = ' - -';
-                stormStatusEl.className = 'status-value no-storm';
-                stormLocationEl.textContent = '香港 800 公里範圍內無風暴';
-                stormMovementEl.style.display = 'none';
-                stormWindEl.textContent = '0';
-                document.querySelector('.right').style.display = 'none';
-                updateTimeLabel.textContent = `— ${timeStr} —`;
-            }
-
-            function renderStormInfo(tc, timeStr) {
-                const wind = parseInt(tc.maxWind) || 0;
-                const category = getWindCategory(wind);
-                const lat = tc.latitude || '--';
-                const lon = tc.longitude || '--';
-
-                // 更新狀態
-                stormStatusEl.textContent = category;
-                stormStatusEl.className = 'status-value';
-                stormLocationEl.textContent = `位置：北緯 ${lat}° / 東經 ${lon}°`;
-
-                // 顯示移動方向
-                if (tc.movement) {
-                    stormMovementEl.style.display = 'block';
-                    stormMovementEl.textContent = `移動：${tc.movement.direction} (${tc.movement.speed} km/h)`;
-                } else {
-                    stormMovementEl.style.display = 'none';
-                }
-
-                stormWindEl.textContent = wind;
-                document.querySelector('.right').style.display = 'flex';
-                updateTimeLabel.textContent = `—  ${timeStr} —`;
-            }
-
-            async function fetchStormData() {
-                try {
-                    const response = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=tcInfo&lang=tc');
-                    if (!response.ok) throw new Error('API Error');
-                    const data = await response.json();
-
-                    const updateTime = data.updateTime ? data.updateTime.slice(11, 16) : new Date().toTimeString().slice(0, 5);
-
-                    if (data.tropicalCyclone && data.tropicalCyclone.length > 0) {
-                        const tc = data.tropicalCyclone[0];
-                        renderStormInfo(tc, updateTime);
-                    } else {
-                        renderNoStorm(updateTime);
-                    }
-                } catch (error) {
-                    console.error('API 錯誤:', error);
-                    renderNoStorm(new Date().toTimeString().slice(0, 5));
-                }
-            }
-
-            // ============================================================
             // 啟動
             // ============================================================
             loadHistory();
-            fetchStormData();
-            setInterval(fetchStormData, 300000);
         })();
     </script>
 </body>
